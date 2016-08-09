@@ -1,0 +1,10 @@
+package: github.com/utahta/momoclo-channel
+import:
+- package: github.com/PuerkitoBio/goquery
+- package: github.com/jteeuwen/go-pkg-rss
+- package: github.com/kennygrant/sanitize
+- package: github.com/pkg/errors
+- package: google.golang.org/appengine
+  subpackages:
+  - log
+  - taskqueue

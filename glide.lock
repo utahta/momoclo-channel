@@ -1,0 +1,41 @@
+hash: 3d536b9b8674abee7e6dc396ea88ac7a756c28e40cba11276397b72de915736e
+updated: 2016-08-10T01:18:02.71130012+09:00
+imports:
+- name: github.com/andybalholm/cascadia
+  version: 3ad29d1ad1c4f2023e355603324348cf1f4b2d48
+- name: github.com/golang/protobuf
+  version: c3cefd437628a0b7d31b34fe44b3a7a540e98527
+  subpackages:
+  - proto
+- name: github.com/jteeuwen/go-pkg-rss
+  version: 72391e6fd7384785fa3c46a405214a616d6c4a1d
+- name: github.com/jteeuwen/go-pkg-xmlx
+  version: 76f54ee73233b171ca9ee82ef837a1fc4d3809c0
+- name: github.com/kennygrant/sanitize
+  version: ce9fd1f6ce32afaa38b51feea32320fc8875e8e4
+- name: github.com/pkg/errors
+  version: a22138067af1c4942683050411a841ade67fe1eb
+- name: github.com/PuerkitoBio/goquery
+  version: 7f4291566cf7cac3be222a933e01a2bed97532b1
+- name: golang.org/x/net
+  version: 075e191f18186a8ff2becaf64478e30f4545cdad
+  subpackages:
+  - context
+  - html
+  - html/atom
+- name: google.golang.org/appengine
+  version: b4728023490a62e70ba739ff62aa65ffcca84210
+  subpackages:
+  - log
+  - taskqueue
+  - urlfetch
+  - internal
+  - internal/app_identity
+  - internal/modules
+  - internal/log
+  - internal/datastore
+  - internal/taskqueue
+  - internal/urlfetch
+  - internal/base
+  - internal/remote_api
+devImports: []

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
+ <link rel="self" href="http://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg"/>
+ <id>yt:channel:UC7pcEjI2U2vg6CqgbwIpjgg</id>
+ <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+ <title>ニュータイプ放送局</title>
+ <link rel="alternate" href="http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg"/>
+ <author>
+  <name>ニュータイプ放送局</name>
+  <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+ </author>
+ <published>2015-12-10T03:47:18+00:00</published>
+ <entry>
+  <id>yt:video:LpVptTGBB8Y</id>
+  <yt:videoId>LpVptTGBB8Y</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>２０１６０４０１　１分報告</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=LpVptTGBB8Y"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2016-04-01T00:18:19+00:00</published>
+  <updated>2016-07-04T12:09:45+00:00</updated>
+  <media:group>
+   <media:title>２０１６０４０１　１分報告</media:title>
+   <media:content url="https://www.youtube.com/v/LpVptTGBB8Y?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/LpVptTGBB8Y/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="558" average="4.98" min="1" max="5"/>
+    <media:statistics views="34542"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:RBfLM0b_vag</id>
+  <yt:videoId>RBfLM0b_vag</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>２０１６０３２７　フォーをたべよ</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=RBfLM0b_vag"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2016-03-27T03:52:48+00:00</published>
+  <updated>2016-07-12T01:49:06+00:00</updated>
+  <media:group>
+   <media:title>２０１６０３２７　フォーをたべよ</media:title>
+   <media:content url="https://www.youtube.com/v/RBfLM0b_vag?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/RBfLM0b_vag/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="552" average="4.98" min="1" max="5"/>
+    <media:statistics views="27336"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:uCRkLsDceMM</id>
+  <yt:videoId>uCRkLsDceMM</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>２１０６０３１２　弁は語る</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=uCRkLsDceMM"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2016-03-12T04:51:11+00:00</published>
+  <updated>2016-07-12T07:09:16+00:00</updated>
+  <media:group>
+   <media:title>２１０６０３１２　弁は語る</media:title>
+   <media:content url="https://www.youtube.com/v/uCRkLsDceMM?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/uCRkLsDceMM/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="636" average="4.97" min="1" max="5"/>
+    <media:statistics views="20679"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:d3VvBTD6hbo</id>
+  <yt:videoId>d3VvBTD6hbo</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>２０１６０３０７　運動神経のよい子はなんでもできちゃう♡</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=d3VvBTD6hbo"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2016-03-07T13:36:36+00:00</published>
+  <updated>2016-07-11T12:44:30+00:00</updated>
+  <media:group>
+   <media:title>２０１６０３０７　運動神経のよい子はなんでもできちゃう♡</media:title>
+   <media:content url="https://www.youtube.com/v/d3VvBTD6hbo?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/d3VvBTD6hbo/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="1149" average="4.82" min="1" max="5"/>
+    <media:statistics views="56630"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:FO37VbQr0wI</id>
+  <yt:videoId>FO37VbQr0wI</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>２０１６０２０６反省　寒いとバッテリーがすぐなくなり、目が回る映像はやだ</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=FO37VbQr0wI"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2016-02-06T10:51:39+00:00</published>
+  <updated>2016-07-08T13:22:45+00:00</updated>
+  <media:group>
+   <media:title>２０１６０２０６反省　寒いとバッテリーがすぐなくなり、目が回る映像はやだ</media:title>
+   <media:content url="https://www.youtube.com/v/FO37VbQr0wI?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/FO37VbQr0wI/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="578" average="4.99" min="1" max="5"/>
+    <media:statistics views="25412"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:-5K07DNIEwg</id>
+  <yt:videoId>-5K07DNIEwg</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>２０１６０１２１　ジュエリーあーりん</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=-5K07DNIEwg"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2016-01-22T07:20:46+00:00</published>
+  <updated>2016-07-13T14:55:32+00:00</updated>
+  <media:group>
+   <media:title>２０１６０１２１　ジュエリーあーりん</media:title>
+   <media:content url="https://www.youtube.com/v/-5K07DNIEwg?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/-5K07DNIEwg/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="1075" average="4.96" min="1" max="5"/>
+    <media:statistics views="85576"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:n1Cm_UDuTkU</id>
+  <yt:videoId>n1Cm_UDuTkU</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>１６０１１１　ももクロの札幌ドームにおいでよ♡　②</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=n1Cm_UDuTkU"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2016-01-14T08:51:45+00:00</published>
+  <updated>2016-07-14T07:33:06+00:00</updated>
+  <media:group>
+   <media:title>１６０１１１　ももクロの札幌ドームにおいでよ♡　②</media:title>
+   <media:content url="https://www.youtube.com/v/n1Cm_UDuTkU?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/n1Cm_UDuTkU/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="686" average="4.98" min="1" max="5"/>
+    <media:statistics views="47016"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:NpolBWtnAz0</id>
+  <yt:videoId>NpolBWtnAz0</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>１６０１１１　ももクロの札幌ドームにおいでよ♡　①</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=NpolBWtnAz0"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2016-01-12T01:31:13+00:00</published>
+  <updated>2016-07-14T07:33:00+00:00</updated>
+  <media:group>
+   <media:title>１６０１１１　ももクロの札幌ドームにおいでよ♡　①</media:title>
+   <media:content url="https://www.youtube.com/v/NpolBWtnAz0?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/NpolBWtnAz0/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="527" average="4.97" min="1" max="5"/>
+    <media:statistics views="37790"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:TSr-9ZgVSw0</id>
+  <yt:videoId>TSr-9ZgVSw0</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>１５１２３０　明日はカウントダウン③</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=TSr-9ZgVSw0"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2015-12-30T14:30:01+00:00</published>
+  <updated>2016-07-14T12:38:53+00:00</updated>
+  <media:group>
+   <media:title>１５１２３０　明日はカウントダウン③</media:title>
+   <media:content url="https://www.youtube.com/v/TSr-9ZgVSw0?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/TSr-9ZgVSw0/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="586" average="4.97" min="1" max="5"/>
+    <media:statistics views="37047"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:SMjB7Q-n4Pw</id>
+  <yt:videoId>SMjB7Q-n4Pw</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>１５１２３０　明日はカウントダウン②</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=SMjB7Q-n4Pw"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2015-12-30T14:13:08+00:00</published>
+  <updated>2016-07-11T08:05:16+00:00</updated>
+  <media:group>
+   <media:title>１５１２３０　明日はカウントダウン②</media:title>
+   <media:content url="https://www.youtube.com/v/SMjB7Q-n4Pw?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i4.ytimg.com/vi/SMjB7Q-n4Pw/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="636" average="4.96" min="1" max="5"/>
+    <media:statistics views="44712"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:LHO1uPk0G5I</id>
+  <yt:videoId>LHO1uPk0G5I</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>１５１２３０　明日はカウントダウン①</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=LHO1uPk0G5I"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2015-12-30T13:50:42+00:00</published>
+  <updated>2016-07-13T14:02:39+00:00</updated>
+  <media:group>
+   <media:title>１５１２３０　明日はカウントダウン①</media:title>
+   <media:content url="https://www.youtube.com/v/LHO1uPk0G5I?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/LHO1uPk0G5I/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="624" average="4.97" min="1" max="5"/>
+    <media:statistics views="44053"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:N73kxPa-XHM</id>
+  <yt:videoId>N73kxPa-XHM</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>２０１５１２２６　ももクリ　ももクロスキー場ライブ</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=N73kxPa-XHM"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2015-12-26T14:39:35+00:00</published>
+  <updated>2016-07-13T17:37:51+00:00</updated>
+  <media:group>
+   <media:title>２０１５１２２６　ももクリ　ももクロスキー場ライブ</media:title>
+   <media:content url="https://www.youtube.com/v/N73kxPa-XHM?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i3.ytimg.com/vi/N73kxPa-XHM/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="1563" average="4.93" min="1" max="5"/>
+    <media:statistics views="107437"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:XRfDNYO-L78</id>
+  <yt:videoId>XRfDNYO-L78</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>20151223 ヨシミーランドとは②</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=XRfDNYO-L78"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2015-12-23T12:28:06+00:00</published>
+  <updated>2016-06-12T23:48:28+00:00</updated>
+  <media:group>
+   <media:title>20151223 ヨシミーランドとは②</media:title>
+   <media:content url="https://www.youtube.com/v/XRfDNYO-L78?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i1.ytimg.com/vi/XRfDNYO-L78/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="165" average="4.95" min="1" max="5"/>
+    <media:statistics views="12891"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:yxmBqNxy5JY</id>
+  <yt:videoId>yxmBqNxy5JY</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>20151223 ヨシミーランドとは①</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=yxmBqNxy5JY"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2015-12-23T11:53:43+00:00</published>
+  <updated>2016-06-12T23:47:43+00:00</updated>
+  <media:group>
+   <media:title>20151223 ヨシミーランドとは①</media:title>
+   <media:content url="https://www.youtube.com/v/yxmBqNxy5JY?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/yxmBqNxy5JY/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="186" average="4.94" min="1" max="5"/>
+    <media:statistics views="16201"/>
+   </media:community>
+  </media:group>
+ </entry>
+ <entry>
+  <id>yt:video:161CgEdA_Q0</id>
+  <yt:videoId>161CgEdA_Q0</yt:videoId>
+  <yt:channelId>UC7pcEjI2U2vg6CqgbwIpjgg</yt:channelId>
+  <title>２０１５年１２月２２日ももクリ前日の一コマ③</title>
+  <link rel="alternate" href="http://www.youtube.com/watch?v=161CgEdA_Q0"/>
+  <author>
+   <name>ニュータイプ放送局</name>
+   <uri>http://www.youtube.com/channel/UC7pcEjI2U2vg6CqgbwIpjgg</uri>
+  </author>
+  <published>2015-12-23T02:26:56+00:00</published>
+  <updated>2016-07-13T17:30:53+00:00</updated>
+  <media:group>
+   <media:title>２０１５年１２月２２日ももクリ前日の一コマ③</media:title>
+   <media:content url="https://www.youtube.com/v/161CgEdA_Q0?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+   <media:thumbnail url="https://i2.ytimg.com/vi/161CgEdA_Q0/hqdefault.jpg" width="480" height="360"/>
+   <media:description></media:description>
+   <media:community>
+    <media:starRating count="504" average="4.98" min="1" max="5"/>
+    <media:statistics views="45182"/>
+   </media:community>
+  </media:group>
+ </entry>
+</feed>

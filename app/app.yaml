@@ -1,0 +1,11 @@
+runtime: go
+api_version: go1
+
+handlers:
+- url: /cron/crawl
+  script: _go_app
+  login: admin
+
+- url: /queue/tweet
+  script: _go_app
+  login: admin

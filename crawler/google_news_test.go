@@ -13,7 +13,7 @@ func TestGoogleNewsChannelParse(t *testing.T) {
 	}
 	defer fp.Close()
 
-	items, err := c.Parse(fp)
+	items, err := c.Parse(c, fp)
 	if err != nil {
 		t.Errorf("Failed to parse. error:%v", err)
 	}

@@ -11,23 +11,17 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type AeNewsChannel struct {
-	*Channel
-}
-
-func NewAeNewsChannel() *AeNewsChannel {
-	return &AeNewsChannel{Channel: &Channel{Url: "http://www.momoclo.net/news/"}}
+func NewAeNewsChannel() *Channel {
+	return &Channel{
+		Url: "http://www.momoclo.net/news/", Parse: parseAeNews,
+	}
 }
 
 func FetchAeNews() ([]*ChannelItem, error) {
-	return FetchParse(NewAeNewsChannel())
+	return NewAeNewsChannel().Fetch()
 }
 
-func (c *AeNewsChannel) Fetch() (io.ReadCloser, error) {
-	return c.fetch(c.Url)
-}
-
-func (c *AeNewsChannel) Parse(r io.Reader) ([]*ChannelItem, error) {
+func parseAeNews(c *Channel, r io.Reader) ([]*ChannelItem, error) {
 	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to new document. url:%s", c.Url)

@@ -12,69 +12,61 @@ import (
 	"github.com/pkg/errors"
 )
 
-type BlogChannel struct {
-	*Channel
+func NewTamaiBlogChannel() *Channel {
+	return &Channel{Url: "http://ameblo.jp/tamai-sd/entrylist.html", Parse: parseBlog}
 }
 
-func NewTamaiBlogChannel() *BlogChannel {
-	return &BlogChannel{Channel: &Channel{Url: "http://ameblo.jp/tamai-sd/entrylist.html"}}
+func NewMomotaBlogChannel() *Channel {
+	return &Channel{Url: "http://ameblo.jp/momota-sd/entrylist.html", Parse: parseBlog}
 }
 
-func NewMomotaBlogChannel() *BlogChannel {
-	return &BlogChannel{Channel: &Channel{Url: "http://ameblo.jp/momota-sd/entrylist.html"}}
+func NewAriyasuBlogChannel() *Channel {
+	return &Channel{Url: "http://ameblo.jp/ariyasu-sd/entrylist.html", Parse: parseBlog}
 }
 
-func NewAriyasuBlogChannel() *BlogChannel {
-	return &BlogChannel{Channel: &Channel{Url: "http://ameblo.jp/ariyasu-sd/entrylist.html"}}
+func NewSasakiBlogChannel() *Channel {
+	return &Channel{Url: "http://ameblo.jp/sasaki-sd/entrylist.html", Parse: parseBlog}
 }
 
-func NewSasakiBlogChannel() *BlogChannel {
-	return &BlogChannel{Channel: &Channel{Url: "http://ameblo.jp/sasaki-sd/entrylist.html"}}
-}
-
-func NewTakagiBlogChannel() *BlogChannel {
-	return &BlogChannel{Channel: &Channel{Url: "http://ameblo.jp/takagi-sd/entrylist.html"}}
+func NewTakagiBlogChannel() *Channel {
+	return &Channel{Url: "http://ameblo.jp/takagi-sd/entrylist.html", Parse: parseBlog}
 }
 
 func FetchTamaiBlog() ([]*ChannelItem, error) {
-	return FetchParse(NewTamaiBlogChannel())
+	return NewTamaiBlogChannel().Fetch()
 }
 
 func FetchMomotaBlog() ([]*ChannelItem, error) {
-	return FetchParse(NewMomotaBlogChannel())
+	return NewMomotaBlogChannel().Fetch()
 }
 
 func FetchAriyasuBlog() ([]*ChannelItem, error) {
-	return FetchParse(NewAriyasuBlogChannel())
+	return NewAriyasuBlogChannel().Fetch()
 }
 
 func FetchSasakiBlog() ([]*ChannelItem, error) {
-	return FetchParse(NewSasakiBlogChannel())
+	return NewSasakiBlogChannel().Fetch()
 }
 
 func FetchTakagiBlog() ([]*ChannelItem, error) {
-	return FetchParse(NewTakagiBlogChannel())
+	return NewTakagiBlogChannel().Fetch()
 }
 
-func (c *BlogChannel) Fetch() (io.ReadCloser, error) {
-	return c.fetch(c.Url)
-}
-
-func (c *BlogChannel) Parse(r io.Reader) ([]*ChannelItem, error) {
-	items, err := c.parseList(r)
+func parseBlog(c *Channel, r io.Reader) ([]*ChannelItem, error) {
+	items, err := parseBlogList(c, r)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, item := range items {
 		err := func () error {
-			r, err := c.fetch(item.Url)
+			resp, err := c.HttpClient.Get(item.Url)
 			if err != nil {
 				return err
 			}
-			defer r.Close()
+			defer resp.Body.Close()
 
-			err = c.parseItem(r, item)
+			err = parseBlogItem(r, item)
 			if err != nil {
 				return err
 			}
@@ -87,7 +79,7 @@ func (c *BlogChannel) Parse(r io.Reader) ([]*ChannelItem, error) {
 	return items, nil
 }
 
-func (c *BlogChannel) parseList(r io.Reader) ([]*ChannelItem, error) {
+func parseBlogList(c *Channel, r io.Reader) ([]*ChannelItem, error) {
 	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to new document url:%s", c.Url)
@@ -129,21 +121,21 @@ func (c *BlogChannel) parseList(r io.Reader) ([]*ChannelItem, error) {
 	return items, err
 }
 
-func (c *BlogChannel) parseItem(r io.Reader, item *ChannelItem) error {
+func parseBlogItem(r io.Reader, item *ChannelItem) error {
 	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
 		return errors.Wrapf(err, "Failed to new document. url:%s", item.Url)
 	}
-	if item.Images, err = c.parseImages(doc); err != nil {
+	if item.Images, err = parseBlogImages(doc); err != nil {
 		return err
 	}
-	if item.Videos, err = c.parseVideos(doc); err != nil {
+	if item.Videos, err = parseBlogVideos(doc); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *BlogChannel) parseImages(doc *goquery.Document) (images []*ChannelImage, err error) {
+func parseBlogImages(doc *goquery.Document) (images []*ChannelImage, err error) {
 	doc.Find("[amb-component='entryBody'] img").EachWithBreak(func(i int, s *goquery.Selection) bool {
 		src, exists := s.Attr("src")
 		if !exists {
@@ -163,7 +155,7 @@ func (c *BlogChannel) parseImages(doc *goquery.Document) (images []*ChannelImage
 	return
 }
 
-func (c *BlogChannel) parseVideos(doc *goquery.Document) (videos []*ChannelVideo, err error) {
+func parseBlogVideos(doc *goquery.Document) (videos []*ChannelVideo, err error) {
 	doc.Find("[amb-component='entryBody'] iframe").EachWithBreak(func(i int, s *goquery.Selection) bool {
 		src, exists := s.Attr("src")
 		if !exists {

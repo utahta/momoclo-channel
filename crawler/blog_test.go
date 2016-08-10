@@ -5,9 +5,27 @@ import (
 	"os"
 )
 
+func TestBlogChannelParse(t *testing.T) {
+	var tests = []struct {
+		c *Channel
+	}{
+		{ NewTamaiBlogChannel() },
+		{ NewMomotaBlogChannel() },
+		{ NewAriyasuBlogChannel() },
+		{ NewSasakiBlogChannel() },
+		{ NewTakagiBlogChannel() },
+	}
+
+	for _, test := range tests {
+		if test.c.Parse == nil {
+			t.Errorf("Channel.Parse() is nil. %#v", test.c)
+		}
+	}
+}
+
 func TestBlogChannelParserList(t *testing.T) {
 	var tests = []struct {
-		c *BlogChannel
+		c *Channel
 		input string
 	}{
 		{ NewTamaiBlogChannel(), "testdata/blog/list_tamai_20160714.html" },
@@ -25,7 +43,7 @@ func TestBlogChannelParserList(t *testing.T) {
 			}
 			defer fp.Close()
 
-			items, err := test.c.parseList(fp)
+			items, err := parseBlogList(test.c, fp)
 			if err != nil {
 				t.Errorf("Failed to parse list. error:%v", err)
 			}
@@ -39,7 +57,7 @@ func TestBlogChannelParserList(t *testing.T) {
 
 func TestBlogChannelParseItem(t *testing.T) {
 	var tests = []struct {
-		c *BlogChannel
+		c *Channel
 		input string
 		expectedImageLen int
 		expectedVideoLen int
@@ -60,7 +78,7 @@ func TestBlogChannelParseItem(t *testing.T) {
 			defer fp.Close()
 
 			item := ChannelItem{}
-			err = test.c.parseItem(fp, &item)
+			err = parseBlogItem(fp, &item)
 			if err != nil {
 				t.Errorf("Failed to parse item. error:%v", err)
 			}

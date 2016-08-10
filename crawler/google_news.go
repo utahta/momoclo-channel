@@ -10,23 +10,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-type GoogleNewsChannel struct {
-	*Channel
-}
-
-func NewGoogleNewsChannel() *GoogleNewsChannel {
-	return &GoogleNewsChannel{Channel: &Channel{Url: "https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420"}}
+func NewGoogleNewsChannel() *Channel {
+	return &Channel{Url: "https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420", Parse: parseGoogleNews}
 }
 
 func FetchGoogleNews() ([]*ChannelItem, error) {
-	return FetchParse(NewGoogleNewsChannel())
+	return NewGoogleNewsChannel().Fetch()
 }
 
-func (c *GoogleNewsChannel) Fetch() (io.ReadCloser, error) {
-	return c.fetch(c.Url)
-}
-
-func (c *GoogleNewsChannel) Parse(r io.Reader) ([]*ChannelItem, error) {
+func parseGoogleNews(c *Channel, r io.Reader) ([]*ChannelItem, error) {
 	content, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to read rss content")

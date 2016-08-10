@@ -36,20 +36,20 @@ type ChannelItem struct {
 type Channel struct {
 	Url string
 	HttpClient http.Client
+
+	Parse func(c *Channel, r io.Reader) ([]*ChannelItem, error)
 }
 
-func (c *Channel) fetch(url string) (io.ReadCloser, error) {
-	res, err := c.HttpClient.Get(url)
+func (c *Channel) Fetch() ([]*ChannelItem, error) {
+	resp, err := c.HttpClient.Get(c.Url)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to fetch url:%s", url)
+		return nil, errors.Wrapf(err, "Failed to get resource. url:%s", c.Url)
 	}
-	return res.Body, nil
-}
+	defer resp.Body.Close()
 
-func FetchParse(c ChannelFetchParser) ([]*ChannelItem, error) {
-	r, err := c.Fetch()
-	if err != nil {
-		return nil, err
+	if c.Parse == nil {
+		return nil, errors.Errorf("You must implemented Parse method. url:%s", c.Url)
 	}
-	return c.Parse(r)
+
+	return c.Parse(c, resp.Body)
 }

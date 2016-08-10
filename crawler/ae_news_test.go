@@ -13,7 +13,7 @@ func TestAeNewsChannelParse(t *testing.T) {
 	}
 	defer fp.Close()
 
-	items, err := c.Parse(fp)
+	items, err := c.Parse(c, fp)
 	if err != nil {
 		t.Errorf("Failed to ae_news parse. error:%v", err)
 	}

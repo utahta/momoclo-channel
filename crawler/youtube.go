@@ -9,23 +9,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-type YouTubeChannel struct {
-	*Channel
-}
-
-func NewYoutubeChannel() *YouTubeChannel {
-	return &YouTubeChannel{Channel: &Channel{Url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg"}}
+func NewYoutubeChannel() *Channel {
+	return &Channel{Url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg", Parse: parseYoutube}
 }
 
 func FetchYoutube() ([]*ChannelItem, error) {
-	return FetchParse(NewYoutubeChannel())
+	return NewYoutubeChannel().Fetch()
 }
 
-func (c *YouTubeChannel) Fetch() (io.ReadCloser, error) {
-	return c.fetch(c.Url)
-}
-
-func (c *YouTubeChannel) Parse(r io.Reader) ([]*ChannelItem, error) {
+func parseYoutube(c *Channel, r io.Reader) ([]*ChannelItem, error) {
 	content, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to read rss content")

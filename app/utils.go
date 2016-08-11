@@ -1,4 +1,4 @@
-package momoclo_channel
+package app
 
 import (
 	"net/http"

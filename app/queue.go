@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/log"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
@@ -35,8 +34,5 @@ func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error
 		return newError(errors.Wrapf(err, "Failed to unmarshal."), http.StatusInternalServerError)
 	}
 
-	for _, item := range items {
-		log.Infof(h.context, "%v", item)
-	}
 	return nil
 }

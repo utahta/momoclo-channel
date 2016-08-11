@@ -12,24 +12,33 @@ import (
 	"github.com/pkg/errors"
 )
 
+type blogChannelParser struct {
+	context *ChannelContext
+}
+
+func newBlogChannel(url string) *Channel {
+	ctx := &ChannelContext{ Url: url }
+	return &Channel{ Context: ctx, parser: &blogChannelParser{ context: ctx } }
+}
+
 func NewTamaiBlogChannel() *Channel {
-	return &Channel{Url: "http://ameblo.jp/tamai-sd/entrylist.html", Parse: parseBlog}
+	return newBlogChannel("http://ameblo.jp/tamai-sd/entrylist.html")
 }
 
 func NewMomotaBlogChannel() *Channel {
-	return &Channel{Url: "http://ameblo.jp/momota-sd/entrylist.html", Parse: parseBlog}
+	return newBlogChannel("http://ameblo.jp/momota-sd/entrylist.html")
 }
 
 func NewAriyasuBlogChannel() *Channel {
-	return &Channel{Url: "http://ameblo.jp/ariyasu-sd/entrylist.html", Parse: parseBlog}
+	return newBlogChannel("http://ameblo.jp/ariyasu-sd/entrylist.html")
 }
 
 func NewSasakiBlogChannel() *Channel {
-	return &Channel{Url: "http://ameblo.jp/sasaki-sd/entrylist.html", Parse: parseBlog}
+	return newBlogChannel("http://ameblo.jp/sasaki-sd/entrylist.html")
 }
 
 func NewTakagiBlogChannel() *Channel {
-	return &Channel{Url: "http://ameblo.jp/takagi-sd/entrylist.html", Parse: parseBlog}
+	return newBlogChannel("http://ameblo.jp/takagi-sd/entrylist.html")
 }
 
 func FetchTamaiBlog() ([]*ChannelItem, error) {
@@ -52,21 +61,22 @@ func FetchTakagiBlog() ([]*ChannelItem, error) {
 	return NewTakagiBlogChannel().Fetch()
 }
 
-func parseBlog(c *Channel, r io.Reader) ([]*ChannelItem, error) {
-	items, err := parseBlogList(c, r)
+func (p *blogChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
+	ctx := p.context
+	items, err := p.parseList(r)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, item := range items {
 		err := func () error {
-			resp, err := c.HttpClient.Get(item.Url)
+			resp, err := ctx.HttpClient.Get(item.Url)
 			if err != nil {
 				return err
 			}
 			defer resp.Body.Close()
 
-			err = parseBlogItem(r, item)
+			err = p.parseItem(r, item)
 			if err != nil {
 				return err
 			}
@@ -79,10 +89,11 @@ func parseBlog(c *Channel, r io.Reader) ([]*ChannelItem, error) {
 	return items, nil
 }
 
-func parseBlogList(c *Channel, r io.Reader) ([]*ChannelItem, error) {
+func (p *blogChannelParser) parseList(r io.Reader) ([]*ChannelItem, error) {
+	ctx := p.context
 	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to new document url:%s", c.Url)
+		return nil, errors.Wrapf(err, "Failed to new document url:%s", ctx.Url)
 	}
 
 	loc, err := time.LoadLocation("Asia/Tokyo")
@@ -96,7 +107,7 @@ func parseBlogList(c *Channel, r io.Reader) ([]*ChannelItem, error) {
 		title := strings.TrimSpace(s.Find("[amb-component='entryItemTitle']").Text())
 		href, exists := s.Find("[amb-component='entryItemTitle'] > a").Attr("href")
 		if !exists {
-			err = errors.Errorf("Failed to get href attribute. url:%s", c.Url)
+			err = errors.Errorf("Failed to get href attribute. url:%s", ctx.Url)
 			return false
 		}
 
@@ -121,21 +132,21 @@ func parseBlogList(c *Channel, r io.Reader) ([]*ChannelItem, error) {
 	return items, err
 }
 
-func parseBlogItem(r io.Reader, item *ChannelItem) error {
+func (p *blogChannelParser) parseItem(r io.Reader, item *ChannelItem) error {
 	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
 		return errors.Wrapf(err, "Failed to new document. url:%s", item.Url)
 	}
-	if item.Images, err = parseBlogImages(doc); err != nil {
+	if item.Images, err = p.parseImages(doc); err != nil {
 		return err
 	}
-	if item.Videos, err = parseBlogVideos(doc); err != nil {
+	if item.Videos, err = p.parseVideos(doc); err != nil {
 		return err
 	}
 	return nil
 }
 
-func parseBlogImages(doc *goquery.Document) (images []*ChannelImage, err error) {
+func (p *blogChannelParser) parseImages(doc *goquery.Document) (images []*ChannelImage, err error) {
 	doc.Find("[amb-component='entryBody'] img").EachWithBreak(func(i int, s *goquery.Selection) bool {
 		src, exists := s.Attr("src")
 		if !exists {
@@ -155,7 +166,7 @@ func parseBlogImages(doc *goquery.Document) (images []*ChannelImage, err error) 
 	return
 }
 
-func parseBlogVideos(doc *goquery.Document) (videos []*ChannelVideo, err error) {
+func (p *blogChannelParser) parseVideos(doc *goquery.Document) (videos []*ChannelVideo, err error) {
 	doc.Find("[amb-component='entryBody'] iframe").EachWithBreak(func(i int, s *goquery.Selection) bool {
 		src, exists := s.Attr("src")
 		if !exists {

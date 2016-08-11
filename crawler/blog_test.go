@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func TestBlogChannelParse(t *testing.T) {
+func TestBlogChannelParser(t *testing.T) {
 	var tests = []struct {
 		c *Channel
 	}{
@@ -17,7 +17,7 @@ func TestBlogChannelParse(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if test.c.Parse == nil {
+		if test.c.parser == nil {
 			t.Errorf("Channel.Parse() is nil. %#v", test.c)
 		}
 	}
@@ -43,7 +43,8 @@ func TestBlogChannelParserList(t *testing.T) {
 			}
 			defer fp.Close()
 
-			items, err := parseBlogList(test.c, fp)
+			parser := test.c.parser.(*blogChannelParser)
+			items, err := parser.parseList(fp)
 			if err != nil {
 				t.Errorf("Failed to parse list. error:%v", err)
 			}
@@ -55,7 +56,7 @@ func TestBlogChannelParserList(t *testing.T) {
 	}
 }
 
-func TestBlogChannelParseItem(t *testing.T) {
+func TestBlogChannelParserItem(t *testing.T) {
 	var tests = []struct {
 		c *Channel
 		input string
@@ -78,7 +79,8 @@ func TestBlogChannelParseItem(t *testing.T) {
 			defer fp.Close()
 
 			item := ChannelItem{}
-			err = parseBlogItem(fp, &item)
+			parser := test.c.parser.(*blogChannelParser)
+			err = parser.parseItem(fp, &item)
 			if err != nil {
 				t.Errorf("Failed to parse item. error:%v", err)
 			}

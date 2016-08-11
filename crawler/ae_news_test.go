@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func TestAeNewsChannelParse(t *testing.T) {
+func TestAeNewsChannelParser(t *testing.T) {
 	c := NewAeNewsChannel()
 	fp, err := os.Open("testdata/ae_news/list_20160715.html")
 	if err != nil {
@@ -13,7 +13,7 @@ func TestAeNewsChannelParse(t *testing.T) {
 	}
 	defer fp.Close()
 
-	items, err := c.Parse(c, fp)
+	items, err := c.parser.Parse(fp)
 	if err != nil {
 		t.Errorf("Failed to ae_news parse. error:%v", err)
 	}

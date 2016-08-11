@@ -9,24 +9,30 @@ import (
 	"github.com/pkg/errors"
 )
 
+type youtubeChannelParser struct {
+	context *ChannelContext
+}
+
 func NewYoutubeChannel() *Channel {
-	return &Channel{Url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg", Parse: parseYoutube}
+	ctx := &ChannelContext{ Url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg" }
+	return &Channel{ Context: ctx, parser: &youtubeChannelParser{ context: ctx } }
 }
 
 func FetchYoutube() ([]*ChannelItem, error) {
 	return NewYoutubeChannel().Fetch()
 }
 
-func parseYoutube(c *Channel, r io.Reader) ([]*ChannelItem, error) {
+func (p *youtubeChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
+	ctx := p.context
 	content, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to read rss content")
 	}
 
 	feed := rss.New(timeout, true, nil, nil)
-	err = feed.FetchBytes(c.Url, content, nil)
+	err = feed.FetchBytes(ctx.Url, content, nil)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", c.Url)
+		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", ctx.Url)
 	}
 
 	jst := time.FixedZone("Asia/Tokyo", 9 * 60 * 60)

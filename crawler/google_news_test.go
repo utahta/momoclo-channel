@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func TestGoogleNewsChannelParse(t *testing.T) {
+func TestGoogleNewsChannelParser(t *testing.T) {
 	c := NewGoogleNewsChannel()
 	fp, err := os.Open("testdata/google_news/feed_20160715.xml")
 	if err != nil {
@@ -13,7 +13,7 @@ func TestGoogleNewsChannelParse(t *testing.T) {
 	}
 	defer fp.Close()
 
-	items, err := c.Parse(c, fp)
+	items, err := c.parser.Parse(fp)
 	if err != nil {
 		t.Errorf("Failed to parse. error:%v", err)
 	}

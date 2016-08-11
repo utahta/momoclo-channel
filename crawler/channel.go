@@ -12,8 +12,7 @@ const (
 	timeout = 5 // sec
 )
 
-type ChannelFetchParser interface {
-	Fetch() (io.ReadCloser, error)
+type ChannelParser interface {
 	Parse(r io.Reader) ([]*ChannelItem, error)
 }
 
@@ -33,23 +32,25 @@ type ChannelItem struct {
 	Videos []*ChannelVideo
 }
 
-type Channel struct {
+type ChannelContext struct {
 	Url string
 	HttpClient http.Client
+}
 
-	Parse func(c *Channel, r io.Reader) ([]*ChannelItem, error)
+type Channel struct {
+	Context *ChannelContext
+	parser ChannelParser
 }
 
 func (c *Channel) Fetch() ([]*ChannelItem, error) {
-	resp, err := c.HttpClient.Get(c.Url)
+	resp, err := c.Context.HttpClient.Get(c.Context.Url)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to get resource. url:%s", c.Url)
+		return nil, errors.Wrapf(err, "Failed to get resource. url:%s", c.Context.Url)
 	}
 	defer resp.Body.Close()
 
-	if c.Parse == nil {
-		return nil, errors.Errorf("You must implemented Parse method. url:%s", c.Url)
+	if c.parser == nil {
+		return nil, errors.Errorf("You must implemented ChannelParser. url:%s", c.Context.Url)
 	}
-
-	return c.Parse(c, resp.Body)
+	return c.parser.Parse(resp.Body)
 }

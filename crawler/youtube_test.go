@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func TestYoutubeChannelParse(t *testing.T) {
+func TestYoutubeChannelParser(t *testing.T) {
 	c := NewYoutubeChannel()
 	fp, err := os.Open("testdata/youtube/feed_20160715.xml")
 	if err != nil {
@@ -13,7 +13,7 @@ func TestYoutubeChannelParse(t *testing.T) {
 	}
 	defer fp.Close()
 
-	items, err := c.Parse(c, fp)
+	items, err := c.parser.Parse(fp)
 	if err != nil {
 		t.Errorf("Failed to parse. error:%v", err)
 	}

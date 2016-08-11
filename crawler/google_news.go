@@ -10,24 +10,30 @@ import (
 	"github.com/pkg/errors"
 )
 
+type googleNewsChannelParser struct {
+	context *ChannelContext
+}
+
 func NewGoogleNewsChannel() *Channel {
-	return &Channel{Url: "https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420", Parse: parseGoogleNews}
+	ctx := &ChannelContext{ Url: "https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420" }
+	return &Channel{ Context: ctx, parser: &googleNewsChannelParser{ context: ctx } }
 }
 
 func FetchGoogleNews() ([]*ChannelItem, error) {
 	return NewGoogleNewsChannel().Fetch()
 }
 
-func parseGoogleNews(c *Channel, r io.Reader) ([]*ChannelItem, error) {
+func (p *googleNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
+	ctx := p.context
 	content, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to read rss content")
 	}
 
 	feed := rss.New(timeout, true, nil, nil)
-	err = feed.FetchBytes(c.Url, content, nil)
+	err = feed.FetchBytes(ctx.Url, content, nil)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", c.Url)
+		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", ctx.Url)
 	}
 
 	jst := time.FixedZone("Asia/Tokyo", 9 * 60 * 60)

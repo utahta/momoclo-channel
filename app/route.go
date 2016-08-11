@@ -3,6 +3,6 @@ package momoclo_channel
 import "net/http"
 
 func init() {
-	http.HandleFunc("/cron/crawl", appHandler(crawlHandler))
-	http.HandleFunc("/queue/tweet", appHandler(tweetHandler))
+	http.HandleFunc("/cron/crawl", appHandlerFunc(crawlHandler))
+	http.HandleFunc("/queue/tweet", appHandlerFunc(tweetHandler))
 }

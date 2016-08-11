@@ -4,35 +4,86 @@ import (
 	"net/http"
 	"net/url"
 	"encoding/json"
+	"sync"
 
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/urlfetch"
 	"google.golang.org/appengine/taskqueue"
-	"github.com/pkg/errors"
+	"google.golang.org/appengine/log"
 	"github.com/utahta/momoclo-channel/crawler"
+	"golang.org/x/net/context"
 )
 
 func crawlHandler(w http.ResponseWriter, r *http.Request) *appError {
 	ctx := appengine.NewContext(r)
+	log.Infof(ctx, "crawl start.")
 
-	c := crawler.NewMomotaBlogChannel()
-	c.HttpClient.Transport = &urlfetch.Transport{Context: ctx}
-	items, err := crawler.FetchParse(c)
-	if err != nil {
-		return newAppError(errors.Wrapf(err, "Failed to fetch momota blog"), http.StatusInternalServerError)
-	}
+	var workQueue = make(chan bool, 5)
+	defer close(workQueue)
 
-	bin, err := json.Marshal(items)
-	if err != nil {
-		return newAppError(errors.Wrapf(err, "Failed to json encode from momota blog"), http.StatusInternalServerError)
-	}
+	var wg sync.WaitGroup
+	httpClient := urlfetch.Client(ctx)
+	for _, c := range crawlChannelClients() {
+		c.Channel.HttpClient = httpClient
 
-	task := taskqueue.NewPOSTTask("/queue/tweet", url.Values{
-		"items": {string(bin)},
-	})
-	_, err = taskqueue.Add(ctx, task, "queue-tweet")
-	if err != nil {
-		return newAppError(errors.Wrapf(err, "Failed to taskqueue.Add"), http.StatusInternalServerError)
+		workQueue <- true
+		wg.Add(1)
+		go func(ctx context.Context, c *crawler.ChannelClient) {
+			defer func(){
+				<-workQueue
+				wg.Done()
+			}()
+
+			items, err := c.Fetch()
+			if err != nil {
+				log.Errorf(ctx, "Failed to fetch. error:%v", err)
+				return
+			}
+
+			bin, err := json.Marshal(items)
+			if err != nil {
+				log.Errorf(ctx, "Failed to encode to json. error:%v", err)
+				return
+			}
+			params := url.Values{ "items": {string(bin)} }
+
+			addTweetPushQueue(ctx, params)
+			addLinePullQueue(ctx, params)
+		}(ctx, c)
 	}
+	wg.Wait()
+
+	log.Infof(ctx, "crawl end.")
 	return nil
+}
+
+func addTweetPushQueue(ctx context.Context, params url.Values) {
+	task := taskqueue.NewPOSTTask("/queue/tweet", params)
+	_, err := taskqueue.Add(ctx, task, "queue-tweet")
+	if err != nil {
+		log.Errorf(ctx, "Failed to add taskqueue for tweet. error:%v", err)
+	}
+}
+
+func addLinePullQueue(ctx context.Context, params url.Values) {
+	task := &taskqueue.Task{
+		Payload: []byte(params.Encode()),
+		Method:  "PULL",
+	}
+	_, err := taskqueue.Add(ctx, task, "queue-line")
+	if err != nil {
+		log.Errorf(ctx, "Failed to add taskqueue for line. error:%v", err)
+	}
+}
+
+func crawlChannelClients() []*crawler.ChannelClient {
+	return []*crawler.ChannelClient{
+		crawler.NewTamaiBlogChannelClient(),
+		crawler.NewMomotaBlogChannelClient(),
+		crawler.NewAriyasuBlogChannelClient(),
+		crawler.NewSasakiBlogChannelClient(),
+		crawler.NewTakagiBlogChannelClient(),
+		crawler.NewAeNewsChannelClient(),
+		crawler.NewYoutubeChannelClient(),
+	}
 }

@@ -34,7 +34,7 @@ type ChannelItem struct {
 
 type Channel struct {
 	Url string
-	HttpClient *http.Client
+	Client *http.Client
 }
 
 type ChannelClient struct {
@@ -45,7 +45,7 @@ type ChannelClient struct {
 func newChannel(url string) *Channel {
 	return &Channel{
 		Url: url,
-		HttpClient: http.DefaultClient,
+		Client: http.DefaultClient,
 	}
 }
 
@@ -57,7 +57,7 @@ func newChannelClient(c *Channel, parser ChannelParser) *ChannelClient {
 }
 
 func (c *ChannelClient) Fetch() ([]*ChannelItem, error) {
-	resp, err := c.Channel.HttpClient.Get(c.Channel.Url)
+	resp, err := c.Channel.Client.Get(c.Channel.Url)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to get resource. url:%s", c.Channel.Url)
 	}

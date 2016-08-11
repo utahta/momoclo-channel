@@ -70,7 +70,7 @@ func (p *blogChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 
 	for _, item := range items {
 		err := func () error {
-			resp, err := c.HttpClient.Get(item.Url)
+			resp, err := c.Client.Get(item.Url)
 			if err != nil {
 				return err
 			}

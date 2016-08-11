@@ -36,9 +36,9 @@ func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
 	defer close(workQueue)
 
 	var wg sync.WaitGroup
-	httpClient := urlfetch.Client(h.context)
+	Client := urlfetch.Client(h.context)
 	for _, c := range h.crawlChannelClients() {
-		c.Channel.HttpClient = httpClient
+		c.Channel.Client = Client
 
 		workQueue <- true
 		wg.Add(1)

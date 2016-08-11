@@ -15,8 +15,8 @@ type googleNewsChannelParser struct {
 }
 
 func NewGoogleNewsChannel() *Channel {
-	ctx := &ChannelContext{ Url: "https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420" }
-	return &Channel{ Context: ctx, parser: &googleNewsChannelParser{ context: ctx } }
+	ctx := newChannelContext("https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420")
+	return newChannel(ctx, &googleNewsChannelParser{ context: ctx })
 }
 
 func FetchGoogleNews() ([]*ChannelItem, error) {

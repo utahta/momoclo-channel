@@ -16,8 +16,8 @@ type aeNewsChannelParser struct {
 }
 
 func NewAeNewsChannel() *Channel {
-	ctx := &ChannelContext{ Url: "http://www.momoclo.net/news/" }
-	return &Channel{ Context: ctx, parser: &aeNewsChannelParser{ context: ctx } }
+	ctx := newChannelContext("http://www.momoclo.net/news/")
+	return newChannel(ctx, &aeNewsChannelParser{ context: ctx })
 }
 
 func FetchAeNews() ([]*ChannelItem, error) {

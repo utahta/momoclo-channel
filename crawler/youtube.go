@@ -14,8 +14,8 @@ type youtubeChannelParser struct {
 }
 
 func NewYoutubeChannel() *Channel {
-	ctx := &ChannelContext{ Url: "https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg" }
-	return &Channel{ Context: ctx, parser: &youtubeChannelParser{ context: ctx } }
+	ctx := newChannelContext("https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg")
+	return newChannel(ctx, &youtubeChannelParser{ context: ctx })
 }
 
 func FetchYoutube() ([]*ChannelItem, error) {

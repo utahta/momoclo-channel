@@ -17,8 +17,8 @@ type blogChannelParser struct {
 }
 
 func newBlogChannel(url string) *Channel {
-	ctx := &ChannelContext{ Url: url }
-	return &Channel{ Context: ctx, parser: &blogChannelParser{ context: ctx } }
+	ctx := newChannelContext(url)
+	return newChannel(ctx, &blogChannelParser{ context: ctx })
 }
 
 func NewTamaiBlogChannel() *Channel {

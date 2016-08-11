@@ -34,12 +34,23 @@ type ChannelItem struct {
 
 type ChannelContext struct {
 	Url string
-	HttpClient http.Client
+	HttpClient *http.Client
 }
 
 type Channel struct {
 	Context *ChannelContext
 	parser ChannelParser
+}
+
+func newChannelContext(url string) *ChannelContext {
+	return &ChannelContext{
+		Url: url,
+		HttpClient: http.DefaultClient,
+	}
+}
+
+func newChannel(ctx *ChannelContext, parser ChannelParser) *Channel {
+	return &Channel{ Context: ctx, parser: parser }
 }
 
 func (c *Channel) Fetch() ([]*ChannelItem, error) {

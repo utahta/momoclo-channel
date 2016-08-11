@@ -32,36 +32,39 @@ type ChannelItem struct {
 	Videos []*ChannelVideo
 }
 
-type ChannelContext struct {
+type Channel struct {
 	Url string
 	HttpClient *http.Client
 }
 
-type Channel struct {
-	Context *ChannelContext
+type ChannelClient struct {
+	Channel *Channel
 	parser ChannelParser
 }
 
-func newChannelContext(url string) *ChannelContext {
-	return &ChannelContext{
+func newChannel(url string) *Channel {
+	return &Channel{
 		Url: url,
 		HttpClient: http.DefaultClient,
 	}
 }
 
-func newChannel(ctx *ChannelContext, parser ChannelParser) *Channel {
-	return &Channel{ Context: ctx, parser: parser }
+func newChannelClient(c *Channel, parser ChannelParser) *ChannelClient {
+	return &ChannelClient{
+		Channel: c,
+		parser: parser,
+	}
 }
 
-func (c *Channel) Fetch() ([]*ChannelItem, error) {
-	resp, err := c.Context.HttpClient.Get(c.Context.Url)
+func (c *ChannelClient) Fetch() ([]*ChannelItem, error) {
+	resp, err := c.Channel.HttpClient.Get(c.Channel.Url)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to get resource. url:%s", c.Context.Url)
+		return nil, errors.Wrapf(err, "Failed to get resource. url:%s", c.Channel.Url)
 	}
 	defer resp.Body.Close()
 
 	if c.parser == nil {
-		return nil, errors.Errorf("You must implemented ChannelParser. url:%s", c.Context.Url)
+		return nil, errors.Errorf("You must implemented ChannelParser. url:%s", c.Channel.Url)
 	}
 	return c.parser.Parse(resp.Body)
 }

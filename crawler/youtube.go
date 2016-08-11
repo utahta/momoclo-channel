@@ -10,29 +10,29 @@ import (
 )
 
 type youtubeChannelParser struct {
-	context *ChannelContext
+	channel *Channel
 }
 
-func NewYoutubeChannel() *Channel {
-	ctx := newChannelContext("https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg")
-	return newChannel(ctx, &youtubeChannelParser{ context: ctx })
+func NewYoutubeChannelClient() *ChannelClient {
+	c := newChannel("https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg")
+	return newChannelClient(c, &youtubeChannelParser{ channel: c })
 }
 
 func FetchYoutube() ([]*ChannelItem, error) {
-	return NewYoutubeChannel().Fetch()
+	return NewYoutubeChannelClient().Fetch()
 }
 
 func (p *youtubeChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
-	ctx := p.context
+	c := p.channel
 	content, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to read rss content")
 	}
 
 	feed := rss.New(timeout, true, nil, nil)
-	err = feed.FetchBytes(ctx.Url, content, nil)
+	err = feed.FetchBytes(c.Url, content, nil)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", ctx.Url)
+		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", c.Url)
 	}
 
 	jst := time.FixedZone("Asia/Tokyo", 9 * 60 * 60)

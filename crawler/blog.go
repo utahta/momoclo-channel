@@ -13,56 +13,56 @@ import (
 )
 
 type blogChannelParser struct {
-	context *ChannelContext
+	channel *Channel
 }
 
-func newBlogChannel(url string) *Channel {
-	ctx := newChannelContext(url)
-	return newChannel(ctx, &blogChannelParser{ context: ctx })
+func newBlogChannelClient(url string) *ChannelClient {
+	c := newChannel(url)
+	return newChannelClient(c, &blogChannelParser{ channel: c })
 }
 
-func NewTamaiBlogChannel() *Channel {
-	return newBlogChannel("http://ameblo.jp/tamai-sd/entrylist.html")
+func NewTamaiBlogChannelClient() *ChannelClient {
+	return newBlogChannelClient("http://ameblo.jp/tamai-sd/entrylist.html")
 }
 
-func NewMomotaBlogChannel() *Channel {
-	return newBlogChannel("http://ameblo.jp/momota-sd/entrylist.html")
+func NewMomotaBlogChannelClient() *ChannelClient {
+	return newBlogChannelClient("http://ameblo.jp/momota-sd/entrylist.html")
 }
 
-func NewAriyasuBlogChannel() *Channel {
-	return newBlogChannel("http://ameblo.jp/ariyasu-sd/entrylist.html")
+func NewAriyasuBlogChannelClient() *ChannelClient {
+	return newBlogChannelClient("http://ameblo.jp/ariyasu-sd/entrylist.html")
 }
 
-func NewSasakiBlogChannel() *Channel {
-	return newBlogChannel("http://ameblo.jp/sasaki-sd/entrylist.html")
+func NewSasakiBlogChannelClient() *ChannelClient {
+	return newBlogChannelClient("http://ameblo.jp/sasaki-sd/entrylist.html")
 }
 
-func NewTakagiBlogChannel() *Channel {
-	return newBlogChannel("http://ameblo.jp/takagi-sd/entrylist.html")
+func NewTakagiBlogChannelClient() *ChannelClient {
+	return newBlogChannelClient("http://ameblo.jp/takagi-sd/entrylist.html")
 }
 
 func FetchTamaiBlog() ([]*ChannelItem, error) {
-	return NewTamaiBlogChannel().Fetch()
+	return NewTamaiBlogChannelClient().Fetch()
 }
 
 func FetchMomotaBlog() ([]*ChannelItem, error) {
-	return NewMomotaBlogChannel().Fetch()
+	return NewMomotaBlogChannelClient().Fetch()
 }
 
 func FetchAriyasuBlog() ([]*ChannelItem, error) {
-	return NewAriyasuBlogChannel().Fetch()
+	return NewAriyasuBlogChannelClient().Fetch()
 }
 
 func FetchSasakiBlog() ([]*ChannelItem, error) {
-	return NewSasakiBlogChannel().Fetch()
+	return NewSasakiBlogChannelClient().Fetch()
 }
 
 func FetchTakagiBlog() ([]*ChannelItem, error) {
-	return NewTakagiBlogChannel().Fetch()
+	return NewTakagiBlogChannelClient().Fetch()
 }
 
 func (p *blogChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
-	ctx := p.context
+	c := p.channel
 	items, err := p.parseList(r)
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func (p *blogChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 
 	for _, item := range items {
 		err := func () error {
-			resp, err := ctx.HttpClient.Get(item.Url)
+			resp, err := c.HttpClient.Get(item.Url)
 			if err != nil {
 				return err
 			}
@@ -90,10 +90,10 @@ func (p *blogChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 }
 
 func (p *blogChannelParser) parseList(r io.Reader) ([]*ChannelItem, error) {
-	ctx := p.context
+	c := p.channel
 	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to new document url:%s", ctx.Url)
+		return nil, errors.Wrapf(err, "Failed to new document url:%s", c.Url)
 	}
 
 	loc, err := time.LoadLocation("Asia/Tokyo")
@@ -107,7 +107,7 @@ func (p *blogChannelParser) parseList(r io.Reader) ([]*ChannelItem, error) {
 		title := strings.TrimSpace(s.Find("[amb-component='entryItemTitle']").Text())
 		href, exists := s.Find("[amb-component='entryItemTitle'] > a").Attr("href")
 		if !exists {
-			err = errors.Errorf("Failed to get href attribute. url:%s", ctx.Url)
+			err = errors.Errorf("Failed to get href attribute. url:%s", c.Url)
 			return false
 		}
 

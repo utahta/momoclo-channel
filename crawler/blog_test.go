@@ -7,13 +7,13 @@ import (
 
 func TestBlogChannelParser(t *testing.T) {
 	var tests = []struct {
-		c *Channel
+		c *ChannelClient
 	}{
-		{ NewTamaiBlogChannel() },
-		{ NewMomotaBlogChannel() },
-		{ NewAriyasuBlogChannel() },
-		{ NewSasakiBlogChannel() },
-		{ NewTakagiBlogChannel() },
+		{ NewTamaiBlogChannelClient() },
+		{ NewMomotaBlogChannelClient() },
+		{ NewAriyasuBlogChannelClient() },
+		{ NewSasakiBlogChannelClient() },
+		{ NewTakagiBlogChannelClient() },
 	}
 
 	for _, test := range tests {
@@ -25,14 +25,14 @@ func TestBlogChannelParser(t *testing.T) {
 
 func TestBlogChannelParserList(t *testing.T) {
 	var tests = []struct {
-		c *Channel
+		c *ChannelClient
 		input string
 	}{
-		{ NewTamaiBlogChannel(), "testdata/blog/list_tamai_20160714.html" },
-		{ NewMomotaBlogChannel(), "testdata/blog/list_momota_20160714.html" },
-		{ NewAriyasuBlogChannel(), "testdata/blog/list_ariyasu_20160714.html" },
-		{ NewSasakiBlogChannel(), "testdata/blog/list_sasaki_20160714.html" },
-		{ NewTakagiBlogChannel(), "testdata/blog/list_takagi_20160714.html" },
+		{ NewTamaiBlogChannelClient(), "testdata/blog/list_tamai_20160714.html" },
+		{ NewMomotaBlogChannelClient(), "testdata/blog/list_momota_20160714.html" },
+		{ NewAriyasuBlogChannelClient(), "testdata/blog/list_ariyasu_20160714.html" },
+		{ NewSasakiBlogChannelClient(), "testdata/blog/list_sasaki_20160714.html" },
+		{ NewTakagiBlogChannelClient(), "testdata/blog/list_takagi_20160714.html" },
 	}
 
 	for _, test := range tests {
@@ -58,16 +58,16 @@ func TestBlogChannelParserList(t *testing.T) {
 
 func TestBlogChannelParserItem(t *testing.T) {
 	var tests = []struct {
-		c *Channel
+		c *ChannelClient
 		input string
 		expectedImageLen int
 		expectedVideoLen int
 	}{
-		{ NewTamaiBlogChannel(), "testdata/blog/item_tamai_20160712.html", 6, 0 },
-		{ NewMomotaBlogChannel(), "testdata/blog/item_momota_20160712.html", 3, 0 },
-		{ NewAriyasuBlogChannel(), "testdata/blog/item_ariyasu_20160702.html", 0, 1 },
-		{ NewSasakiBlogChannel(), "testdata/blog/item_sasaki_20160712.html", 2, 0 },
-		{ NewTakagiBlogChannel(), "testdata/blog/item_takagi_20160712.html", 5, 0 },
+		{ NewTamaiBlogChannelClient(), "testdata/blog/item_tamai_20160712.html", 6, 0 },
+		{ NewMomotaBlogChannelClient(), "testdata/blog/item_momota_20160712.html", 3, 0 },
+		{ NewAriyasuBlogChannelClient(), "testdata/blog/item_ariyasu_20160702.html", 0, 1 },
+		{ NewSasakiBlogChannelClient(), "testdata/blog/item_sasaki_20160712.html", 2, 0 },
+		{ NewTakagiBlogChannelClient(), "testdata/blog/item_takagi_20160712.html", 5, 0 },
 	}
 
 	for _, test := range tests {

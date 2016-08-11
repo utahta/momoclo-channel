@@ -6,7 +6,7 @@ import (
 )
 
 func TestAeNewsChannelParser(t *testing.T) {
-	c := NewAeNewsChannel()
+	c := NewAeNewsChannelClient()
 	fp, err := os.Open("testdata/ae_news/list_20160715.html")
 	if err != nil {
 		t.Error("Failed to open ae_news testdata")

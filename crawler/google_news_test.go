@@ -6,7 +6,7 @@ import (
 )
 
 func TestGoogleNewsChannelParser(t *testing.T) {
-	c := NewGoogleNewsChannel()
+	c := NewGoogleNewsChannelClient()
 	fp, err := os.Open("testdata/google_news/feed_20160715.xml")
 	if err != nil {
 		t.Error("Failed to open youtube testdata")

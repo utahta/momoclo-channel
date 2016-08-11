@@ -12,23 +12,23 @@ import (
 )
 
 type aeNewsChannelParser struct {
-	context *ChannelContext
+	channel *Channel
 }
 
-func NewAeNewsChannel() *Channel {
-	ctx := newChannelContext("http://www.momoclo.net/news/")
-	return newChannel(ctx, &aeNewsChannelParser{ context: ctx })
+func NewAeNewsChannelClient() *ChannelClient {
+	c := newChannel("http://www.momoclo.net/news/")
+	return newChannelClient(c, &aeNewsChannelParser{ channel: c })
 }
 
 func FetchAeNews() ([]*ChannelItem, error) {
-	return NewAeNewsChannel().Fetch()
+	return NewAeNewsChannelClient().Fetch()
 }
 
 func (p *aeNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
-	ctx := p.context
+	c := p.channel
 	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to new document. url:%s", ctx.Url)
+		return nil, errors.Wrapf(err, "Failed to new document. url:%s", c.Url)
 	}
 
 	loc, err := time.LoadLocation("Asia/Tokyo")
@@ -56,9 +56,9 @@ func (p *aeNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 			return false
 		}
 
-		u, err := url.Parse(ctx.Url)
+		u, err := url.Parse(c.Url)
 		if err != nil {
-			err = errors.Wrapf(err, "Failed to parse url. url:%s", ctx.Url)
+			err = errors.Wrapf(err, "Failed to parse url. url:%s", c.Url)
 			return false
 		}
 

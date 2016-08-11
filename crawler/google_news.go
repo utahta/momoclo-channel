@@ -11,29 +11,29 @@ import (
 )
 
 type googleNewsChannelParser struct {
-	context *ChannelContext
+	channel *Channel
 }
 
-func NewGoogleNewsChannel() *Channel {
-	ctx := newChannelContext("https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420")
-	return newChannel(ctx, &googleNewsChannelParser{ context: ctx })
+func NewGoogleNewsChannelClient() *ChannelClient {
+	c := newChannel("https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420")
+	return newChannelClient(c, &googleNewsChannelParser{ channel: c })
 }
 
 func FetchGoogleNews() ([]*ChannelItem, error) {
-	return NewGoogleNewsChannel().Fetch()
+	return NewGoogleNewsChannelClient().Fetch()
 }
 
 func (p *googleNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
-	ctx := p.context
+	c := p.channel
 	content, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to read rss content")
 	}
 
 	feed := rss.New(timeout, true, nil, nil)
-	err = feed.FetchBytes(ctx.Url, content, nil)
+	err = feed.FetchBytes(c.Url, content, nil)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", ctx.Url)
+		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", c.Url)
 	}
 
 	jst := time.FixedZone("Asia/Tokyo", 9 * 60 * 60)

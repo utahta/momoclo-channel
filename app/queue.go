@@ -18,22 +18,25 @@ type QueueHandler struct {
 func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.context = appengine.NewContext(r)
 
+	var err *Error
 	switch r.URL.Path {
 	case "/queue/tweet":
-		h.serveTweet(w, r)
+		err = h.serveTweet(w, r)
 	default:
 		http.NotFound(w, r)
 	}
+
+	err.Handle(h.context, w)
 }
 
-func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) {
+func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error {
 	items := []*crawler.ChannelItem{}
 	if err := json.Unmarshal([]byte(r.FormValue("items")), &items); err != nil {
-		appError(h.context, w, errors.Wrapf(err, "Failed to unmarshal."), http.StatusInternalServerError)
-		return
+		return newError(errors.Wrapf(err, "Failed to unmarshal."), http.StatusInternalServerError)
 	}
 
 	for _, item := range items {
 		log.Infof(h.context, "%v", item)
 	}
+	return nil
 }

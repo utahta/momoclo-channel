@@ -14,16 +14,30 @@ import (
 	"golang.org/x/net/context"
 )
 
-func crawlHandler(w http.ResponseWriter, r *http.Request) *appError {
-	ctx := appengine.NewContext(r)
-	log.Infof(ctx, "crawl start.")
+type CronHandler struct {
+	context context.Context
+}
+
+func (h *CronHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.context = appengine.NewContext(r)
+
+	switch r.URL.Path {
+	case "/cron/crawl":
+		h.serveCrawl(w, r)
+	default:
+		http.NotFound(w, r)
+	}
+}
+
+func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
+	log.Infof(h.context, "crawl start.")
 
 	var workQueue = make(chan bool, 5)
 	defer close(workQueue)
 
 	var wg sync.WaitGroup
-	httpClient := urlfetch.Client(ctx)
-	for _, c := range crawlChannelClients() {
+	httpClient := urlfetch.Client(h.context)
+	for _, c := range h.crawlChannelClients() {
 		c.Channel.HttpClient = httpClient
 
 		workQueue <- true
@@ -47,36 +61,35 @@ func crawlHandler(w http.ResponseWriter, r *http.Request) *appError {
 			}
 			params := url.Values{ "items": {string(bin)} }
 
-			addTweetPushQueue(ctx, params)
-			addLinePullQueue(ctx, params)
-		}(ctx, c)
+			h.addTweetPushQueue(params)
+			h.addLinePullQueue(params)
+		}(h.context, c)
 	}
 	wg.Wait()
 
-	log.Infof(ctx, "crawl end.")
-	return nil
+	log.Infof(h.context, "crawl end.")
 }
 
-func addTweetPushQueue(ctx context.Context, params url.Values) {
+func (h *CronHandler) addTweetPushQueue(params url.Values) {
 	task := taskqueue.NewPOSTTask("/queue/tweet", params)
-	_, err := taskqueue.Add(ctx, task, "queue-tweet")
+	_, err := taskqueue.Add(h.context, task, "queue-tweet")
 	if err != nil {
-		log.Errorf(ctx, "Failed to add taskqueue for tweet. error:%v", err)
+		log.Errorf(h.context, "Failed to add taskqueue for tweet. error:%v", err)
 	}
 }
 
-func addLinePullQueue(ctx context.Context, params url.Values) {
+func (h *CronHandler) addLinePullQueue(params url.Values) {
 	task := &taskqueue.Task{
 		Payload: []byte(params.Encode()),
 		Method:  "PULL",
 	}
-	_, err := taskqueue.Add(ctx, task, "queue-line")
+	_, err := taskqueue.Add(h.context, task, "queue-line")
 	if err != nil {
-		log.Errorf(ctx, "Failed to add taskqueue for line. error:%v", err)
+		log.Errorf(h.context, "Failed to add taskqueue for line. error:%v", err)
 	}
 }
 
-func crawlChannelClients() []*crawler.ChannelClient {
+func (h *CronHandler) crawlChannelClients() []*crawler.ChannelClient {
 	return []*crawler.ChannelClient{
 		crawler.NewTamaiBlogChannelClient(),
 		crawler.NewMomotaBlogChannelClient(),

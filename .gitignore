@@ -28,3 +28,5 @@ _testmain.go
 *.iml
 .env
 vendor
+.oauth2_token
+cmd/line_notify/line_notify

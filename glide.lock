@@ -1,5 +1,5 @@
 hash: 3d536b9b8674abee7e6dc396ea88ac7a756c28e40cba11276397b72de915736e
-updated: 2016-08-10T01:18:02.71130012+09:00
+updated: 2016-08-15T11:27:19.896539788+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 3ad29d1ad1c4f2023e355603324348cf1f4b2d48
@@ -7,6 +7,8 @@ imports:
   version: c3cefd437628a0b7d31b34fe44b3a7a540e98527
   subpackages:
   - proto
+- name: github.com/joho/godotenv
+  version: 4ed13390c0acd2ff4e371e64d8b97c8954138243
 - name: github.com/jteeuwen/go-pkg-rss
   version: 72391e6fd7384785fa3c46a405214a616d6c4a1d
 - name: github.com/jteeuwen/go-pkg-xmlx
@@ -22,7 +24,19 @@ imports:
   subpackages:
   - context
   - html
+  - context/ctxhttp
   - html/atom
+- name: golang.org/x/oauth2
+  version: 4784bb855e56a530f1ce5d788959359ed6cb4a16
+  subpackages:
+  - internal
+- name: google.golang.org/api
+  version: 8ae9b02432fd8417fb9359af58f473036b094d20
+  subpackages:
+  - taskqueue/v1beta2
+  - gensupport
+  - googleapi
+  - googleapi/internal/uritemplates
 - name: google.golang.org/appengine
   version: b4728023490a62e70ba739ff62aa65ffcca84210
   subpackages:

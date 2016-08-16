@@ -34,7 +34,9 @@ type ChannelItem struct {
 
 type Channel struct {
 	Url string
-	Client *http.Client
+	Title string
+	Items []*ChannelItem
+	Client *http.Client `json:"-"`
 }
 
 type ChannelClient struct {
@@ -42,9 +44,10 @@ type ChannelClient struct {
 	parser ChannelParser
 }
 
-func newChannel(url string) *Channel {
+func newChannel(url string, title string) *Channel {
 	return &Channel{
 		Url: url,
+		Title: title,
 		Client: http.DefaultClient,
 	}
 }
@@ -56,7 +59,7 @@ func newChannelClient(c *Channel, parser ChannelParser) *ChannelClient {
 	}
 }
 
-func (c *ChannelClient) Fetch() ([]*ChannelItem, error) {
+func (c *ChannelClient) Fetch() (*Channel, error) {
 	resp, err := c.Channel.Client.Get(c.Channel.Url)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to get resource. url:%s", c.Channel.Url)
@@ -66,5 +69,10 @@ func (c *ChannelClient) Fetch() ([]*ChannelItem, error) {
 	if c.parser == nil {
 		return nil, errors.Errorf("You must implemented ChannelParser. url:%s", c.Channel.Url)
 	}
-	return c.parser.Parse(resp.Body)
+
+	c.Channel.Items, err = c.parser.Parse(resp.Body)
+	if err != nil {
+		return nil, errors.Wrapf(err, "Failed to parse channel. url:%s", c.Channel.Url)
+	}
+	return c.Channel, nil
 }

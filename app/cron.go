@@ -48,18 +48,18 @@ func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
 				wg.Done()
 			}()
 
-			items, err := c.Fetch()
+			ch, err := c.Fetch()
 			if err != nil {
 				log.Errorf(ctx, "Failed to fetch. error:%v", err)
 				return
 			}
 
-			bin, err := json.Marshal(items)
+			bin, err := json.Marshal(ch)
 			if err != nil {
 				log.Errorf(ctx, "Failed to encode to json. error:%v", err)
 				return
 			}
-			params := url.Values{ "items": {string(bin)} }
+			params := url.Values{ "channel": {string(bin)} }
 
 			h.pushTweetQueue(params)
 		}(h.context, c)

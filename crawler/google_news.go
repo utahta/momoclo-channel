@@ -15,11 +15,11 @@ type googleNewsChannelParser struct {
 }
 
 func NewGoogleNewsChannelClient() *ChannelClient {
-	c := newChannel("https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420")
+	c := newChannel("https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420", "Google ニュース")
 	return newChannelClient(c, &googleNewsChannelParser{ channel: c })
 }
 
-func FetchGoogleNews() ([]*ChannelItem, error) {
+func FetchGoogleNews() (*Channel, error) {
 	return NewGoogleNewsChannelClient().Fetch()
 }
 

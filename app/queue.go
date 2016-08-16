@@ -29,8 +29,8 @@ func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error {
-	items := []*crawler.ChannelItem{}
-	if err := json.Unmarshal([]byte(r.FormValue("items")), &items); err != nil {
+	var ch crawler.Channel
+	if err := json.Unmarshal([]byte(r.FormValue("channel")), &ch); err != nil {
 		return newError(errors.Wrapf(err, "Failed to unmarshal."), http.StatusInternalServerError)
 	}
 

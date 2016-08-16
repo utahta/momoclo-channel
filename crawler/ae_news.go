@@ -16,11 +16,11 @@ type aeNewsChannelParser struct {
 }
 
 func NewAeNewsChannelClient() *ChannelClient {
-	c := newChannel("http://www.momoclo.net/news/")
+	c := newChannel("http://www.momoclo.net/news/", "ANGEL EYES | News")
 	return newChannelClient(c, &aeNewsChannelParser{ channel: c })
 }
 
-func FetchAeNews() ([]*ChannelItem, error) {
+func FetchAeNews() (*Channel, error) {
 	return NewAeNewsChannelClient().Fetch()
 }
 

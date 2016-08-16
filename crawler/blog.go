@@ -16,48 +16,48 @@ type blogChannelParser struct {
 	channel *Channel
 }
 
-func newBlogChannelClient(url string) *ChannelClient {
-	c := newChannel(url)
+func newBlogChannelClient(url string, title string) *ChannelClient {
+	c := newChannel(url, title)
 	return newChannelClient(c, &blogChannelParser{ channel: c })
 }
 
 func NewTamaiBlogChannelClient() *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/tamai-sd/entrylist.html")
+	return newBlogChannelClient("http://ameblo.jp/tamai-sd/entrylist.html", "ももいろクローバーZ 玉井詩織 オフィシャルブログ「楽しおりん生活」")
 }
 
 func NewMomotaBlogChannelClient() *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/momota-sd/entrylist.html")
+	return newBlogChannelClient("http://ameblo.jp/momota-sd/entrylist.html", "ももいろクローバーZ 百田夏菜子 オフィシャルブログ「でこちゃん日記」")
 }
 
 func NewAriyasuBlogChannelClient() *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/ariyasu-sd/entrylist.html")
+	return newBlogChannelClient("http://ameblo.jp/ariyasu-sd/entrylist.html", "ももいろクローバーZ 有安杏果 オフィシャルブログ「ももパワー充電所」")
 }
 
 func NewSasakiBlogChannelClient() *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/sasaki-sd/entrylist.html")
+	return newBlogChannelClient("http://ameblo.jp/sasaki-sd/entrylist.html", "ももいろクローバーZ 佐々木彩夏 オフィシャルブログ「あーりんのほっぺ」")
 }
 
 func NewTakagiBlogChannelClient() *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/takagi-sd/entrylist.html")
+	return newBlogChannelClient("http://ameblo.jp/takagi-sd/entrylist.html", "ももいろクローバーZ 高城れに オフィシャルブログ「ビリビリ everyday」")
 }
 
-func FetchTamaiBlog() ([]*ChannelItem, error) {
+func FetchTamaiBlog() (*Channel, error) {
 	return NewTamaiBlogChannelClient().Fetch()
 }
 
-func FetchMomotaBlog() ([]*ChannelItem, error) {
+func FetchMomotaBlog() (*Channel, error) {
 	return NewMomotaBlogChannelClient().Fetch()
 }
 
-func FetchAriyasuBlog() ([]*ChannelItem, error) {
+func FetchAriyasuBlog() (*Channel, error) {
 	return NewAriyasuBlogChannelClient().Fetch()
 }
 
-func FetchSasakiBlog() ([]*ChannelItem, error) {
+func FetchSasakiBlog() (*Channel, error) {
 	return NewSasakiBlogChannelClient().Fetch()
 }
 
-func FetchTakagiBlog() ([]*ChannelItem, error) {
+func FetchTakagiBlog() (*Channel, error) {
 	return NewTakagiBlogChannelClient().Fetch()
 }
 

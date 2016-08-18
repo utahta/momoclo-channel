@@ -21,6 +21,8 @@ func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/queue/tweet":
 		err = h.serveTweet(w, r)
+	case "/queue/line":
+		err = h.serveLine(w, r)
 	default:
 		http.NotFound(w, r)
 	}
@@ -29,6 +31,15 @@ func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error {
+	var ch crawler.Channel
+	if err := json.Unmarshal([]byte(r.FormValue("channel")), &ch); err != nil {
+		return newError(errors.Wrapf(err, "Failed to unmarshal."), http.StatusInternalServerError)
+	}
+
+	return nil
+}
+
+func (h *QueueHandler) serveLine(w http.ResponseWriter, r *http.Request) *Error {
 	var ch crawler.Channel
 	if err := json.Unmarshal([]byte(r.FormValue("channel")), &ch); err != nil {
 		return newError(errors.Wrapf(err, "Failed to unmarshal."), http.StatusInternalServerError)

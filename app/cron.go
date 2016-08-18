@@ -62,6 +62,7 @@ func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
 			params := url.Values{ "channel": {string(bin)} }
 
 			h.pushTweetQueue(params)
+			h.pushLineQueue(params)
 		}(h.context, c)
 	}
 	wg.Wait()
@@ -74,6 +75,14 @@ func (h *CronHandler) pushTweetQueue(params url.Values) {
 	_, err := taskqueue.Add(h.context, task, "queue-tweet")
 	if err != nil {
 		log.Errorf(h.context, "Failed to add taskqueue for tweet. error:%v", err)
+	}
+}
+
+func (h *CronHandler) pushLineQueue(params url.Values) {
+	task := taskqueue.NewPOSTTask("/queue/line", params)
+	_, err := taskqueue.Add(h.context, task, "queue-line")
+	if err != nil {
+		log.Errorf(h.context, "Failed to add taskqueue for line. error:%v", err)
 	}
 }
 

@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package line;
+
+service Line {
+    rpc NotifyChannel (NotifyChannelRequest) returns (NotifyChannelResponse) {}
+    rpc AppendUser (AppendUserRequest) returns (AppendUserResponse) {}
+    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {}
+}
+
+message NotifyChannelRequest {
+    string title = 1;
+
+    message Item {
+        string title = 1;
+        string url = 2;
+
+        message Image {
+            string url = 1;
+        }
+        repeated Image images = 3;
+
+        message Video {
+            string url = 1;
+        }
+        repeated Video videos = 4;
+    }
+    Item item = 2;
+}
+
+message NotifyChannelResponse {
+}
+
+message AppendUserRequest {
+    string mid = 1;
+}
+
+message AppendUserResponse {
+}
+
+message DeleteUserRequest {
+    string mid = 1;
+}
+
+message DeleteUserResponse {
+}

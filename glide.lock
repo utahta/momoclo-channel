@@ -1,5 +1,5 @@
 hash: 3d536b9b8674abee7e6dc396ea88ac7a756c28e40cba11276397b72de915736e
-updated: 2016-08-15T11:27:19.896539788+09:00
+updated: 2016-08-18T00:46:40.071056609+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 3ad29d1ad1c4f2023e355603324348cf1f4b2d48
@@ -23,9 +23,14 @@ imports:
   version: 075e191f18186a8ff2becaf64478e30f4545cdad
   subpackages:
   - context
-  - html
   - context/ctxhttp
+  - html
+  - http2
+  - trace
   - html/atom
+  - http2/hpack
+  - lex/httplex
+  - internal/timeseries
 - name: golang.org/x/oauth2
   version: 4784bb855e56a530f1ce5d788959359ed6cb4a16
   subpackages:
@@ -52,4 +57,15 @@ imports:
   - internal/urlfetch
   - internal/base
   - internal/remote_api
-devImports: []
+- name: google.golang.org/grpc
+  version: c2781963b3af261a37e0f14fdcb7c1fa13259e1f
+  subpackages:
+  - codes
+  - credentials
+  - grpclog
+  - internal
+  - metadata
+  - naming
+  - transport
+  - peer
+testImports: []

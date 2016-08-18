@@ -9,7 +9,8 @@ service Line {
 }
 
 message NotifyChannelRequest {
-    string title = 1;
+    string mid = 1;
+    string title = 2;
 
     message Item {
         string title = 1;
@@ -25,7 +26,7 @@ message NotifyChannelRequest {
         }
         repeated Video videos = 4;
     }
-    Item item = 2;
+    repeated Item items = 3;
 }
 
 message NotifyChannelResponse {

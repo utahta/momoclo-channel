@@ -76,7 +76,7 @@ func (p *blogChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 			}
 			defer resp.Body.Close()
 
-			err = p.parseItem(r, item)
+			err = p.parseItem(resp.Body, item)
 			if err != nil {
 				return err
 			}

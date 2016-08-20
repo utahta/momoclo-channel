@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load("env"); err != nil {
 		log.Basic().Fatalf("Failed to load dotenv. error:%v", err)
 	}
 

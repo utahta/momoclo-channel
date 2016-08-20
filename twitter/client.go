@@ -8,10 +8,8 @@ import (
 	"strings"
 
 	"github.com/ChimeraCoder/anaconda"
-	"golang.org/x/net/context"
-	"google.golang.org/appengine/urlfetch"
 	"github.com/utahta/momoclo-channel/crawler"
-	"github.com/utahta/momoclo-channel/app/log"
+	"github.com/utahta/momoclo-channel/log"
 	"github.com/pkg/errors"
 )
 
@@ -19,25 +17,29 @@ const (
 	maxUploadImages = 4
 )
 
-type TwitterApi struct {
-	api *anaconda.TwitterApi
-	Context context.Context
+type TwitterClient struct {
+	Api *anaconda.TwitterApi
+	Log log.Logger
 }
 
 type mediaImage struct {
 	Ids [maxUploadImages]string
 }
 
-func (t *TwitterApi) Auth(consumerKey, consumerSecret, accessToken, accessTokenSecret string) {
-	anaconda.SetConsumerKey(consumerKey)
-	anaconda.SetConsumerSecret(consumerSecret)
-	t.api = anaconda.NewTwitterApi(accessToken, accessTokenSecret)
-	if t.Context != nil {
-		t.api.HttpClient.Transport = &urlfetch.Transport{ Context: t.Context }
-	}
+func NewTwitterClient(consumerKey, consumerSecret, accessToken, accessTokenSecret string) *TwitterClient {
+	t := &TwitterClient{}
+	t.auth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
+	t.Log = log.NewSilentLogger()
+	return t
 }
 
-func (t *TwitterApi) Tweet(ch *crawler.Channel) {
+func (t *TwitterClient) auth(consumerKey, consumerSecret, accessToken, accessTokenSecret string) {
+	anaconda.SetConsumerKey(consumerKey)
+	anaconda.SetConsumerSecret(consumerSecret)
+	t.Api = anaconda.NewTwitterApi(accessToken, accessTokenSecret)
+}
+
+func (t *TwitterClient) Tweet(ch *crawler.Channel) {
 	for _, item := range ch.Items {
 		images := t.uploadImages(item)
 		videos := t.uploadVideos(item)
@@ -51,21 +53,21 @@ func (t *TwitterApi) Tweet(ch *crawler.Channel) {
 			v.Add("media_ids", videos[0].MediaIDString)
 			videos = videos[1:]
 		}
-		tweet, err := t.api.PostTweet(text, v)
+		tweet, err := t.Api.PostTweet(text, v)
 		if err != nil {
-			log.Errorf(t.Context, "Failed to post tweet. url:%s error:%s", item.Url, err)
+			t.Log.Errorf("Failed to post tweet. url:%s error:%s", item.Url, err)
 			continue
 		}
-		log.Infof(t.Context, "Post tweet. text:%s", text)
+		t.Log.Infof("Post tweet. text:%s", text)
 
 		for _, image := range images {
 			v := url.Values{}
 			v.Add("in_reply_to_status_id", tweet.IdStr)
 			v.Add("media_ids", strings.Join(image.Ids[:], ","))
 
-			tweet, err = t.api.PostTweet("", v)
+			tweet, err = t.Api.PostTweet("", v)
 			if err != nil {
-				log.Errorf(t.Context, "Failed to post tweet images. error:%v", err)
+				t.Log.Errorf("Failed to post tweet images. error:%v", err)
 				continue
 			}
 		}
@@ -75,16 +77,16 @@ func (t *TwitterApi) Tweet(ch *crawler.Channel) {
 			v.Add("in_reply_to_status_id", tweet.IdStr)
 			v.Add("media_ids", video.MediaIDString)
 
-			tweet, err = t.api.PostTweet("", v)
+			tweet, err = t.Api.PostTweet("", v)
 			if err != nil {
-				log.Errorf(t.Context, "Failed to post tweet videos. error:%v", err)
+				t.Log.Errorf("Failed to post tweet videos. error:%v", err)
 				continue
 			}
 		}
 	}
 }
 
-func (t *TwitterApi) truncateText(ch *crawler.Channel, item *crawler.ChannelItem) string {
+func (t *TwitterClient) truncateText(ch *crawler.Channel, item *crawler.ChannelItem) string {
 	const maxTweetTextLen = 101 // ハッシュタグや url を除いて投稿可能な文字数
 
 	title := []rune(fmt.Sprintf("%s %s", ch.Title, item.Title))
@@ -94,17 +96,17 @@ func (t *TwitterApi) truncateText(ch *crawler.Channel, item *crawler.ChannelItem
 	return fmt.Sprintf("%s %s #momoclo #ももクロ", string(title), item.Url)
 }
 
-func (t *TwitterApi) uploadImages(item *crawler.ChannelItem) ([]*mediaImage) {
+func (t *TwitterClient) uploadImages(item *crawler.ChannelItem) ([]*mediaImage) {
 	ids := []string{}
 	for _, image := range item.Images {
 		resource, err := t.downloadImage(image.Url)
 		if err != nil {
-			log.Errorf(t.Context, "url:%s error:%s", image.Url, err)
+			t.Log.Errorf("url:%s error:%s", image.Url, err)
 			continue
 		}
-		media, err := t.api.UploadMedia(resource)
+		media, err := t.Api.UploadMedia(resource)
 		if err != nil {
-			log.Errorf(t.Context, "Failed to upload media. url:%s error:%s", image.Url, err)
+			t.Log.Errorf("Failed to upload media. url:%s error:%s", image.Url, err)
 			continue
 		}
 		ids = append(ids, media.MediaIDString)
@@ -129,33 +131,33 @@ func (t *TwitterApi) uploadImages(item *crawler.ChannelItem) ([]*mediaImage) {
 	return mis
 }
 
-func (t *TwitterApi) uploadVideos(item *crawler.ChannelItem) ([]*anaconda.VideoMedia) {
+func (t *TwitterClient) uploadVideos(item *crawler.ChannelItem) ([]*anaconda.VideoMedia) {
 	videos := []*anaconda.VideoMedia{}
 	for _, video := range item.Videos {
-		resp, err := t.api.HttpClient.Get(video.Url)
+		resp, err := t.Api.HttpClient.Get(video.Url)
 		if err != nil {
-			log.Errorf(t.Context, "failed to get mp4 url:%s err:%v\n", video.Url, err)
+			t.Log.Errorf("failed to get mp4 url:%s err:%v\n", video.Url, err)
 			continue
 		}
 
 		bytes, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Errorf(t.Context, "failed to readall mp4 url:%s err:%v\n", video.Url, err)
+			t.Log.Errorf("failed to readall mp4 url:%s err:%v\n", video.Url, err)
 			continue
 		}
 
-		media, err := t.api.UploadVideoInit(len(bytes), "video/mp4")
+		media, err := t.Api.UploadVideoInit(len(bytes), "video/mp4")
 		if err != nil {
-			log.Errorf(t.Context, "failed to upload video init. url:%s err:%v\n", video.Url, err)
+			t.Log.Errorf("failed to upload video init. url:%s err:%v\n", video.Url, err)
 			continue
 		}
-		if err = t.api.UploadVideoAppend(media.MediaIDString, 0, base64.StdEncoding.EncodeToString(bytes)); err != nil {
-			log.Errorf(t.Context, "failed to upload video append. url:%s err:%v\n", video.Url, err)
+		if err = t.Api.UploadVideoAppend(media.MediaIDString, 0, base64.StdEncoding.EncodeToString(bytes)); err != nil {
+			t.Log.Errorf("failed to upload video append. url:%s err:%v\n", video.Url, err)
 			continue
 		}
-		v, err := t.api.UploadVideoFinalize(media.MediaIDString)
+		v, err := t.Api.UploadVideoFinalize(media.MediaIDString)
 		if err != nil {
-			log.Errorf(t.Context, "failed to upload video finalize. url:%s err:%v\n", video.Url, err)
+			t.Log.Errorf("failed to upload video finalize. url:%s err:%v\n", video.Url, err)
 			continue
 		}
 		videos = append(videos, &v)
@@ -164,8 +166,8 @@ func (t *TwitterApi) uploadVideos(item *crawler.ChannelItem) ([]*anaconda.VideoM
 }
 
 
-func (t *TwitterApi) downloadImage(url string) (string, error) {
-	response, err := t.api.HttpClient.Get(url)
+func (t *TwitterClient) downloadImage(url string) (string, error) {
+	response, err := t.Api.HttpClient.Get(url)
 	if err != nil {
 		return "", errors.Wrapf(err, "Failed to download image. url:%s", url)
 	}

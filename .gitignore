@@ -27,5 +27,7 @@ _testmain.go
 .idea
 *.iml
 .env
+.env.prod
+.env.local
 vendor
 cmd/line_server/line_server

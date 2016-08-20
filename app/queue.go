@@ -3,11 +3,15 @@ package app
 import (
 	"net/http"
 	"encoding/json"
+	"os"
 
 	"google.golang.org/appengine"
 	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-channel/twitter"
+	"github.com/utahta/momoclo-channel/log"
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
+	"google.golang.org/appengine/urlfetch"
 )
 
 type QueueHandler struct {
@@ -30,12 +34,29 @@ func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err.Handle(h.context, w)
 }
 
-func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error {
+func (h *QueueHandler) parseParams(r *http.Request) (*crawler.Channel, error) {
 	var ch crawler.Channel
 	if err := json.Unmarshal([]byte(r.FormValue("channel")), &ch); err != nil {
-		return newError(errors.Wrapf(err, "Failed to unmarshal."), http.StatusInternalServerError)
+		return nil, errors.Wrapf(err, "Failed to unmarshal.")
+	}
+	return &ch, nil
+}
+
+func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error {
+	ch, err := h.parseParams(r)
+	if err != nil {
+		return newError(err, http.StatusInternalServerError)
 	}
 
+	tw := twitter.NewTwitterClient(
+		os.Getenv("TWITTER_CONSUMER_KEY"),
+		os.Getenv("TWITTER_CONSUMER_SECRET"),
+		os.Getenv("TWITTER_ACCESS_TOKEN"),
+		os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
+	)
+	tw.Log = log.NewGaeLogger(h.context)
+	tw.Api.HttpClient.Transport = &urlfetch.Transport{ Context: h.context }
+	tw.Tweet(ch)
 	return nil
 }
 

@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	"google.golang.org/appengine/log"
+	"github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
 )
 
@@ -21,5 +21,5 @@ func (e *Error) Handle(ctx context.Context, w http.ResponseWriter) {
 		return
 	}
 	http.Error(w, e.Error.Error(), e.Code)
-	log.Errorf(ctx, "error:%v code:%d", e.Error, e.Code)
+	log.Gae(ctx).Errorf("error:%v code:%d", e.Error, e.Code)
 }

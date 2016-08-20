@@ -41,55 +41,59 @@ func (t *TwitterClient) auth(consumerKey, consumerSecret, accessToken, accessTok
 
 func (t *TwitterClient) Tweet(ch *crawler.Channel) {
 	for _, item := range ch.Items {
-		images := t.uploadImages(item)
-		videos := t.uploadVideos(item)
+		t.TweetItem(ch.Title, item)
+	}
+}
 
-		text := t.truncateText(ch, item)
+func (t *TwitterClient) TweetItem(title string, item *crawler.ChannelItem) {
+	images := t.uploadImages(item)
+	videos := t.uploadVideos(item)
+
+	text := t.truncateText(title, item)
+	v := url.Values{}
+	if len(images) > 0 {
+		v.Add("media_ids", strings.Join(images[0].Ids[:], ","))
+		images = images[1:]
+	} else if len(videos) > 0 {
+		v.Add("media_ids", videos[0].MediaIDString)
+		videos = videos[1:]
+	}
+	tweet, err := t.Api.PostTweet(text, v)
+	if err != nil {
+		t.Log.Errorf("Failed to post tweet. url:%s error:%s", item.Url, err)
+		return
+	}
+	t.Log.Infof("Post tweet. text:%s", text)
+
+	for _, image := range images {
 		v := url.Values{}
-		if len(images) > 0 {
-			v.Add("media_ids", strings.Join(images[0].Ids[:], ","))
-			images = images[1:]
-		} else if len(videos) > 0 {
-			v.Add("media_ids", videos[0].MediaIDString)
-			videos = videos[1:]
-		}
-		tweet, err := t.Api.PostTweet(text, v)
+		v.Add("in_reply_to_status_id", tweet.IdStr)
+		v.Add("media_ids", strings.Join(image.Ids[:], ","))
+
+		tweet, err = t.Api.PostTweet("", v)
 		if err != nil {
-			t.Log.Errorf("Failed to post tweet. url:%s error:%s", item.Url, err)
+			t.Log.Errorf("Failed to post tweet images. error:%v", err)
 			continue
 		}
-		t.Log.Infof("Post tweet. text:%s", text)
+	}
 
-		for _, image := range images {
-			v := url.Values{}
-			v.Add("in_reply_to_status_id", tweet.IdStr)
-			v.Add("media_ids", strings.Join(image.Ids[:], ","))
+	for _, video := range videos {
+		v := url.Values{}
+		v.Add("in_reply_to_status_id", tweet.IdStr)
+		v.Add("media_ids", video.MediaIDString)
 
-			tweet, err = t.Api.PostTweet("", v)
-			if err != nil {
-				t.Log.Errorf("Failed to post tweet images. error:%v", err)
-				continue
-			}
-		}
-
-		for _, video := range videos {
-			v := url.Values{}
-			v.Add("in_reply_to_status_id", tweet.IdStr)
-			v.Add("media_ids", video.MediaIDString)
-
-			tweet, err = t.Api.PostTweet("", v)
-			if err != nil {
-				t.Log.Errorf("Failed to post tweet videos. error:%v", err)
-				continue
-			}
+		tweet, err = t.Api.PostTweet("", v)
+		if err != nil {
+			t.Log.Errorf("Failed to post tweet videos. error:%v", err)
+			continue
 		}
 	}
 }
 
-func (t *TwitterClient) truncateText(ch *crawler.Channel, item *crawler.ChannelItem) string {
+func (t *TwitterClient) truncateText(channelTitle string, item *crawler.ChannelItem) string {
 	const maxTweetTextLen = 101 // ハッシュタグや url を除いて投稿可能な文字数
 
-	title := []rune(fmt.Sprintf("%s %s", ch.Title, item.Title))
+	title := []rune(fmt.Sprintf("%s %s", channelTitle, item.Title))
 	if len(title) > maxTweetTextLen {
 		title = append(title[0:maxTweetTextLen-3], []rune("...")...)
 	}

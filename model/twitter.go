@@ -31,9 +31,14 @@ func newTweetItem(item *crawler.ChannelItem) *TweetItem {
 
 func PutTweetItem(ctx context.Context, item *crawler.ChannelItem) error {
 	ti := newTweetItem(item)
-	return datastore.RunInTransaction(ctx, func(ctx context.Context) error {
-		g := goon.FromContext(ctx)
+	g := goon.FromContext(ctx)
 
+	// check for cached item
+	if g.Get(ti) == nil {
+		return nil
+	}
+
+	return g.RunInTransaction(func(g *goon.Goon) error {
 		err := g.Get(ti)
 		if err != nil && err != datastore.ErrNoSuchEntity {
 			return err

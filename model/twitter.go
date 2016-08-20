@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/mjibson/goon"
+	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
@@ -35,7 +36,7 @@ func PutTweetItem(ctx context.Context, item *crawler.ChannelItem) error {
 
 	// check for cached item
 	if g.Get(ti) == nil {
-		return nil
+		return errors.Errorf("TweetItem already exists.")
 	}
 
 	return g.RunInTransaction(func(g *goon.Goon) error {

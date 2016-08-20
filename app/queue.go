@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
@@ -56,14 +57,15 @@ func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error
 		os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
 	)
 	tw.Log = log.NewGaeLogger(h.context)
-	tw.Api.HttpClient.Transport = &urlfetch.Transport{Context: h.context}
+	ctx, fn := context.WithTimeout(h.context, 30*time.Second)
+	defer fn()
+	tw.Api.HttpClient.Transport = &urlfetch.Transport{Context: ctx}
 
 	for _, item := range ch.Items {
-		err := model.PutTweetItem(h.context, item)
-		if err != nil {
+		if err := model.PutTweetItem(h.context, item); err != nil {
 			continue
 		}
-		//tw.TweetItem(ch.Title, item)
+		tw.TweetItem(ch.Title, item)
 	}
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"sync"
+	"time"
 
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/log"
@@ -38,13 +39,14 @@ func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
 	defer close(workQueue)
 
 	var wg sync.WaitGroup
-	Client := urlfetch.Client(h.context)
 	for _, c := range h.crawlChannelClients() {
-		c.Channel.Client = Client
-
 		workQueue <- true
 		wg.Add(1)
 		go func(ctx context.Context, c *crawler.ChannelClient) {
+			ctx, fn := context.WithTimeout(ctx, 30*time.Second)
+			defer fn()
+			c.Channel.Client = urlfetch.Client(ctx)
+
 			defer func() {
 				<-workQueue
 				wg.Done()

@@ -1,4 +1,4 @@
-.PHONY: install test build-prots serve deploy
+.PHONY: install test build-prots serve deploy-dev deploy-prod rollback
 
 install:
 	@glide install
@@ -13,6 +13,14 @@ serve:
 test:
 	@go test -v ./crawler/...
 
-deploy:
+deploy-prod:
 	@cp app/.env.prod app/env
 	@appcfg.py -A momoclo-channel update app
+
+deploy-dev:
+	@cp app/.env.dev app/env
+	@appcfg.py -A momoclo-channel update app
+
+rollback:
+	@cp app/.env.prod app/env
+	@appcfg.py rollback -A momoclo-channel app

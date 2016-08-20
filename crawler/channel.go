@@ -1,9 +1,9 @@
 package crawler
 
 import (
-	"time"
-	"net/http"
 	"io"
+	"net/http"
+	"time"
 
 	"github.com/pkg/errors"
 )
@@ -25,29 +25,29 @@ type ChannelVideo struct {
 }
 
 type ChannelItem struct {
-	Url string
-	Title string
+	Url         string
+	Title       string
 	PublishedAt *time.Time
-	Images []*ChannelImage
-	Videos []*ChannelVideo
+	Images      []*ChannelImage
+	Videos      []*ChannelVideo
 }
 
 type Channel struct {
-	Url string
-	Title string
-	Items []*ChannelItem
+	Url    string
+	Title  string
+	Items  []*ChannelItem
 	Client *http.Client `json:"-"`
 }
 
 type ChannelClient struct {
 	Channel *Channel
-	parser ChannelParser
+	parser  ChannelParser
 }
 
 func newChannel(url string, title string) *Channel {
 	return &Channel{
-		Url: url,
-		Title: title,
+		Url:    url,
+		Title:  title,
 		Client: http.DefaultClient,
 	}
 }
@@ -55,7 +55,7 @@ func newChannel(url string, title string) *Channel {
 func newChannelClient(c *Channel, parser ChannelParser) *ChannelClient {
 	return &ChannelClient{
 		Channel: c,
-		parser: parser,
+		parser:  parser,
 	}
 }
 

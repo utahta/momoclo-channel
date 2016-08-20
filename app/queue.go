@@ -1,16 +1,16 @@
 package app
 
 import (
-	"net/http"
 	"encoding/json"
+	"net/http"
 	"os"
 
-	"google.golang.org/appengine"
-	"github.com/utahta/momoclo-channel/crawler"
-	"github.com/utahta/momoclo-channel/twitter"
-	"github.com/utahta/momoclo-channel/log"
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/twitter"
 	"golang.org/x/net/context"
+	"google.golang.org/appengine"
 	"google.golang.org/appengine/urlfetch"
 )
 
@@ -55,7 +55,7 @@ func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error
 		os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
 	)
 	tw.Log = log.NewGaeLogger(h.context)
-	tw.Api.HttpClient.Transport = &urlfetch.Transport{ Context: h.context }
+	tw.Api.HttpClient.Transport = &urlfetch.Transport{Context: h.context}
 	tw.Tweet(ch)
 	return nil
 }

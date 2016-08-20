@@ -1,14 +1,14 @@
 package crawler
 
 import (
-	"time"
-	"strings"
 	"fmt"
-	"net/url"
 	"io"
+	"net/url"
+	"strings"
+	"time"
 
-	"github.com/pkg/errors"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/pkg/errors"
 )
 
 type aeNewsChannelParser struct {
@@ -17,7 +17,7 @@ type aeNewsChannelParser struct {
 
 func NewAeNewsChannelClient() *ChannelClient {
 	c := newChannel("http://www.momoclo.net/news/", "ANGEL EYES | News")
-	return newChannelClient(c, &aeNewsChannelParser{ channel: c })
+	return newChannelClient(c, &aeNewsChannelParser{channel: c})
 }
 
 func FetchAeNews() (*Channel, error) {
@@ -63,8 +63,8 @@ func (p *aeNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 		}
 
 		item := ChannelItem{
-			Title: a.Text(),
-			Url: fmt.Sprintf("%s://%s%s", u.Scheme, u.Host, path),
+			Title:       a.Text(),
+			Url:         fmt.Sprintf("%s://%s%s", u.Scheme, u.Host, path),
 			PublishedAt: &publishedAt,
 		}
 		items = append(items, &item)

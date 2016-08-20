@@ -1,8 +1,8 @@
 package crawler
 
 import (
-	"testing"
 	"os"
+	"testing"
 )
 
 func TestAeNewsChannelParser(t *testing.T) {

@@ -1,22 +1,22 @@
 package app
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/url"
-	"encoding/json"
 	"sync"
 
-	"google.golang.org/appengine"
-	"google.golang.org/appengine/urlfetch"
-	"google.golang.org/appengine/taskqueue"
-	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/taskqueue"
+	"google.golang.org/appengine/urlfetch"
 )
 
 type CronHandler struct {
 	context context.Context
-	Log log.Logger
+	Log     log.Logger
 }
 
 func (h *CronHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +45,7 @@ func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
 		workQueue <- true
 		wg.Add(1)
 		go func(ctx context.Context, c *crawler.ChannelClient) {
-			defer func(){
+			defer func() {
 				<-workQueue
 				wg.Done()
 			}()
@@ -61,7 +61,7 @@ func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
 				h.Log.Errorf("Failed to encode to json. error:%v", err)
 				return
 			}
-			params := url.Values{ "channel": {string(bin)} }
+			params := url.Values{"channel": {string(bin)}}
 
 			h.pushTweetQueue(params)
 			h.pushLineQueue(params)

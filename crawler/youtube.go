@@ -1,9 +1,9 @@
 package crawler
 
 import (
-	"time"
 	"io"
 	"io/ioutil"
+	"time"
 
 	rss "github.com/jteeuwen/go-pkg-rss"
 	"github.com/pkg/errors"
@@ -15,7 +15,7 @@ type youtubeChannelParser struct {
 
 func NewYoutubeChannelClient() *ChannelClient {
 	c := newChannel("https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg", "ニュータイプ放送局")
-	return newChannelClient(c, &youtubeChannelParser{ channel: c })
+	return newChannelClient(c, &youtubeChannelParser{channel: c})
 }
 
 func FetchYoutube() (*Channel, error) {
@@ -35,7 +35,7 @@ func (p *youtubeChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", c.Url)
 	}
 
-	jst := time.FixedZone("Asia/Tokyo", 9 * 60 * 60)
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 	items := []*ChannelItem{}
 	err = nil
 	for _, ch := range feed.Channels {
@@ -51,8 +51,8 @@ func (p *youtubeChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 			publishedAt = publishedAt.UTC().In(jst)
 
 			items = append(items, &ChannelItem{
-				Title: item.Title,
-				Url: url,
+				Title:       item.Title,
+				Url:         url,
 				PublishedAt: &publishedAt,
 			})
 		}

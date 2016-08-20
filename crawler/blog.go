@@ -1,12 +1,12 @@
 package crawler
 
 import (
-	"time"
-	"regexp"
-	"strings"
-	"net/url"
 	"fmt"
 	"io"
+	"net/url"
+	"regexp"
+	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/pkg/errors"
@@ -18,7 +18,7 @@ type blogChannelParser struct {
 
 func newBlogChannelClient(url string, title string) *ChannelClient {
 	c := newChannel(url, title)
-	return newChannelClient(c, &blogChannelParser{ channel: c })
+	return newChannelClient(c, &blogChannelParser{channel: c})
 }
 
 func NewTamaiBlogChannelClient() *ChannelClient {
@@ -69,7 +69,7 @@ func (p *blogChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 	}
 
 	for _, item := range items {
-		err := func () error {
+		err := func() error {
 			resp, err := c.Client.Get(item.Url)
 			if err != nil {
 				return err
@@ -122,8 +122,8 @@ func (p *blogChannelParser) parseList(r io.Reader) ([]*ChannelItem, error) {
 		}
 
 		item := ChannelItem{
-			Title: title,
-			Url: href,
+			Title:       title,
+			Url:         href,
 			PublishedAt: &publishedAt,
 		}
 		items = append(items, &item)

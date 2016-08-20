@@ -9,11 +9,11 @@ import (
 
 type Error struct {
 	Error error
-	Code int
+	Code  int
 }
 
 func newError(err error, code int) *Error {
-	return &Error{ Error: err, Code: code }
+	return &Error{Error: err, Code: code}
 }
 
 func (e *Error) Handle(ctx context.Context, w http.ResponseWriter) {

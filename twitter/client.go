@@ -1,16 +1,16 @@
 package twitter
 
 import (
-	"io/ioutil"
 	"encoding/base64"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 	"strings"
 
 	"github.com/ChimeraCoder/anaconda"
+	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/log"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -96,7 +96,7 @@ func (t *TwitterClient) truncateText(ch *crawler.Channel, item *crawler.ChannelI
 	return fmt.Sprintf("%s %s #momoclo #ももクロ", string(title), item.Url)
 }
 
-func (t *TwitterClient) uploadImages(item *crawler.ChannelItem) ([]*mediaImage) {
+func (t *TwitterClient) uploadImages(item *crawler.ChannelItem) []*mediaImage {
 	ids := []string{}
 	for _, image := range item.Images {
 		resource, err := t.downloadImage(image.Url)
@@ -131,7 +131,7 @@ func (t *TwitterClient) uploadImages(item *crawler.ChannelItem) ([]*mediaImage) 
 	return mis
 }
 
-func (t *TwitterClient) uploadVideos(item *crawler.ChannelItem) ([]*anaconda.VideoMedia) {
+func (t *TwitterClient) uploadVideos(item *crawler.ChannelItem) []*anaconda.VideoMedia {
 	videos := []*anaconda.VideoMedia{}
 	for _, video := range item.Videos {
 		resp, err := t.Api.HttpClient.Get(video.Url)
@@ -164,7 +164,6 @@ func (t *TwitterClient) uploadVideos(item *crawler.ChannelItem) ([]*anaconda.Vid
 	}
 	return videos
 }
-
 
 func (t *TwitterClient) downloadImage(url string) (string, error) {
 	response, err := t.Api.HttpClient.Get(url)

@@ -1,9 +1,9 @@
 package crawler
 
 import (
-	"time"
 	"io"
 	"io/ioutil"
+	"time"
 
 	rss "github.com/jteeuwen/go-pkg-rss"
 	"github.com/kennygrant/sanitize"
@@ -16,7 +16,7 @@ type googleNewsChannelParser struct {
 
 func NewGoogleNewsChannelClient() *ChannelClient {
 	c := newChannel("https://www.google.com/alerts/feeds/15513821572968738743/9316362605522861420", "Google ニュース")
-	return newChannelClient(c, &googleNewsChannelParser{ channel: c })
+	return newChannelClient(c, &googleNewsChannelParser{channel: c})
 }
 
 func FetchGoogleNews() (*Channel, error) {
@@ -36,7 +36,7 @@ func (p *googleNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 		return nil, errors.Wrapf(err, "Failed to fetch. url:%s", c.Url)
 	}
 
-	jst := time.FixedZone("Asia/Tokyo", 9 * 60 * 60)
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 	items := []*ChannelItem{}
 	err = nil
 	for _, ch := range feed.Channels {
@@ -52,8 +52,8 @@ func (p *googleNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 			publishedAt = publishedAt.UTC().In(jst)
 
 			items = append(items, &ChannelItem{
-				Title: sanitize.HTML(item.Title),
-				Url: url,
+				Title:       sanitize.HTML(item.Title),
+				Url:         url,
 				PublishedAt: &publishedAt,
 			})
 		}

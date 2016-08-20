@@ -1,8 +1,8 @@
 package crawler
 
 import (
-	"testing"
 	"os"
+	"testing"
 )
 
 func TestYoutubeChannelParser(t *testing.T) {

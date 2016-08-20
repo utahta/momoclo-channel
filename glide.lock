@@ -1,8 +1,22 @@
 hash: 3d536b9b8674abee7e6dc396ea88ac7a756c28e40cba11276397b72de915736e
-updated: 2016-08-18T00:46:40.071056609+09:00
+updated: 2016-08-20T21:24:10.948236118+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 3ad29d1ad1c4f2023e355603324348cf1f4b2d48
+- name: github.com/azr/backoff
+  version: 53511d3c733003985b0b76f733df1f4d0095ee6a
+- name: github.com/ChimeraCoder/anaconda
+  version: 00ecb7b4510497dc28cd46a598007ab8fe01f889
+- name: github.com/ChimeraCoder/tokenbucket
+  version: c5a927568de7aad8a58127d80bcd36ca4e71e454
+- name: github.com/dustin/go-jsonpointer
+  version: ba0abeacc3dcca5b9b20f31509c46794edbc9965
+- name: github.com/dustin/gojson
+  version: 2e71ec9dd5adce3b168cd0dbde03b5cc04951c30
+- name: github.com/garyburd/go-oauth
+  version: 719b069913e1151a73ea30d2ea4f90deda3ce234
+  subpackages:
+  - oauth
 - name: github.com/golang/protobuf
   version: c3cefd437628a0b7d31b34fe44b3a7a540e98527
   subpackages:
@@ -15,6 +29,8 @@ imports:
   version: 76f54ee73233b171ca9ee82ef837a1fc4d3809c0
 - name: github.com/kennygrant/sanitize
   version: ce9fd1f6ce32afaa38b51feea32320fc8875e8e4
+- name: github.com/mjibson/goon
+  version: f99149e651e1f35d52dfbf8ac32aa87385d828fc
 - name: github.com/pkg/errors
   version: a22138067af1c4942683050411a841ade67fe1eb
 - name: github.com/PuerkitoBio/goquery
@@ -23,7 +39,6 @@ imports:
   version: 075e191f18186a8ff2becaf64478e30f4545cdad
   subpackages:
   - context
-  - context/ctxhttp
   - html
   - http2
   - trace
@@ -31,32 +46,24 @@ imports:
   - http2/hpack
   - lex/httplex
   - internal/timeseries
-- name: golang.org/x/oauth2
-  version: 4784bb855e56a530f1ce5d788959359ed6cb4a16
-  subpackages:
-  - internal
-- name: google.golang.org/api
-  version: 8ae9b02432fd8417fb9359af58f473036b094d20
-  subpackages:
-  - taskqueue/v1beta2
-  - gensupport
-  - googleapi
-  - googleapi/internal/uritemplates
 - name: google.golang.org/appengine
   version: b4728023490a62e70ba739ff62aa65ffcca84210
   subpackages:
   - log
   - taskqueue
   - urlfetch
+  - datastore
   - internal
   - internal/app_identity
   - internal/modules
-  - internal/log
   - internal/datastore
   - internal/taskqueue
   - internal/urlfetch
+  - internal/log
   - internal/base
   - internal/remote_api
+  - memcache
+  - internal/memcache
 - name: google.golang.org/grpc
   version: c2781963b3af261a37e0f14fdcb7c1fa13259e1f
   subpackages:

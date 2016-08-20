@@ -1,8 +1,10 @@
 package crawler
 
 import (
+	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -30,6 +32,30 @@ type ChannelItem struct {
 	PublishedAt *time.Time
 	Images      []*ChannelImage
 	Videos      []*ChannelVideo
+}
+
+func (c *ChannelItem) UniqId() string {
+	id := c.Url
+	if c.PublishedAt != nil {
+		id = fmt.Sprintf("%s%s", id, c.PublishedAt.Format("20060102150405"))
+	}
+	return id
+}
+
+func (c *ChannelItem) ImageUrlsToString() string {
+	s := []string{}
+	for _, image := range c.Images {
+		s = append(s, image.Url)
+	}
+	return strings.Join(s, ",")
+}
+
+func (c *ChannelItem) VideoUrlsToString() string {
+	s := []string{}
+	for _, video := range c.Videos {
+		s = append(s, video.Url)
+	}
+	return strings.Join(s, ",")
 }
 
 type Channel struct {

@@ -17,3 +17,7 @@ handlers:
 - url: /queue/tweet
   script: _go_app
   login: admin
+
+- url: /queue/line
+  script: _go_app
+  login: admin

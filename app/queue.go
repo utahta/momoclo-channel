@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-channel/twitter"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
@@ -56,7 +57,14 @@ func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error
 	)
 	tw.Log = log.NewGaeLogger(h.context)
 	tw.Api.HttpClient.Transport = &urlfetch.Transport{Context: h.context}
-	tw.Tweet(ch)
+
+	for _, item := range ch.Items {
+		err := model.PutTweetItem(h.context, item)
+		if err != nil {
+			continue
+		}
+		//tw.TweetItem(ch.Title, item)
+	}
 	return nil
 }
 

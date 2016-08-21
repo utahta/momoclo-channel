@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
@@ -50,23 +51,34 @@ func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error
 		return newError(err, http.StatusInternalServerError)
 	}
 
-	tw := twitter.NewTwitterClient(
-		os.Getenv("TWITTER_CONSUMER_KEY"),
-		os.Getenv("TWITTER_CONSUMER_SECRET"),
-		os.Getenv("TWITTER_ACCESS_TOKEN"),
-		os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
-	)
-	tw.Log = log.NewGaeLogger(h.context)
-	ctx, fn := context.WithTimeout(h.context, 30*time.Second)
-	defer fn()
-	tw.Api.HttpClient.Transport = &urlfetch.Transport{Context: ctx}
-
+	var wg sync.WaitGroup
 	for _, item := range ch.Items {
 		if err := model.PutTweetItem(h.context, item); err != nil {
 			continue
 		}
-		tw.TweetItem(ch.Title, item)
+
+		wg.Add(1)
+		go func(item *crawler.ChannelItem) {
+			ctx, cancel := context.WithTimeout(h.context, 45*time.Second)
+			defer func() {
+				cancel()
+				wg.Done()
+			}()
+
+			tw := twitter.NewTwitterClient(
+				os.Getenv("TWITTER_CONSUMER_KEY"),
+				os.Getenv("TWITTER_CONSUMER_SECRET"),
+				os.Getenv("TWITTER_ACCESS_TOKEN"),
+				os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
+			)
+			tw.Log = log.NewGaeLogger(h.context)
+			tw.Api.HttpClient.Transport = &urlfetch.Transport{Context: ctx}
+
+			tw.TweetItem(ch.Title, item)
+		}(item)
 	}
+	wg.Wait()
+
 	return nil
 }
 

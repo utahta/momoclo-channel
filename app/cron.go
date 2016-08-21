@@ -35,7 +35,7 @@ func (h *CronHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
 	h.Log.Infof("crawl start.")
 
-	var workQueue = make(chan bool, 5)
+	var workQueue = make(chan bool, 20)
 	defer close(workQueue)
 
 	var wg sync.WaitGroup
@@ -43,14 +43,13 @@ func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
 		workQueue <- true
 		wg.Add(1)
 		go func(ctx context.Context, c *crawler.ChannelClient) {
-			ctx, fn := context.WithTimeout(ctx, 30*time.Second)
-			defer fn()
-			c.Channel.Client = urlfetch.Client(ctx)
-
+			ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 			defer func() {
+				cancel()
 				<-workQueue
 				wg.Done()
 			}()
+			c.Channel.Client = urlfetch.Client(ctx)
 
 			ch, err := c.Fetch()
 			if err != nil {

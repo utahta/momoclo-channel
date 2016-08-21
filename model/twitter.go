@@ -15,8 +15,8 @@ type TweetItem struct {
 	Title       string
 	Url         string
 	PublishedAt time.Time
-	ImageUrls   string
-	VideoUrls   string
+	ImageUrls   string `datastore:",noindex"`
+	VideoUrls   string `datastore:",noindex"`
 }
 
 func newTweetItem(item *crawler.ChannelItem) *TweetItem {

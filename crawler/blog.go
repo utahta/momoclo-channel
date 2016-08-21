@@ -12,13 +12,18 @@ import (
 	"github.com/pkg/errors"
 )
 
+const (
+	defaultMaxItemNum = 5
+)
+
 type blogChannelParser struct {
 	channel *Channel
+	maxItemNum int //FIXME should be options
 }
 
 func newBlogChannelClient(url string, title string) *ChannelClient {
 	c := newChannel(url, title)
-	return newChannelClient(c, &blogChannelParser{channel: c})
+	return newChannelClient(c, &blogChannelParser{channel: c, maxItemNum: defaultMaxItemNum})
 }
 
 func NewTamaiBlogChannelClient() *ChannelClient {
@@ -104,6 +109,9 @@ func (p *blogChannelParser) parseList(r io.Reader) ([]*ChannelItem, error) {
 	items := []*ChannelItem{}
 	err = nil
 	doc.Find("[amb-component='archiveList'] > li").EachWithBreak(func(i int, s *goquery.Selection) bool {
+		if len(items) >= p.maxItemNum {
+			return false
+		}
 		title := strings.TrimSpace(s.Find("[amb-component='entryItemTitle']").Text())
 		href, exists := s.Find("[amb-component='entryItemTitle'] > a").Attr("href")
 		if !exists {

@@ -22,12 +22,12 @@ type blogChannelParser struct {
 }
 
 type BlogChannelParserOption struct {
-	maxItemNum int
+	MaxItemNum int
 }
 
 func newBlogChannelClient(url string, title string, opt *BlogChannelParserOption) *ChannelClient {
 	if opt == nil {
-		opt = &BlogChannelParserOption{maxItemNum: defaultMaxItemNum}
+		opt = &BlogChannelParserOption{MaxItemNum: defaultMaxItemNum}
 	}
 	c := newChannel(url, title)
 	return newChannelClient(c, &blogChannelParser{channel: c, option: opt})
@@ -116,7 +116,7 @@ func (p *blogChannelParser) parseList(r io.Reader) ([]*ChannelItem, error) {
 	items := []*ChannelItem{}
 	err = nil
 	doc.Find("[amb-component='archiveList'] > li").EachWithBreak(func(i int, s *goquery.Selection) bool {
-		if len(items) >= p.option.maxItemNum {
+		if len(items) >= p.option.MaxItemNum {
 			return false
 		}
 		title := strings.TrimSpace(s.Find("[amb-component='entryItemTitle']").Text())

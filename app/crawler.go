@@ -79,12 +79,13 @@ func (c *Crawler) pushLineQueue(params url.Values) {
 }
 
 func (c *Crawler) crawlChannelClients() []*crawler.ChannelClient {
+	bopt := &crawler.BlogChannelParserOption{MaxItemNum: 2}
 	return []*crawler.ChannelClient{
-		crawler.NewTamaiBlogChannelClient(nil),
-		crawler.NewMomotaBlogChannelClient(nil),
-		crawler.NewAriyasuBlogChannelClient(nil),
-		crawler.NewSasakiBlogChannelClient(nil),
-		crawler.NewTakagiBlogChannelClient(nil),
+		crawler.NewTamaiBlogChannelClient(bopt),
+		crawler.NewMomotaBlogChannelClient(bopt),
+		crawler.NewAriyasuBlogChannelClient(bopt),
+		crawler.NewSasakiBlogChannelClient(bopt),
+		crawler.NewTakagiBlogChannelClient(bopt),
 		crawler.NewAeNewsChannelClient(),
 		crawler.NewYoutubeChannelClient(),
 	}

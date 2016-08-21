@@ -59,7 +59,7 @@ func TestBlogChannelParserList(t *testing.T) {
 
 func TestBlogChannelParserListWithOption(t *testing.T) {
 	const expectMaxItemNum = 10
-	opt := &BlogChannelParserOption{maxItemNum: expectMaxItemNum}
+	opt := &BlogChannelParserOption{MaxItemNum: expectMaxItemNum}
 	var tests = []struct {
 		c     *ChannelClient
 		input string

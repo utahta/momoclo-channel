@@ -17,50 +17,49 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
+// Queue for crawler.Channel
 type QueueHandler struct {
-	context context.Context
 }
 
 func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.context = appengine.NewContext(r)
-
+	ctx := appengine.NewContext(r)
 	var err *Error
+	defer err.Handle(ctx, w)
+
+	ch, err := h.parseParams(r)
+	if err != nil {
+		return
+	}
+
 	switch r.URL.Path {
 	case "/queue/tweet":
-		err = h.serveTweet(w, r)
+		err = h.serveTweet(ctx, ch)
 	case "/queue/line":
-		err = h.serveLine(w, r)
+		err = h.serveLine(ctx, ch)
 	default:
 		http.NotFound(w, r)
 	}
-
-	err.Handle(h.context, w)
 }
 
-func (h *QueueHandler) parseParams(r *http.Request) (*crawler.Channel, error) {
+func (h *QueueHandler) parseParams(r *http.Request) (*crawler.Channel, *Error) {
 	var ch crawler.Channel
 	if err := json.Unmarshal([]byte(r.FormValue("channel")), &ch); err != nil {
-		return nil, errors.Wrapf(err, "Failed to unmarshal.")
+		return nil, newError(errors.Wrapf(err, "Failed to unmarshal."), http.StatusInternalServerError)
 	}
 	return &ch, nil
 }
 
-func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error {
-	ch, err := h.parseParams(r)
-	if err != nil {
-		return newError(err, http.StatusInternalServerError)
-	}
-
+func (h *QueueHandler) serveTweet(ctx context.Context, ch *crawler.Channel) *Error {
 	var wg sync.WaitGroup
 	for _, item := range ch.Items {
 		wg.Add(1)
 		go func(item *crawler.ChannelItem) {
 			defer wg.Done()
 
-			if err := model.NewTweetItem(item).Put(h.context); err != nil {
+			if err := model.NewTweetItem(item).Put(ctx); err != nil {
 				return
 			}
-			ctx, cancel := context.WithTimeout(h.context, 45*time.Second)
+			ctx, cancel := context.WithTimeout(ctx, 45*time.Second)
 			defer cancel()
 
 			tw := twitter.NewTwitterClient(
@@ -69,7 +68,7 @@ func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error
 				os.Getenv("TWITTER_ACCESS_TOKEN"),
 				os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
 			)
-			tw.Log = log.NewGaeLogger(h.context)
+			tw.Log = log.NewGaeLogger(ctx)
 			tw.Api.HttpClient.Transport = &urlfetch.Transport{Context: ctx}
 
 			tw.TweetItem(ch.Title, item)
@@ -80,11 +79,6 @@ func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error
 	return nil
 }
 
-func (h *QueueHandler) serveLine(w http.ResponseWriter, r *http.Request) *Error {
-	var ch crawler.Channel
-	if err := json.Unmarshal([]byte(r.FormValue("channel")), &ch); err != nil {
-		return newError(errors.Wrapf(err, "Failed to unmarshal."), http.StatusInternalServerError)
-	}
-
+func (h *QueueHandler) serveLine(ctx context.Context, ch *crawler.Channel) *Error {
 	return nil
 }

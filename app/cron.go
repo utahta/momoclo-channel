@@ -2,7 +2,7 @@ package app
 
 import (
 	"net/http"
-	
+
 	"google.golang.org/appengine"
 )
 
@@ -14,7 +14,7 @@ func (h *CronHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	switch r.URL.Path {
 	case "/cron/crawl":
-		new(Crawler).Crawl(ctx)
+		newCrawler(ctx).Crawl()
 	default:
 		http.NotFound(w, r)
 	}

@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"net/http"
 	"net/url"
 	"sync"
 	"time"
@@ -10,18 +9,17 @@ import (
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
-	"google.golang.org/appengine"
 	"google.golang.org/appengine/taskqueue"
 	"google.golang.org/appengine/urlfetch"
 )
 
-type CrawlHandler struct {
+type Crawler struct {
 	context context.Context
 	Log     log.Logger
 }
 
-func (h *CrawlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.context = appengine.NewContext(r)
+func (h *Crawler) Crawl(ctx context.Context) error {
+	h.context = ctx
 	h.Log = log.NewGaeLogger(h.context)
 
 	var workQueue = make(chan bool, 20)
@@ -59,9 +57,11 @@ func (h *CrawlHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}(h.context, c)
 	}
 	wg.Wait()
+
+	return nil
 }
 
-func (h *CrawlHandler) pushTweetQueue(params url.Values) {
+func (h *Crawler) pushTweetQueue(params url.Values) {
 	task := taskqueue.NewPOSTTask("/queue/tweet", params)
 	_, err := taskqueue.Add(h.context, task, "queue-tweet")
 	if err != nil {
@@ -69,7 +69,7 @@ func (h *CrawlHandler) pushTweetQueue(params url.Values) {
 	}
 }
 
-func (h *CrawlHandler) pushLineQueue(params url.Values) {
+func (h *Crawler) pushLineQueue(params url.Values) {
 	task := taskqueue.NewPOSTTask("/queue/line", params)
 	_, err := taskqueue.Add(h.context, task, "queue-line")
 	if err != nil {
@@ -77,7 +77,7 @@ func (h *CrawlHandler) pushLineQueue(params url.Values) {
 	}
 }
 
-func (h *CrawlHandler) crawlChannelClients() []*crawler.ChannelClient {
+func (h *Crawler) crawlChannelClients() []*crawler.ChannelClient {
 	return []*crawler.ChannelClient{
 		crawler.NewTamaiBlogChannelClient(nil),
 		crawler.NewMomotaBlogChannelClient(nil),

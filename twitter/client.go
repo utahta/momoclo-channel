@@ -75,6 +75,7 @@ func (t *TwitterClient) TweetItem(title string, item *crawler.ChannelItem) {
 			t.Log.Errorf("Failed to post tweet images. error:%v", err)
 			continue
 		}
+		t.Log.Infof("Post image. url:%s", item.Url)
 	}
 
 	for _, video := range videos {
@@ -87,6 +88,7 @@ func (t *TwitterClient) TweetItem(title string, item *crawler.ChannelItem) {
 			t.Log.Errorf("Failed to post tweet videos. error:%v", err)
 			continue
 		}
+		t.Log.Infof("Post video. url:%s", item.Url)
 	}
 }
 

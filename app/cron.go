@@ -92,11 +92,11 @@ func (h *CronHandler) pushLineQueue(params url.Values) {
 
 func (h *CronHandler) crawlChannelClients() []*crawler.ChannelClient {
 	return []*crawler.ChannelClient{
-		crawler.NewTamaiBlogChannelClient(),
-		crawler.NewMomotaBlogChannelClient(),
-		crawler.NewAriyasuBlogChannelClient(),
-		crawler.NewSasakiBlogChannelClient(),
-		crawler.NewTakagiBlogChannelClient(),
+		crawler.NewTamaiBlogChannelClient(nil),
+		crawler.NewMomotaBlogChannelClient(nil),
+		crawler.NewAriyasuBlogChannelClient(nil),
+		crawler.NewSasakiBlogChannelClient(nil),
+		crawler.NewTakagiBlogChannelClient(nil),
 		crawler.NewAeNewsChannelClient(),
 		crawler.NewYoutubeChannelClient(),
 	}

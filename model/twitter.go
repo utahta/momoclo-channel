@@ -19,7 +19,7 @@ type TweetItem struct {
 	VideoUrls   string `datastore:",noindex"`
 }
 
-func newTweetItem(item *crawler.ChannelItem) *TweetItem {
+func NewTweetItem(item *crawler.ChannelItem) *TweetItem {
 	return &TweetItem{
 		Id:          item.UniqId(),
 		Title:       item.Title,
@@ -30,8 +30,7 @@ func newTweetItem(item *crawler.ChannelItem) *TweetItem {
 	}
 }
 
-func PutTweetItem(ctx context.Context, item *crawler.ChannelItem) error {
-	ti := newTweetItem(item)
+func (ti *TweetItem) Put(ctx context.Context) error {
 	g := goon.FromContext(ctx)
 
 	// check for cached item

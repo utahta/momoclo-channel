@@ -57,7 +57,7 @@ func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error
 		go func(item *crawler.ChannelItem) {
 			defer wg.Done()
 
-			if err := model.PutTweetItem(h.context, item); err != nil {
+			if err := model.NewTweetItem(item).Put(h.context); err != nil {
 				return
 			}
 			ctx, cancel := context.WithTimeout(h.context, 45*time.Second)

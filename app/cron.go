@@ -43,12 +43,13 @@ func (h *CronHandler) serveCrawl(w http.ResponseWriter, r *http.Request) {
 		workQueue <- true
 		wg.Add(1)
 		go func(ctx context.Context, c *crawler.ChannelClient) {
-			ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 			defer func() {
-				cancel()
 				<-workQueue
 				wg.Done()
 			}()
+
+			ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+			defer cancel()
 			c.Channel.Client = urlfetch.Client(ctx)
 
 			ch, err := c.Fetch()

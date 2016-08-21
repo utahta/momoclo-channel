@@ -55,15 +55,13 @@ func (h *QueueHandler) serveTweet(w http.ResponseWriter, r *http.Request) *Error
 	for _, item := range ch.Items {
 		wg.Add(1)
 		go func(item *crawler.ChannelItem) {
+			defer wg.Done()
+
 			if err := model.PutTweetItem(h.context, item); err != nil {
 				return
 			}
-
 			ctx, cancel := context.WithTimeout(h.context, 45*time.Second)
-			defer func() {
-				cancel()
-				wg.Done()
-			}()
+			defer cancel()
 
 			tw := twitter.NewTwitterClient(
 				os.Getenv("TWITTER_CONSUMER_KEY"),

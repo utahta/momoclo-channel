@@ -9,11 +9,11 @@ func TestBlogChannelParser(t *testing.T) {
 	var tests = []struct {
 		c *ChannelClient
 	}{
-		{NewTamaiBlogChannelClient()},
-		{NewMomotaBlogChannelClient()},
-		{NewAriyasuBlogChannelClient()},
-		{NewSasakiBlogChannelClient()},
-		{NewTakagiBlogChannelClient()},
+		{NewTamaiBlogChannelClient(nil)},
+		{NewMomotaBlogChannelClient(nil)},
+		{NewAriyasuBlogChannelClient(nil)},
+		{NewSasakiBlogChannelClient(nil)},
+		{NewTakagiBlogChannelClient(nil)},
 	}
 
 	for _, test := range tests {
@@ -28,11 +28,11 @@ func TestBlogChannelParserList(t *testing.T) {
 		c     *ChannelClient
 		input string
 	}{
-		{NewTamaiBlogChannelClient(), "testdata/blog/list_tamai_20160714.html"},
-		{NewMomotaBlogChannelClient(), "testdata/blog/list_momota_20160714.html"},
-		{NewAriyasuBlogChannelClient(), "testdata/blog/list_ariyasu_20160714.html"},
-		{NewSasakiBlogChannelClient(), "testdata/blog/list_sasaki_20160714.html"},
-		{NewTakagiBlogChannelClient(), "testdata/blog/list_takagi_20160714.html"},
+		{NewTamaiBlogChannelClient(nil), "testdata/blog/list_tamai_20160714.html"},
+		{NewMomotaBlogChannelClient(nil), "testdata/blog/list_momota_20160714.html"},
+		{NewAriyasuBlogChannelClient(nil), "testdata/blog/list_ariyasu_20160714.html"},
+		{NewSasakiBlogChannelClient(nil), "testdata/blog/list_sasaki_20160714.html"},
+		{NewTakagiBlogChannelClient(nil), "testdata/blog/list_takagi_20160714.html"},
 	}
 
 	for _, test := range tests {
@@ -49,7 +49,43 @@ func TestBlogChannelParserList(t *testing.T) {
 				t.Errorf("Failed to parse list. error:%v", err)
 			}
 
-			if len(items) != 20 {
+			if len(items) != 5 {
+				t.Errorf("Invalid items size. len:%d", len(items))
+			}
+		}()
+	}
+}
+
+
+func TestBlogChannelParserListWithOption(t *testing.T) {
+	const expectMaxItemNum = 10
+	opt := &BlogChannelParserOption{maxItemNum: expectMaxItemNum}
+	var tests = []struct {
+		c     *ChannelClient
+		input string
+	}{
+		{NewTamaiBlogChannelClient(opt), "testdata/blog/list_tamai_20160714.html"},
+		{NewMomotaBlogChannelClient(opt), "testdata/blog/list_momota_20160714.html"},
+		{NewAriyasuBlogChannelClient(opt), "testdata/blog/list_ariyasu_20160714.html"},
+		{NewSasakiBlogChannelClient(opt), "testdata/blog/list_sasaki_20160714.html"},
+		{NewTakagiBlogChannelClient(opt), "testdata/blog/list_takagi_20160714.html"},
+	}
+
+	for _, test := range tests {
+		func() {
+			fp, err := os.Open(test.input)
+			if err != nil {
+				t.Errorf("Failed to open test list data. input:%s", test.input)
+			}
+			defer fp.Close()
+
+			parser := test.c.parser.(*blogChannelParser)
+			items, err := parser.parseList(fp)
+			if err != nil {
+				t.Errorf("Failed to parse list. error:%v", err)
+			}
+
+			if len(items) != expectMaxItemNum {
 				t.Errorf("Invalid items size. len:%d", len(items))
 			}
 		}()
@@ -63,11 +99,11 @@ func TestBlogChannelParserItem(t *testing.T) {
 		expectedImageLen int
 		expectedVideoLen int
 	}{
-		{NewTamaiBlogChannelClient(), "testdata/blog/item_tamai_20160712.html", 6, 0},
-		{NewMomotaBlogChannelClient(), "testdata/blog/item_momota_20160712.html", 3, 0},
-		{NewAriyasuBlogChannelClient(), "testdata/blog/item_ariyasu_20160702.html", 0, 1},
-		{NewSasakiBlogChannelClient(), "testdata/blog/item_sasaki_20160712.html", 2, 0},
-		{NewTakagiBlogChannelClient(), "testdata/blog/item_takagi_20160712.html", 5, 0},
+		{NewTamaiBlogChannelClient(nil), "testdata/blog/item_tamai_20160712.html", 6, 0},
+		{NewMomotaBlogChannelClient(nil), "testdata/blog/item_momota_20160712.html", 3, 0},
+		{NewAriyasuBlogChannelClient(nil), "testdata/blog/item_ariyasu_20160702.html", 0, 1},
+		{NewSasakiBlogChannelClient(nil), "testdata/blog/item_sasaki_20160712.html", 2, 0},
+		{NewTakagiBlogChannelClient(nil), "testdata/blog/item_takagi_20160712.html", 5, 0},
 	}
 
 	for _, test := range tests {

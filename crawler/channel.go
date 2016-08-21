@@ -86,7 +86,13 @@ func newChannelClient(c *Channel, parser ChannelParser) *ChannelClient {
 }
 
 func (c *ChannelClient) Fetch() (*Channel, error) {
-	resp, err := c.Channel.Client.Get(c.Channel.Url)
+	req, err := http.NewRequest("GET", c.Channel.Url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Cache-Control", "no-cache, must-revalidate")
+
+	resp, err := c.Channel.Client.Do(req)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to get resource. url:%s", c.Channel.Url)
 	}

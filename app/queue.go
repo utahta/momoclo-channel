@@ -24,10 +24,10 @@ type QueueHandler struct {
 func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	var err *Error
-	defer err.Handle(ctx, w)
 
 	ch, err := h.parseParams(r)
 	if err != nil {
+		err.Handle(ctx, w)
 		return
 	}
 
@@ -39,6 +39,7 @@ func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.NotFound(w, r)
 	}
+	err.Handle(ctx, w)
 }
 
 func (h *QueueHandler) parseParams(r *http.Request) (*crawler.Channel, *Error) {

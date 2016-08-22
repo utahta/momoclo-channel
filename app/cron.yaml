@@ -2,3 +2,6 @@ cron:
 - description: minutely crawling job
   url: /cron/crawl
   schedule: every 1 minutes
+- description: minutely ustream job
+  url: /cron/ustream
+  schedule: every 1 minutes

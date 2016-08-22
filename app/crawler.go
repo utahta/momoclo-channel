@@ -22,7 +22,7 @@ func newCrawler(ctx context.Context) *Crawler {
 	return &Crawler{context: ctx, log: log.NewGaeLogger(ctx)}
 }
 
-func (c *Crawler) Crawl() error {
+func (c *Crawler) Crawl() *Error {
 	var workQueue = make(chan bool, 20)
 	defer close(workQueue)
 

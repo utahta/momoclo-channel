@@ -17,7 +17,7 @@ func (h *CronHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "/cron/crawl":
 		err = newCrawler(ctx).Crawl()
 	case "/cron/ustream":
-		err = newUstream(ctx).Notify()
+		err = newUstreamNotification(ctx).Notify()
 	default:
 		http.NotFound(w, r)
 	}

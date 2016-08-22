@@ -15,16 +15,16 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
-type Ustream struct {
+type UstreamNotification struct {
 	context context.Context
 	log     log.Logger
 }
 
-func newUstream(ctx context.Context) *Ustream {
-	return &Ustream{context: ctx, log: log.NewGaeLogger(ctx)}
+func newUstreamNotification(ctx context.Context) *UstreamNotification {
+	return &UstreamNotification{context: ctx, log: log.NewGaeLogger(ctx)}
 }
 
-func (u *Ustream) Notify() *Error {
+func (u *UstreamNotification) Notify() *Error {
 	c := ustream.NewClient()
 	c.HttpClient.Transport = &urlfetch.Transport{Context: u.context}
 

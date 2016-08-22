@@ -62,7 +62,7 @@ func (h *QueueHandler) serveTweet(ctx context.Context, ch *crawler.Channel) *Err
 			ctx, cancel := context.WithTimeout(ctx, 45*time.Second)
 			defer cancel()
 
-			tw := twitter.NewTwitterClient(
+			tw := twitter.NewChannelClient(
 				os.Getenv("TWITTER_CONSUMER_KEY"),
 				os.Getenv("TWITTER_CONSUMER_SECRET"),
 				os.Getenv("TWITTER_ACCESS_TOKEN"),

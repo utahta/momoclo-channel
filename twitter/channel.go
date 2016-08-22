@@ -17,7 +17,7 @@ const (
 	maxUploadImages = 4
 )
 
-type TwitterClient struct {
+type ChannelClient struct {
 	Api *anaconda.TwitterApi
 	Log log.Logger
 }
@@ -26,26 +26,26 @@ type mediaImage struct {
 	Ids [maxUploadImages]string
 }
 
-func NewTwitterClient(consumerKey, consumerSecret, accessToken, accessTokenSecret string) *TwitterClient {
-	t := &TwitterClient{}
+func NewChannelClient(consumerKey, consumerSecret, accessToken, accessTokenSecret string) *ChannelClient {
+	t := &ChannelClient{}
 	t.auth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
 	t.Log = log.NewSilentLogger()
 	return t
 }
 
-func (t *TwitterClient) auth(consumerKey, consumerSecret, accessToken, accessTokenSecret string) {
+func (t *ChannelClient) auth(consumerKey, consumerSecret, accessToken, accessTokenSecret string) {
 	anaconda.SetConsumerKey(consumerKey)
 	anaconda.SetConsumerSecret(consumerSecret)
 	t.Api = anaconda.NewTwitterApi(accessToken, accessTokenSecret)
 }
 
-func (t *TwitterClient) Tweet(ch *crawler.Channel) {
+func (t *ChannelClient) Tweet(ch *crawler.Channel) {
 	for _, item := range ch.Items {
 		t.TweetItem(ch.Title, item)
 	}
 }
 
-func (t *TwitterClient) TweetItem(title string, item *crawler.ChannelItem) {
+func (t *ChannelClient) TweetItem(title string, item *crawler.ChannelItem) {
 	images := t.uploadImages(item)
 	videos := t.uploadVideos(item)
 
@@ -92,7 +92,7 @@ func (t *TwitterClient) TweetItem(title string, item *crawler.ChannelItem) {
 	}
 }
 
-func (t *TwitterClient) truncateText(channelTitle string, item *crawler.ChannelItem) string {
+func (t *ChannelClient) truncateText(channelTitle string, item *crawler.ChannelItem) string {
 	const maxTweetTextLen = 101 // ハッシュタグや url を除いて投稿可能な文字数
 
 	title := []rune(fmt.Sprintf("%s %s", channelTitle, item.Title))
@@ -102,7 +102,7 @@ func (t *TwitterClient) truncateText(channelTitle string, item *crawler.ChannelI
 	return fmt.Sprintf("%s %s #momoclo #ももクロ", string(title), item.Url)
 }
 
-func (t *TwitterClient) uploadImages(item *crawler.ChannelItem) []*mediaImage {
+func (t *ChannelClient) uploadImages(item *crawler.ChannelItem) []*mediaImage {
 	ids := []string{}
 	for _, image := range item.Images {
 		resource, err := t.downloadImage(image.Url)
@@ -137,7 +137,7 @@ func (t *TwitterClient) uploadImages(item *crawler.ChannelItem) []*mediaImage {
 	return mis
 }
 
-func (t *TwitterClient) uploadVideos(item *crawler.ChannelItem) []*anaconda.VideoMedia {
+func (t *ChannelClient) uploadVideos(item *crawler.ChannelItem) []*anaconda.VideoMedia {
 	videos := []*anaconda.VideoMedia{}
 	for _, video := range item.Videos {
 		resp, err := t.Api.HttpClient.Get(video.Url)
@@ -171,7 +171,7 @@ func (t *TwitterClient) uploadVideos(item *crawler.ChannelItem) []*anaconda.Vide
 	return videos
 }
 
-func (t *TwitterClient) downloadImage(url string) (string, error) {
+func (t *ChannelClient) downloadImage(url string) (string, error) {
 	response, err := t.Api.HttpClient.Get(url)
 	if err != nil {
 		return "", errors.Wrapf(err, "Failed to download image. url:%s", url)

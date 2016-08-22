@@ -53,7 +53,7 @@ func (u *Ustream) Notify() *Error {
 
 		jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 		t := time.Now().In(jst)
-		tw.Tweet(fmt.Sprintf("＿人人人人人人人人人人人人人人人人人＿\n＞　momoclotv が配信を開始しました　＜\n￣Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^￣\n%s", t.Format("[2006/01/02 15:04:05]")))
+		tw.Tweet(fmt.Sprintf("＿人人人人人人人人人人人人人人人人人＿\n＞　momocloTV が配信を開始しました　＜\n￣Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^Y^￣\n%s", t.Format("[2006/01/02 15:04:05]")))
 	}
 	return nil
 }

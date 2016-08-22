@@ -90,7 +90,7 @@ func (c *ChannelClient) Fetch() (*Channel, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Cache-Control", "no-cache, must-revalidate")
+	req.Header.Set("Cache-Control", "no-cache,must-revalidate,max-age=0")
 
 	resp, err := c.Channel.Client.Do(req)
 	if err != nil {

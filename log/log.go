@@ -3,6 +3,7 @@ package log
 import (
 	"fmt"
 	"log"
+	"sync"
 
 	"golang.org/x/net/context"
 	glog "google.golang.org/appengine/log"
@@ -41,22 +42,22 @@ func NewSilentLogger() Logger {
 	return &silentLogger{}
 }
 
-func (_ silentLogger) Fatal(_ ...interface{}) {}
-func (_ silentLogger) Fatalf(_ string, _ ...interface{}) {}
-func (_ silentLogger) Panic(_ ...interface{}) {}
-func (_ silentLogger) Panicf(_ string, _ ...interface{}) {}
-func (_ silentLogger) Critical(_ ...interface{}) {}
+func (_ silentLogger) Fatal(_ ...interface{})               {}
+func (_ silentLogger) Fatalf(_ string, _ ...interface{})    {}
+func (_ silentLogger) Panic(_ ...interface{})               {}
+func (_ silentLogger) Panicf(_ string, _ ...interface{})    {}
+func (_ silentLogger) Critical(_ ...interface{})            {}
 func (_ silentLogger) Criticalf(_ string, _ ...interface{}) {}
-func (_ silentLogger) Error(_ ...interface{}) {}
-func (_ silentLogger) Errorf(_ string, _ ...interface{}) {}
-func (_ silentLogger) Warning(_ ...interface{}) {}
-func (_ silentLogger) Warningf(_ string, _ ...interface{}) {}
-func (_ silentLogger) Notice(_ ...interface{}) {}
-func (_ silentLogger) Noticef(_ string, _ ...interface{}) {}
-func (_ silentLogger) Info(_ ...interface{}) {}
-func (_ silentLogger) Infof(_ string, _ ...interface{}) {}
-func (_ silentLogger) Debug(_ ...interface{}) {}
-func (_ silentLogger) Debugf(_ string, _ ...interface{}) {}
+func (_ silentLogger) Error(_ ...interface{})               {}
+func (_ silentLogger) Errorf(_ string, _ ...interface{})    {}
+func (_ silentLogger) Warning(_ ...interface{})             {}
+func (_ silentLogger) Warningf(_ string, _ ...interface{})  {}
+func (_ silentLogger) Notice(_ ...interface{})              {}
+func (_ silentLogger) Noticef(_ string, _ ...interface{})   {}
+func (_ silentLogger) Info(_ ...interface{})                {}
+func (_ silentLogger) Infof(_ string, _ ...interface{})     {}
+func (_ silentLogger) Debug(_ ...interface{})               {}
+func (_ silentLogger) Debugf(_ string, _ ...interface{})    {}
 
 type basicLogger struct {
 }
@@ -67,6 +68,9 @@ func NewBasicLogger() Logger {
 	return &basicLogger{}
 }
 func Basic() Logger {
+	m := new(sync.Mutex)
+	m.Lock()
+	defer m.Unlock()
 	if basicLog != nil {
 		return basicLog
 	}
@@ -133,6 +137,9 @@ func NewGaeLogger(ctx context.Context) Logger {
 	return &gaeLogger{context: ctx}
 }
 func Gae(ctx context.Context) Logger {
+	m := new(sync.Mutex)
+	m.Lock()
+	defer m.Unlock()
 	if gaeLog != nil {
 		return gaeLog
 	}

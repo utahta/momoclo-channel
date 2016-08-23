@@ -42,7 +42,7 @@ func (c *Crawler) Crawl() *Error {
 
 			ch, err := cli.Fetch()
 			if err != nil {
-				c.log.Errorf("Failed to fetcc. error:%v", err)
+				c.log.Errorf("Failed to fetch. error:%v", err)
 				return
 			}
 

@@ -34,13 +34,13 @@ func (u *UstreamNotification) Notify() *Error {
 	}
 
 	status := model.NewUstreamStatus()
-	status.Load(u.context)
+	status.Get(u.context)
 
 	if status.IsLive == isLive {
 		return nil
 	}
 	status.IsLive = isLive
-	status.Update(u.context)
+	status.Put(u.context)
 
 	if isLive {
 		tw := twitter.NewMessageClient(

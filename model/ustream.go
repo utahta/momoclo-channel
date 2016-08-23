@@ -17,12 +17,12 @@ func NewUstreamStatus() *UstreamStatus {
 	}
 }
 
-func (u *UstreamStatus) Load(ctx context.Context) {
+func (u *UstreamStatus) Get(ctx context.Context) {
 	g := goon.FromContext(ctx)
 	g.Get(u)
 }
 
-func (u *UstreamStatus) Update(ctx context.Context) {
+func (u *UstreamStatus) Put(ctx context.Context) {
 	g := goon.FromContext(ctx)
 	g.Put(u)
 }

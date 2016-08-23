@@ -13,6 +13,7 @@ import (
 	"github.com/utahta/momoclo-channel/ustream"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
+	"google.golang.org/appengine/datastore"
 )
 
 type UstreamNotification struct {
@@ -34,7 +35,9 @@ func (u *UstreamNotification) Notify() *Error {
 	}
 
 	status := model.NewUstreamStatus()
-	status.Get(u.context)
+	if err := status.Get(u.context); err != nil && err != datastore.ErrNoSuchEntity {
+		return newError(errors.Wrap(err, "Failed to get ustream status from datastore"), http.StatusInternalServerError)
+	}
 
 	if status.IsLive == isLive {
 		return nil

@@ -54,7 +54,7 @@ func (h *QueueHandler) serveTweet(ctx context.Context, ch *crawler.Channel) *Err
 	var wg sync.WaitGroup
 	for _, item := range ch.Items {
 		wg.Add(1)
-		go func(item *crawler.ChannelItem) {
+		go func(ctx context.Context, item *crawler.ChannelItem) {
 			defer wg.Done()
 
 			if err := model.NewTweetItem(item).Put(ctx); err != nil {
@@ -73,7 +73,7 @@ func (h *QueueHandler) serveTweet(ctx context.Context, ch *crawler.Channel) *Err
 			tw.Api.HttpClient.Transport = &urlfetch.Transport{Context: ctx}
 
 			tw.TweetItem(ch.Title, item)
-		}(item)
+		}(ctx, item)
 	}
 	wg.Wait()
 

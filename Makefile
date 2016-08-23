@@ -3,7 +3,7 @@
 install:
 	@glide install
 
-build-prots:
+build-protos:
 	@protoc grpc/line/protos/line.proto --go_out=plugins=grpc:.
 
 serve:
@@ -19,8 +19,4 @@ deploy-prod:
 
 deploy-dev:
 	@cp app/.env.dev app/env
-	@appcfg.py -A momoclo-channel update app
-
-rollback:
-	@cp app/.env.prod app/env
-	@appcfg.py rollback -A momoclo-channel app
+	@appcfg.py -A momoclo-channel-dev update app

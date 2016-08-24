@@ -51,6 +51,10 @@ func (h *QueueHandler) parseParams(r *http.Request) (*crawler.Channel, *Error) {
 }
 
 func (h *QueueHandler) serveTweet(ctx context.Context, ch *crawler.Channel) *Error {
+	ctx, cancel := context.WithTimeout(ctx, 45*time.Second)
+	defer cancel()
+	client := urlfetch.Client(ctx)
+
 	var wg sync.WaitGroup
 	for _, item := range ch.Items {
 		wg.Add(1)
@@ -60,8 +64,6 @@ func (h *QueueHandler) serveTweet(ctx context.Context, ch *crawler.Channel) *Err
 			if err := model.NewTweetItem(item).Put(ctx); err != nil {
 				return
 			}
-			ctx, cancel := context.WithTimeout(ctx, 45*time.Second)
-			defer cancel()
 
 			tw := twitter.NewChannelClient(
 				os.Getenv("TWITTER_CONSUMER_KEY"),
@@ -70,7 +72,7 @@ func (h *QueueHandler) serveTweet(ctx context.Context, ch *crawler.Channel) *Err
 				os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
 			)
 			tw.Log = log.NewGaeLogger(ctx)
-			tw.Api.HttpClient.Transport = &urlfetch.Transport{Context: ctx}
+			tw.Api.HttpClient = client
 
 			tw.TweetItem(ch.Title, item)
 		}(ctx, item)

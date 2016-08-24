@@ -33,9 +33,9 @@ func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	switch r.URL.Path {
 	case "/queue/tweet":
-		err = h.serveTweet(ctx, ch)
+		err = h.tweet(ctx, ch)
 	case "/queue/line":
-		err = h.serveLine(ctx, ch)
+		err = h.line(ctx, ch)
 	default:
 		http.NotFound(w, r)
 	}
@@ -50,8 +50,8 @@ func (h *QueueHandler) parseParams(r *http.Request) (*crawler.Channel, *Error) {
 	return &ch, nil
 }
 
-func (h *QueueHandler) serveTweet(ctx context.Context, ch *crawler.Channel) *Error {
-	ctx, cancel := context.WithTimeout(ctx, 45*time.Second)
+func (h *QueueHandler) tweet(ctx context.Context, ch *crawler.Channel) *Error {
+	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
 	defer cancel()
 	client := urlfetch.Client(ctx)
 
@@ -82,6 +82,6 @@ func (h *QueueHandler) serveTweet(ctx context.Context, ch *crawler.Channel) *Err
 	return nil
 }
 
-func (h *QueueHandler) serveLine(ctx context.Context, ch *crawler.Channel) *Error {
+func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 	return nil
 }

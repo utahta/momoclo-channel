@@ -9,7 +9,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
-	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-channel/twitter"
 	"golang.org/x/net/context"
@@ -71,7 +70,7 @@ func (h *QueueHandler) tweet(ctx context.Context, ch *crawler.Channel) *Error {
 				os.Getenv("TWITTER_ACCESS_TOKEN"),
 				os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
 			)
-			tw.Log = log.NewGaeLogger(ctx)
+			tw.Log = NewGaeLogger(ctx)
 			tw.Api.HttpClient = client
 
 			tw.TweetItem(ch.Title, item)

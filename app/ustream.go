@@ -22,7 +22,7 @@ type UstreamNotification struct {
 }
 
 func newUstreamNotification(ctx context.Context) *UstreamNotification {
-	return &UstreamNotification{context: ctx, log: log.NewGaeLogger(ctx)}
+	return &UstreamNotification{context: ctx, log: NewGaeLogger(ctx)}
 }
 
 func (u *UstreamNotification) Notify() *Error {

@@ -19,7 +19,7 @@ type Crawler struct {
 }
 
 func newCrawler(ctx context.Context) *Crawler {
-	return &Crawler{context: ctx, log: log.NewGaeLogger(ctx)}
+	return &Crawler{context: ctx, log: NewGaeLogger(ctx)}
 }
 
 func (c *Crawler) Crawl() *Error {

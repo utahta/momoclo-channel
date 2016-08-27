@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"os"
+	"io"
 )
 
 type Logger interface {
@@ -56,13 +58,18 @@ func (_ silentLogger) Infof(_ string, _ ...interface{})     {}
 func (_ silentLogger) Debug(_ ...interface{})               {}
 func (_ silentLogger) Debugf(_ string, _ ...interface{})    {}
 
-type basicLogger struct {
+type logger struct {
+	log *log.Logger
+}
+
+func NewIOLogger(io io.Writer) Logger {
+	return &logger{log: log.New(io, "", log.LstdFlags)}
 }
 
 var basicLog Logger
 
 func NewBasicLogger() Logger {
-	return &basicLogger{}
+	return NewIOLogger(os.Stdout)
 }
 func Basic() Logger {
 	m := new(sync.Mutex)
@@ -75,51 +82,51 @@ func Basic() Logger {
 	return basicLog
 }
 
-func (_ basicLogger) Fatal(args ...interface{}) {
-	log.Fatal(fmt.Sprintf("FATAL: %s", args...))
+func (l logger) Fatal(args ...interface{}) {
+	l.log.Fatal(fmt.Sprintf("FATAL: %s", args...))
 }
-func (_ basicLogger) Fatalf(format string, args ...interface{}) {
-	log.Fatalf("FATAL: %s", fmt.Sprintf(format, args...))
+func (l logger) Fatalf(format string, args ...interface{}) {
+	l.log.Fatalf("FATAL: %s", fmt.Sprintf(format, args...))
 }
-func (_ basicLogger) Panic(args ...interface{}) {
-	log.Panic(fmt.Sprintf("PANIC: %s", args...))
+func (l logger) Panic(args ...interface{}) {
+	l.log.Panic(fmt.Sprintf("PANIC: %s", args...))
 }
-func (_ basicLogger) Panicf(format string, args ...interface{}) {
-	log.Panicf("PANIC: %s", fmt.Sprintf(format, args...))
+func (l logger) Panicf(format string, args ...interface{}) {
+	l.log.Panicf("PANIC: %s", fmt.Sprintf(format, args...))
 }
-func (_ basicLogger) Critical(args ...interface{}) {
-	log.Print(fmt.Sprintf("CRIT: %s", args...))
+func (l logger) Critical(args ...interface{}) {
+	l.log.Print(fmt.Sprintf("CRIT: %s", args...))
 }
-func (_ basicLogger) Criticalf(format string, args ...interface{}) {
-	log.Printf("CRIT: %s", fmt.Sprintf(format, args...))
+func (l logger) Criticalf(format string, args ...interface{}) {
+	l.log.Printf("CRIT: %s", fmt.Sprintf(format, args...))
 }
-func (_ basicLogger) Error(args ...interface{}) {
-	log.Print(fmt.Sprintf("ERROR: %s", args...))
+func (l logger) Error(args ...interface{}) {
+	l.log.Print(fmt.Sprintf("ERROR: %s", args...))
 }
-func (_ basicLogger) Errorf(format string, args ...interface{}) {
-	log.Printf("ERROR: %s", fmt.Sprintf(format, args...))
+func (l logger) Errorf(format string, args ...interface{}) {
+	l.log.Printf("ERROR: %s", fmt.Sprintf(format, args...))
 }
-func (_ basicLogger) Warning(args ...interface{}) {
-	log.Print(fmt.Sprintf("WARN: %s", args...))
+func (l logger) Warning(args ...interface{}) {
+	l.log.Print(fmt.Sprintf("WARN: %s", args...))
 }
-func (_ basicLogger) Warningf(format string, args ...interface{}) {
-	log.Printf("WARN: %s", fmt.Sprintf(format, args...))
+func (l logger) Warningf(format string, args ...interface{}) {
+	l.log.Printf("WARN: %s", fmt.Sprintf(format, args...))
 }
-func (_ basicLogger) Notice(args ...interface{}) {
-	log.Print(fmt.Sprintf("NOTICE: %s", args...))
+func (l logger) Notice(args ...interface{}) {
+	l.log.Print(fmt.Sprintf("NOTICE: %s", args...))
 }
-func (_ basicLogger) Noticef(format string, args ...interface{}) {
-	log.Printf("NOTICE: %s", fmt.Sprintf(format, args...))
+func (l logger) Noticef(format string, args ...interface{}) {
+	l.log.Printf("NOTICE: %s", fmt.Sprintf(format, args...))
 }
-func (_ basicLogger) Info(args ...interface{}) {
-	log.Print(fmt.Sprintf("INFO: %s", args...))
+func (l logger) Info(args ...interface{}) {
+	l.log.Print(fmt.Sprintf("INFO: %s", args...))
 }
-func (_ basicLogger) Infof(format string, args ...interface{}) {
-	log.Printf("INFO: %s", fmt.Sprintf(format, args...))
+func (l logger) Infof(format string, args ...interface{}) {
+	l.log.Printf("INFO: %s", fmt.Sprintf(format, args...))
 }
-func (_ basicLogger) Debug(args ...interface{}) {
-	log.Print(fmt.Sprintf("DEBUG: %s", args...))
+func (l logger) Debug(args ...interface{}) {
+	l.log.Print(fmt.Sprintf("DEBUG: %s", args...))
 }
-func (_ basicLogger) Debugf(format string, args ...interface{}) {
-	log.Printf("DEBUG: %s", fmt.Sprintf(format, args...))
+func (l logger) Debugf(format string, args ...interface{}) {
+	l.log.Printf("DEBUG: %s", fmt.Sprintf(format, args...))
 }

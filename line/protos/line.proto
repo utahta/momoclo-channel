@@ -4,8 +4,8 @@ package line;
 
 service Line {
     rpc NotifyChannel (NotifyChannelRequest) returns (NotifyChannelResponse) {}
-    rpc AppendUser (AppendUserRequest) returns (AppendUserResponse) {}
-    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {}
+    rpc NotifyAppendUser (NotifyAppendUserRequest) returns (NotifyAppendUserResponse) {}
+    rpc NotifyDeleteUser (NotifyDeleteUserRequest) returns (NotifyDeleteUserResponse) {}
 }
 
 message NotifyChannelRequest {
@@ -32,16 +32,16 @@ message NotifyChannelRequest {
 message NotifyChannelResponse {
 }
 
-message AppendUserRequest {
+message NotifyAppendUserRequest {
     string to = 1;
 }
 
-message AppendUserResponse {
+message NotifyAppendUserResponse {
 }
 
-message DeleteUserRequest {
+message NotifyDeleteUserRequest {
     string to = 1;
 }
 
-message DeleteUserResponse {
+message NotifyDeleteUserResponse {
 }

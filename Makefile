@@ -4,7 +4,7 @@ install:
 	@glide install
 
 build-protos:
-	@protoc grpc/line/protos/line.proto --go_out=plugins=grpc:.
+	@protoc line/protos/line.proto --go_out=plugins=grpc:.
 
 serve:
 	@cp app/.env.local app/env

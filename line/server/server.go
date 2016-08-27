@@ -26,6 +26,8 @@ func New(channelID int64, channelSecret, channelMID string) (*notificationServer
 }
 
 func (s *notificationServer) NotifyChannel(c context.Context, r *pb.NotifyChannelRequest) (*pb.NotifyChannelResponse, error) {
+	s.Log.Infof("start notify channel. params:%#v", r)
+
 	mm := s.Client.NewMultipleMessage()
 	mm.AddText(fmt.Sprintf("%s\n%s\n%s", r.Title, r.Item.Title, r.Item.Url))
 	for _, img := range r.Item.Images {
@@ -35,23 +37,33 @@ func (s *notificationServer) NotifyChannel(c context.Context, r *pb.NotifyChanne
 	if err != nil {
 		s.Log.Errorf("Failed to send channel. error:%v", err)
 	}
+
+	s.Log.Info("end notify channel.")
 	return &pb.NotifyChannelResponse{}, nil
 }
 
-func (s *notificationServer) AppendUser(c context.Context, r *pb.AppendUserRequest) (*pb.AppendUserResponse, error) {
+func (s *notificationServer) NotifyAppendUser(c context.Context, r *pb.NotifyAppendUserRequest) (*pb.NotifyAppendUserResponse, error) {
+	s.Log.Infof("start append user. params:%#v", r)
+
 	_, err := s.Client.SendText([]string{r.To}, "通知ノフ設定オンにしました（・Θ・）")
 	if err != nil {
 		s.Log.Errorf("failed to send text. error:%v", err)
 	}
-	return &pb.AppendUserResponse{}, nil
+
+	s.Log.Info("end append user.")
+	return &pb.NotifyAppendUserResponse{}, nil
 }
 
-func (s *notificationServer) DeleteUser(c context.Context, r *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+func (s *notificationServer) NotifyDeleteUser(c context.Context, r *pb.NotifyDeleteUserRequest) (*pb.NotifyDeleteUserResponse, error) {
+	s.Log.Infof("start delete user. params:%#v", r)
+
 	_, err := s.Client.SendText([]string{r.To}, "通知ノフ設定オフにしました（・Θ・）")
 	if err != nil {
 		s.Log.Errorf("failed to send text. error:%v", err)
 	}
-	return &pb.DeleteUserResponse{}, nil
+
+	s.Log.Infof("end delete user.")
+	return &pb.NotifyDeleteUserResponse{}, nil
 }
 
 func (s *notificationServer) Run(port string) error {

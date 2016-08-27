@@ -7,6 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/utahta/momoclo-channel/line/server"
+	mlog "github.com/utahta/momoclo-channel/log"
 )
 
 func main() {
@@ -28,6 +29,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to init line server. error:%v", err)
 	}
+
+	fp, err := os.OpenFile(os.Getenv("LOG_PATH"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("Failed to open file. error:%v", err)
+	}
+	defer fp.Close()
+
+	s.Log = mlog.NewIOLogger(fp)
 
 	if err := s.Run(os.Getenv("SERVER_PORT")); err != nil {
 		log.Fatalf("Failed to serv. error:%v", err)

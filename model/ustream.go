@@ -6,13 +6,13 @@ import (
 )
 
 type UstreamStatus struct {
-	Id   string `datastore:"-" goon:"id"`
+	Id     string `datastore:"-" goon:"id"`
 	IsLive bool
 }
 
 func NewUstreamStatus() *UstreamStatus {
 	return &UstreamStatus{
-		Id:   "ustream_status",
+		Id:     "ustream_status",
 		IsLive: false,
 	}
 }

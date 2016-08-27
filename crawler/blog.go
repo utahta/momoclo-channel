@@ -18,7 +18,7 @@ const (
 
 type blogChannelParser struct {
 	channel *Channel
-	option *BlogChannelParserOption
+	option  *BlogChannelParserOption
 }
 
 type BlogChannelParserOption struct {

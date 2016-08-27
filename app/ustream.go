@@ -12,8 +12,8 @@ import (
 	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/ustream"
 	"golang.org/x/net/context"
-	"google.golang.org/appengine/urlfetch"
 	"google.golang.org/appengine/datastore"
+	"google.golang.org/appengine/urlfetch"
 )
 
 type UstreamNotification struct {

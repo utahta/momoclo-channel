@@ -2,10 +2,10 @@ package log
 
 import (
 	"fmt"
-	"log"
-	"sync"
-	"os"
 	"io"
+	"log"
+	"os"
+	"sync"
 )
 
 type Logger interface {
@@ -69,7 +69,7 @@ func NewIOLogger(io io.Writer) Logger {
 var basicLog Logger
 
 func NewBasicLogger() Logger {
-	return NewIOLogger(os.Stdout)
+	return NewIOLogger(os.Stderr)
 }
 func Basic() Logger {
 	m := new(sync.Mutex)

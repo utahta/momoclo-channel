@@ -1,20 +1,20 @@
 package server
 
 import (
-	"net"
 	"fmt"
+	"net"
 
+	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/pkg/errors"
 	pb "github.com/utahta/momoclo-channel/line/protos"
 	"github.com/utahta/momoclo-channel/log"
-	"github.com/line/line-bot-sdk-go/linebot"
-	"google.golang.org/grpc"
 	"golang.org/x/net/context"
-	"github.com/pkg/errors"
+	"google.golang.org/grpc"
 )
 
 type notificationServer struct {
 	Client *linebot.Client
-	Log log.Logger
+	Log    log.Logger
 }
 
 func New(channelID int64, channelSecret, channelMID string) (*notificationServer, error) {

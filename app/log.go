@@ -5,9 +5,9 @@ import (
 	"log"
 	"sync"
 
+	mlog "github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
 	glog "google.golang.org/appengine/log"
-	mlog "github.com/utahta/momoclo-channel/log"
 )
 
 type gaeLogger struct {

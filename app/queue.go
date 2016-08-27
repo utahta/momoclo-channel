@@ -17,6 +17,7 @@ import (
 	"github.com/utahta/momoclo-channel/twitter"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
+	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/socket"
 	"google.golang.org/appengine/urlfetch"
 	"google.golang.org/grpc"
@@ -121,14 +122,33 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 			for _, video := range item.Videos {
 				reqItem.Videos = append(reqItem.Videos, &pb.NotifyChannelRequest_Item_Video{Url: video.Url})
 			}
-			req := &pb.NotifyChannelRequest{To: []string{""}, Title: ch.Title, Item: reqItem}
+			req := &pb.NotifyChannelRequest{Title: ch.Title, Item: reqItem}
 
-			_, err := client.NotifyChannel(ctx, req)
-			if err != nil {
-				h.log.Errorf("Failed to notify channel. error:%v", err)
-				return
+			// notify channel item
+			var (
+				q      = model.NewUserQuery(ctx)
+				cursor = datastore.Cursor{}
+				err    error
+			)
+			for {
+				req.To, cursor, err = q.GetIds(cursor)
+				if err != nil {
+					h.log.Errorf("Failed to get user ids. error:%v", err)
+					return
+				}
+				count := len(req.To)
+
+				if count > 0 {
+					if _, err := client.NotifyChannel(ctx, req); err != nil {
+						h.log.Errorf("Failed to notify channel. error:%v", err)
+						return
+					}
+					h.log.Infof("Notify channel. title:%s", req.Item.Title)
+				}
+				if count < q.Limit {
+					break
+				}
 			}
-			h.log.Infof("Notify channel. title:%s", req.Item.Title)
 		}(ctx, item)
 	}
 	wg.Wait()

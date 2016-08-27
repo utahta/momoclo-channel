@@ -30,4 +30,4 @@ _testmain.go
 env
 .env.*
 vendor
-cmd/line_server/line_server
+cmd/line_server/line-server

@@ -1,4 +1,4 @@
-.PHONY: build
+.PHONY: all build
 
 all:
 	@make build

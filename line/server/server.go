@@ -2,6 +2,7 @@ package server
 
 import (
 	"net"
+	"fmt"
 
 	pb "github.com/utahta/momoclo-channel/line/protos"
 	"github.com/utahta/momoclo-channel/log"
@@ -25,13 +26,22 @@ func New(channelID int64, channelSecret, channelMID string) (*notificationServer
 }
 
 func (s *notificationServer) NotifyChannel(c context.Context, r *pb.NotifyChannelRequest) (*pb.NotifyChannelResponse, error) {
+	mm := s.Client.NewMultipleMessage()
+	mm.AddText(fmt.Sprintf("%s\n%s\n%s", r.Title, r.Item.Title, r.Item.Url))
+	for _, img := range r.Item.Images {
+		mm.AddImage(img.Url, img.Url)
+	}
+	_, err := mm.Send(r.To)
+	if err != nil {
+		s.Log.Errorf("Failed to send channel. error:%v", err)
+	}
 	return &pb.NotifyChannelResponse{}, nil
 }
 
 func (s *notificationServer) AppendUser(c context.Context, r *pb.AppendUserRequest) (*pb.AppendUserResponse, error) {
 	_, err := s.Client.SendText([]string{r.To}, "通知ノフ設定オンにしました（・Θ・）")
 	if err != nil {
-		s.Log.Errorf("failed to send text. error:%s", err)
+		s.Log.Errorf("failed to send text. error:%v", err)
 	}
 	return &pb.AppendUserResponse{}, nil
 }
@@ -39,7 +49,7 @@ func (s *notificationServer) AppendUser(c context.Context, r *pb.AppendUserReque
 func (s *notificationServer) DeleteUser(c context.Context, r *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	_, err := s.Client.SendText([]string{r.To}, "通知ノフ設定オフにしました（・Θ・）")
 	if err != nil {
-		s.Log.Errorf("failed to send text. error:%s", err)
+		s.Log.Errorf("failed to send text. error:%v", err)
 	}
 	return &pb.DeleteUserResponse{}, nil
 }

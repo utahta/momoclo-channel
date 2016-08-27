@@ -17,7 +17,6 @@ import (
 	"github.com/utahta/momoclo-channel/twitter"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/socket"
 	"google.golang.org/appengine/urlfetch"
 	"google.golang.org/grpc"
@@ -126,12 +125,11 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 
 			// notify channel item
 			var (
-				q      = model.NewLineUserQuery(ctx)
-				cursor = datastore.Cursor{}
-				err    error
+				q   = model.NewLineUserQuery(ctx)
+				err error
 			)
 			for {
-				req.To, cursor, err = q.GetIds(cursor)
+				req.To, err = q.GetIds()
 				if err != nil {
 					h.log.Errorf("Failed to get user ids. error:%v", err)
 					return

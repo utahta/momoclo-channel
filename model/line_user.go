@@ -53,10 +53,10 @@ func NewLineUserQuery(ctx context.Context) *LineUserQuery {
 	return &LineUserQuery{context: ctx, Limit: 100}
 }
 
-func (u *LineUserQuery) GetIds(cursor datastore.Cursor) ([]string, datastore.Cursor, error) {
+func (u *LineUserQuery) GetIds() ([]string, error) {
 	q := datastore.NewQuery("LineUser").KeysOnly().Limit(u.Limit)
-	if cursor.String() != "" {
-		q = q.Start(cursor)
+	if u.cursor.String() != "" {
+		q = q.Start(u.cursor)
 	}
 
 	ids := []string{}
@@ -67,14 +67,15 @@ func (u *LineUserQuery) GetIds(cursor datastore.Cursor) ([]string, datastore.Cur
 			break
 		}
 		if err != nil {
-			return nil, cursor, err
+			return nil, err
 		}
 		ids = append(ids, k.StringID())
 	}
 
-	cursor, err := t.Cursor()
+	var err error
+	u.cursor, err = t.Cursor()
 	if err != nil {
-		return nil, cursor, err
+		return nil, err
 	}
-	return ids, cursor, nil
+	return ids, nil
 }

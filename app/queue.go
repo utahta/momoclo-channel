@@ -126,7 +126,7 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 
 			// notify channel item
 			var (
-				q      = model.NewUserQuery(ctx)
+				q      = model.NewLineUserQuery(ctx)
 				cursor = datastore.Cursor{}
 				err    error
 			)

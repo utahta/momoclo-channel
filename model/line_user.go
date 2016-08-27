@@ -9,21 +9,21 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-type User struct {
+type LineUser struct {
 	Id        string `datastore:"-" goon:"id"`
 	CreatedAt time.Time
 }
 
-func NewUser(id string) *User {
-	return &User{Id: id}
+func NewLineUser(id string) *LineUser {
+	return &LineUser{Id: id}
 }
 
-func (u *User) Put(ctx context.Context) error {
+func (u *LineUser) Put(ctx context.Context) error {
 	g := goon.FromContext(ctx)
 
 	// check for cached item
 	if g.Get(u) == nil {
-		return errors.Errorf("User already exists.")
+		return errors.Errorf("LineUser already exists.")
 	}
 
 	return g.RunInTransaction(func(g *goon.Goon) error {
@@ -43,18 +43,18 @@ func (u *User) Put(ctx context.Context) error {
 	}, nil)
 }
 
-type UserQuery struct {
+type LineUserQuery struct {
 	context context.Context
 	cursor  datastore.Cursor
 	Limit   int
 }
 
-func NewUserQuery(ctx context.Context) *UserQuery {
-	return &UserQuery{context: ctx, Limit: 100}
+func NewLineUserQuery(ctx context.Context) *LineUserQuery {
+	return &LineUserQuery{context: ctx, Limit: 100}
 }
 
-func (u *UserQuery) GetIds(cursor datastore.Cursor) ([]string, datastore.Cursor, error) {
-	q := datastore.NewQuery("User").KeysOnly().Limit(u.Limit)
+func (u *LineUserQuery) GetIds(cursor datastore.Cursor) ([]string, datastore.Cursor, error) {
+	q := datastore.NewQuery("LineUser").KeysOnly().Limit(u.Limit)
 	if cursor.String() != "" {
 		q = q.Start(cursor)
 	}

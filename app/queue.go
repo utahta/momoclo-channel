@@ -93,16 +93,6 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
 	defer cancel()
 
-	dialOption := grpc.WithDialer(func(addr string, timeout time.Duration) (net.Conn, error) {
-		return socket.DialTimeout(ctx, "tcp", os.Getenv("LINE_SERVER_ADDRESS"), timeout)
-	})
-	client, err := client.Dial(os.Getenv("LINE_SERVER_ADDRESS"), grpc.WithInsecure(), dialOption)
-	if err != nil {
-		return newError(err, http.StatusInternalServerError)
-	}
-	defer client.Close()
-	client.Log = h.log
-
 	var wg sync.WaitGroup
 	wg.Add(len(ch.Items))
 	for _, item := range ch.Items {
@@ -112,6 +102,18 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 			if err := model.NewLineItem(item).Put(ctx); err != nil {
 				return
 			}
+
+			// connect line server
+			dialOption := grpc.WithDialer(func(addr string, timeout time.Duration) (net.Conn, error) {
+				return socket.DialTimeout(ctx, "tcp", addr, timeout)
+			})
+			client, err := client.Dial(os.Getenv("LINE_SERVER_ADDRESS"), grpc.WithInsecure(), dialOption)
+			if err != nil {
+				h.log.Errorf("Failed to connect line_server. error:%v", err)
+				return
+			}
+			defer client.Close()
+			client.Log = h.log
 
 			// make gRPC request params.
 			reqItem := &pb.NotifyChannelRequest_Item{Title: item.Title, Url: item.Url}
@@ -124,10 +126,7 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 			req := &pb.NotifyChannelRequest{Title: ch.Title, Item: reqItem}
 
 			// notify channel item
-			var (
-				q   = model.NewLineUserQuery(ctx)
-				err error
-			)
+			q := model.NewLineUserQuery(ctx)
 			for {
 				req.To, err = q.GetIds()
 				if err != nil {

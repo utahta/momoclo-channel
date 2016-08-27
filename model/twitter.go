@@ -17,6 +17,7 @@ type TweetItem struct {
 	PublishedAt time.Time
 	ImageUrls   string `datastore:",noindex"`
 	VideoUrls   string `datastore:",noindex"`
+	CreatedAt   time.Time
 }
 
 func NewTweetItem(item *crawler.ChannelItem) *TweetItem {
@@ -43,6 +44,12 @@ func (ti *TweetItem) Put(ctx context.Context) error {
 		if err != nil && err != datastore.ErrNoSuchEntity {
 			return err
 		}
+
+		jst, err := time.LoadLocation("Asia/Tokyo")
+		if err != nil {
+			return err
+		}
+		ti.CreatedAt = time.Now().In(jst)
 
 		_, err = g.Put(ti)
 		return err

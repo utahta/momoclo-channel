@@ -17,6 +17,7 @@ type LineItem struct {
 	PublishedAt time.Time
 	ImageUrls   string `datastore:",noindex"`
 	VideoUrls   string `datastore:",noindex"`
+	CreatedAt   time.Time
 }
 
 func NewLineItem(item *crawler.ChannelItem) *LineItem {
@@ -43,6 +44,12 @@ func (ti *LineItem) Put(ctx context.Context) error {
 		if err != nil && err != datastore.ErrNoSuchEntity {
 			return err
 		}
+
+		jst, err := time.LoadLocation("Asia/Tokyo")
+		if err != nil {
+			return err
+		}
+		ti.CreatedAt = time.Now().In(jst)
 
 		_, err = g.Put(ti)
 		return err

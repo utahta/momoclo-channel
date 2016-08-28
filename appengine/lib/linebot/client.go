@@ -5,20 +5,20 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
 	pb "github.com/utahta/momoclo-channel/linebot/protos"
-	"github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/socket"
 	"google.golang.org/grpc"
 )
 
 type Client struct {
-	context    context.Context
-	conn       *grpc.ClientConn
+	context       context.Context
+	conn          *grpc.ClientConn
 	LineBotClient pb.LineBotClient
-	Log        log.Logger
+	Log           log.Logger
 }
 
 func Dial(ctx context.Context, address string) (*Client, error) {
@@ -29,7 +29,7 @@ func Dial(ctx context.Context, address string) (*Client, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "did not connect. address:%s", address)
 	}
-	return &Client{context: ctx, conn: conn, LineBotClient: pb.NewLineBotClient(conn), Log: log.NewSilentLogger()}, nil
+	return &Client{context: ctx, conn: conn, LineBotClient: pb.NewLineBotClient(conn), Log: log.NewGaeLogger(ctx)}, nil
 }
 
 func (c *Client) Close() {

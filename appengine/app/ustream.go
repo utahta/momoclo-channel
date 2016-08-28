@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
-	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/ustream"
 	"golang.org/x/net/context"
@@ -22,7 +22,7 @@ type UstreamNotification struct {
 }
 
 func newUstreamNotification(ctx context.Context) *UstreamNotification {
-	return &UstreamNotification{context: ctx, log: NewGaeLogger(ctx)}
+	return &UstreamNotification{context: ctx, log: log.NewGaeLogger(ctx)}
 }
 
 func (u *UstreamNotification) Notify() *Error {

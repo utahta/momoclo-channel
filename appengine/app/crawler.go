@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/crawler"
-	"github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/taskqueue"
 	"google.golang.org/appengine/urlfetch"
@@ -19,7 +19,7 @@ type Crawler struct {
 }
 
 func newCrawler(ctx context.Context) *Crawler {
-	return &Crawler{context: ctx, log: NewGaeLogger(ctx)}
+	return &Crawler{context: ctx, log: log.NewGaeLogger(ctx)}
 }
 
 func (c *Crawler) Crawl() *Error {

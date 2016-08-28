@@ -9,9 +9,9 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/linebot"
+	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
-	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/twitter"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
@@ -25,7 +25,7 @@ type QueueHandler struct {
 
 func (h *QueueHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
-	h.log = NewGaeLogger(ctx)
+	h.log = log.NewGaeLogger(ctx)
 	var err *Error
 
 	ch, err := h.parseParams(r)
@@ -74,7 +74,7 @@ func (h *QueueHandler) tweet(ctx context.Context, ch *crawler.Channel) *Error {
 				os.Getenv("TWITTER_ACCESS_TOKEN"),
 				os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
 			)
-			tw.Log = NewGaeLogger(ctx)
+			tw.Log = log.NewGaeLogger(ctx)
 			tw.Api.HttpClient = client
 
 			tw.TweetItem(ch.Title, item)

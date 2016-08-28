@@ -1,4 +1,4 @@
-package app
+package log
 
 import (
 	"fmt"
@@ -9,6 +9,8 @@ import (
 	"golang.org/x/net/context"
 	glog "google.golang.org/appengine/log"
 )
+
+type Logger mlog.Logger
 
 type gaeLogger struct {
 	context context.Context

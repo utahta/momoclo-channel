@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
+	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/ustream"
 	"golang.org/x/net/context"

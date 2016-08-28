@@ -2,24 +2,20 @@ package app
 
 import (
 	"encoding/json"
-	"net"
 	"net/http"
 	"os"
 	"sync"
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/crawler"
-	"github.com/utahta/momoclo-channel/line/client"
-	pb "github.com/utahta/momoclo-channel/line/protos"
-	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/appengine/lib/line"
 	"github.com/utahta/momoclo-channel/appengine/model"
+	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/twitter"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/socket"
 	"google.golang.org/appengine/urlfetch"
-	"google.golang.org/grpc"
 )
 
 // Queue for crawler.Channel
@@ -103,48 +99,16 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 				return
 			}
 
-			// connect line server
-			dialOption := grpc.WithDialer(func(addr string, timeout time.Duration) (net.Conn, error) {
-				return socket.DialTimeout(ctx, "tcp", addr, timeout)
-			})
-			client, err := client.Dial(os.Getenv("LINE_SERVER_ADDRESS"), grpc.WithInsecure(), dialOption)
+			cli, err := line.Dial(ctx, os.Getenv("LINE_SERVER_ADDRESS"))
 			if err != nil {
-				h.log.Errorf("Failed to connect line_server. error:%v", err)
+				h.log.Error(err)
 				return
 			}
-			defer client.Close()
-			client.Log = h.log
+			defer cli.Close()
 
-			// make gRPC request params.
-			reqItem := &pb.NotifyChannelRequest_Item{Title: item.Title, Url: item.Url}
-			for _, image := range item.Images {
-				reqItem.Images = append(reqItem.Images, &pb.NotifyChannelRequest_Item_Image{Url: image.Url})
-			}
-			for _, video := range item.Videos {
-				reqItem.Videos = append(reqItem.Videos, &pb.NotifyChannelRequest_Item_Video{Url: video.Url})
-			}
-			req := &pb.NotifyChannelRequest{Title: ch.Title, Item: reqItem}
-
-			// notify channel item
-			q := model.NewLineUserQuery(ctx)
-			for {
-				req.To, err = q.GetIds()
-				if err != nil {
-					h.log.Errorf("Failed to get user ids. error:%v", err)
-					return
-				}
-				count := len(req.To)
-
-				if count > 0 {
-					if _, err := client.NotifyChannel(ctx, req); err != nil {
-						h.log.Errorf("Failed to notify channel. error:%v", err)
-						return
-					}
-					h.log.Infof("Notify channel. title:%s", req.Item.Title)
-				}
-				if count < q.Limit {
-					break
-				}
+			if err := cli.NotifyChannel(ch.Title, item); err != nil {
+				h.log.Error(err)
+				return
 			}
 		}(ctx, item)
 	}

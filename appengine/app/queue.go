@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/appengine/lib/line"
+	"github.com/utahta/momoclo-channel/appengine/lib/linebot"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/log"
@@ -99,7 +99,7 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 				return
 			}
 
-			cli, err := line.Dial(ctx, os.Getenv("LINE_SERVER_ADDRESS"))
+			cli, err := linebot.Dial(ctx, os.Getenv("LINE_SERVER_ADDRESS"))
 			if err != nil {
 				h.log.Error(err)
 				return

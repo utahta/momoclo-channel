@@ -6,7 +6,7 @@ import (
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/pkg/errors"
-	pb "github.com/utahta/momoclo-channel/line/protos"
+	pb "github.com/utahta/momoclo-channel/linebot/protos"
 	"github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -73,7 +73,7 @@ func (s *notificationServer) Run(port string) error {
 	}
 
 	gs := grpc.NewServer()
-	pb.RegisterLineServer(gs, s)
+	pb.RegisterLineBotServer(gs, s)
 	gs.Serve(lis)
 	return nil
 }

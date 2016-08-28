@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package line;
+package linebot;
 
-service Line {
+service LineBot {
     rpc NotifyChannel (NotifyChannelRequest) returns (NotifyChannelResponse) {}
     rpc NotifyAppendUser (NotifyAppendUserRequest) returns (NotifyAppendUserResponse) {}
     rpc NotifyDeleteUser (NotifyDeleteUserRequest) returns (NotifyDeleteUserResponse) {}

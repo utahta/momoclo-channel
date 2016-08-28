@@ -1,4 +1,4 @@
-package line
+package linebot
 
 import (
 	"net"
@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
-	pb "github.com/utahta/momoclo-channel/line/protos"
+	pb "github.com/utahta/momoclo-channel/linebot/protos"
 	"github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/socket"
@@ -17,7 +17,7 @@ import (
 type Client struct {
 	context    context.Context
 	conn       *grpc.ClientConn
-	LineClient pb.LineClient
+	LineBotClient pb.LineBotClient
 	Log        log.Logger
 }
 
@@ -29,7 +29,7 @@ func Dial(ctx context.Context, address string) (*Client, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "did not connect. address:%s", address)
 	}
-	return &Client{context: ctx, conn: conn, LineClient: pb.NewLineClient(conn), Log: log.NewSilentLogger()}, nil
+	return &Client{context: ctx, conn: conn, LineBotClient: pb.NewLineBotClient(conn), Log: log.NewSilentLogger()}, nil
 }
 
 func (c *Client) Close() {
@@ -65,7 +65,7 @@ func (c *Client) NotifyChannel(title string, item *crawler.ChannelItem) error {
 		count := len(req.To)
 
 		if count > 0 {
-			if _, err := c.LineClient.NotifyChannel(c.context, req); err != nil {
+			if _, err := c.LineBotClient.NotifyChannel(c.context, req); err != nil {
 				return errors.Wrapf(err, "Failed to notify channel. title:%s", item.Title)
 			}
 			c.Log.Infof("Notify channel. title:%s", item.Title)

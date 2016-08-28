@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/joho/godotenv"
-	"github.com/utahta/momoclo-channel/line/server"
+	"github.com/utahta/momoclo-channel/linebot/server"
 	mlog "github.com/utahta/momoclo-channel/log"
 )
 

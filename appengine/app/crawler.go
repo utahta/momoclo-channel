@@ -80,7 +80,7 @@ func (c *Crawler) pushLineQueue(ctx context.Context, params url.Values) {
 }
 
 func (c *Crawler) crawlChannelClients() []*crawler.ChannelClient {
-	bopt := &crawler.BlogChannelParserOption{MaxItemNum: 2}
+	bopt := &crawler.BlogChannelParserOption{MaxItemNum: 1}
 	return []*crawler.ChannelClient{
 		crawler.NewTamaiBlogChannelClient(bopt),
 		crawler.NewMomotaBlogChannelClient(bopt),

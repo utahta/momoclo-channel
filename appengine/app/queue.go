@@ -13,7 +13,7 @@ import (
 	"github.com/utahta/momoclo-channel/line/client"
 	pb "github.com/utahta/momoclo-channel/line/protos"
 	"github.com/utahta/momoclo-channel/log"
-	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/twitter"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"

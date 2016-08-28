@@ -1,22 +1,19 @@
-.PHONY: install test build-prots serve deploy-dev deploy-prod rollback
+.PHONY: install test build-prots serve deploy-dev deploy-prod
 
 install:
 	@glide install
 
-build-protos:
-	@protoc line/protos/line.proto --go_out=plugins=grpc:.
-
-serve:
-	@cp app/.env.local app/env
-	@goapp serve app
-
 test:
 	@go test -v ./crawler/...
 
-deploy-prod:
-	@cp app/.env.prod app/env
-	@appcfg.py -A momoclo-channel update app
+build-protos:
+	@protoc line/protos/line.proto --go_out=plugins=grpc:.
 
-deploy-dev:
-	@cp app/.env.dev app/env
-	@appcfg.py -A momoclo-channel-dev update app
+serve-app:
+	@cd appengine/app && make serve
+
+deploy-app-prod:
+	@cd appengine/app && make deploy-prod
+
+deploy-app-dev:
+	@cd appengine/app && make deploy-dev

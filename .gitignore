@@ -28,6 +28,8 @@ _testmain.go
 *.iml
 .env
 env
-.env.*
+.env.local
+.env.dev
+.env.prod
 vendor
 cmd/line_server/line-server

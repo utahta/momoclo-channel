@@ -77,7 +77,10 @@ func (h *QueueHandler) tweet(ctx context.Context, ch *crawler.Channel) *Error {
 			tw.Log = log.NewGaeLogger(ctx)
 			tw.Api.HttpClient = client
 
-			tw.TweetItem(ch.Title, item)
+			if err := tw.TweetItem(ch.Title, item); err != nil {
+				h.log.Error(err)
+				return
+			}
 		}(ctx, item)
 	}
 	wg.Wait()
@@ -99,14 +102,14 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 				return
 			}
 
-			cli, err := linebot.Dial(ctx, os.Getenv("LINE_SERVER_ADDRESS"))
+			bot, err := linebot.Dial(ctx)
 			if err != nil {
 				h.log.Error(err)
 				return
 			}
-			defer cli.Close()
+			defer bot.Close()
 
-			if err := cli.NotifyChannel(ch.Title, item); err != nil {
+			if err := bot.NotifyChannel(ch.Title, item); err != nil {
 				h.log.Error(err)
 				return
 			}

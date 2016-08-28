@@ -4,6 +4,7 @@ import (
 	"net/url"
 
 	"github.com/ChimeraCoder/anaconda"
+	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/log"
 )
 
@@ -25,12 +26,12 @@ func (t *MessageClient) auth(consumerKey, consumerSecret, accessToken, accessTok
 	t.Api = anaconda.NewTwitterApi(accessToken, accessTokenSecret)
 }
 
-func (t *MessageClient) Tweet(msg string) {
+func (t *MessageClient) Tweet(msg string) error {
 	v := url.Values{}
 	_, err := t.Api.PostTweet(msg, v)
 	if err != nil {
-		t.Log.Errorf("Failed to post message. msg:%s error:%s", msg, err)
-		return
+		return errors.Wrapf(err, "Failed to post message. msg:%s", msg)
 	}
 	t.Log.Infof("Post message. msg:%s", msg)
+	return nil
 }

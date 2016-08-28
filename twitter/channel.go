@@ -39,13 +39,7 @@ func (t *ChannelClient) auth(consumerKey, consumerSecret, accessToken, accessTok
 	t.Api = anaconda.NewTwitterApi(accessToken, accessTokenSecret)
 }
 
-func (t *ChannelClient) Tweet(ch *crawler.Channel) {
-	for _, item := range ch.Items {
-		t.TweetItem(ch.Title, item)
-	}
-}
-
-func (t *ChannelClient) TweetItem(title string, item *crawler.ChannelItem) {
+func (t *ChannelClient) TweetItem(title string, item *crawler.ChannelItem) error {
 	images := t.uploadImages(item)
 	videos := t.uploadVideos(item)
 
@@ -60,8 +54,7 @@ func (t *ChannelClient) TweetItem(title string, item *crawler.ChannelItem) {
 	}
 	tweet, err := t.Api.PostTweet(text, v)
 	if err != nil {
-		t.Log.Errorf("Failed to post tweet. url:%s error:%s", item.Url, err)
-		return
+		return errors.Wrapf(err, "Failed to post tweet. url:%s", item.Url)
 	}
 	t.Log.Infof("Post tweet. text:%s", text)
 
@@ -90,6 +83,7 @@ func (t *ChannelClient) TweetItem(title string, item *crawler.ChannelItem) {
 		}
 		t.Log.Infof("Post video. url:%s", item.Url)
 	}
+	return nil
 }
 
 func (t *ChannelClient) truncateText(channelTitle string, item *crawler.ChannelItem) string {

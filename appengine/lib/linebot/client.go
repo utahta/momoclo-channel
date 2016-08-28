@@ -2,6 +2,7 @@ package linebot
 
 import (
 	"net"
+	"os"
 	"time"
 
 	"github.com/pkg/errors"
@@ -21,7 +22,9 @@ type Client struct {
 	Log           log.Logger
 }
 
-func Dial(ctx context.Context, address string) (*Client, error) {
+func Dial(ctx context.Context) (*Client, error) {
+	address := os.Getenv("LINE_SERVER_ADDRESS")
+
 	dialOption := grpc.WithDialer(func(addr string, timeout time.Duration) (net.Conn, error) {
 		return socket.DialTimeout(ctx, "tcp", addr, timeout)
 	})
@@ -77,7 +80,7 @@ func (c *Client) NotifyChannel(title string, item *crawler.ChannelItem) error {
 	}
 	req := &pb.NotifyChannelRequest{Title: title, Item: reqItem}
 
-	c.notifyAll(func(ctx context.Context, to []string) error {
+	return c.notifyAll(func(ctx context.Context, to []string) error {
 		req.To = to
 		if _, err := c.LineBotClient.NotifyChannel(ctx, req); err != nil {
 			return errors.Wrapf(err, "Failed to notify channel. title:%s", item.Title)
@@ -85,14 +88,13 @@ func (c *Client) NotifyChannel(title string, item *crawler.ChannelItem) error {
 		c.Log.Infof("Notify channel. title:%s count:%d", item.Title, len(to))
 		return nil
 	})
-	return nil
 }
 
-func (c *Client) NotifyUstream(message string) error {
+func (c *Client) NotifyUstream() error {
 	// make gRPC request params.
 	req := &pb.NotifyUstreamRequest{}
 
-	c.notifyAll(func(ctx context.Context, to []string) error {
+	return c.notifyAll(func(ctx context.Context, to []string) error {
 		req.To = to
 		if _, err := c.LineBotClient.NotifyUstream(ctx, req); err != nil {
 			return errors.Wrap(err, "Failed to notify ustream.")
@@ -100,5 +102,4 @@ func (c *Client) NotifyUstream(message string) error {
 		c.Log.Info("Notify ustream. count:%d", len(to))
 		return nil
 	})
-	return nil
 }

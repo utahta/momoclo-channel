@@ -6,6 +6,7 @@ service LineBot {
     rpc NotifyChannel (NotifyChannelRequest) returns (NotifyChannelResponse) {}
     rpc NotifyAppendUser (NotifyAppendUserRequest) returns (NotifyAppendUserResponse) {}
     rpc NotifyDeleteUser (NotifyDeleteUserRequest) returns (NotifyDeleteUserResponse) {}
+    rpc NotifyUstream (NotifyUstreamRequest) returns (NotifyUstreamResponse) {}
 }
 
 message NotifyChannelRequest {
@@ -44,4 +45,11 @@ message NotifyDeleteUserRequest {
 }
 
 message NotifyDeleteUserResponse {
+}
+
+message NotifyUstreamRequest {
+    repeated string to = 1;
+}
+
+message NotifyUstreamResponse {
 }

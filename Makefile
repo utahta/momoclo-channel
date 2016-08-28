@@ -17,3 +17,6 @@ deploy-app-prod:
 
 deploy-app-dev:
 	@cd appengine/app && make deploy-dev
+
+deploy-linebot:
+	@cd cmd/linebot_server && make deploy

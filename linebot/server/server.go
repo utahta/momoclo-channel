@@ -66,6 +66,18 @@ func (s *notificationServer) NotifyDeleteUser(c context.Context, r *pb.NotifyDel
 	return &pb.NotifyDeleteUserResponse{}, nil
 }
 
+func (s *notificationServer) NotifyUstream(c context.Context, r *pb.NotifyUstreamRequest) (*pb.NotifyUstreamResponse, error) {
+	s.Log.Infof("start notify ustream. params:%#v", r)
+
+	_, err := s.Client.SendText(r.To, "momocloTV が配信を開始しました")
+	if err != nil {
+		s.Log.Errorf("failed to send text. error:%v", err)
+	}
+
+	s.Log.Infof("end notify ustream.")
+	return &pb.NotifyUstreamResponse{}, nil
+}
+
 func (s *notificationServer) Run(port string) error {
 	lis, err := net.Listen("tcp", port)
 	if err != nil {

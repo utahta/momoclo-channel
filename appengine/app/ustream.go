@@ -1,17 +1,15 @@
 package app
 
 import (
-	"fmt"
 	"net/http"
-	"os"
 	"sync"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/linebot"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 	"github.com/utahta/momoclo-channel/appengine/model"
-	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/ustream"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
@@ -56,38 +54,13 @@ func (u *UstreamNotification) Notify() *Error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-
-			tw := twitter.NewMessageClient(
-				os.Getenv("TWITTER_CONSUMER_KEY"),
-				os.Getenv("TWITTER_CONSUMER_SECRET"),
-				os.Getenv("TWITTER_ACCESS_TOKEN"),
-				os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
-			)
-			tw.Log = u.log
-
-			jst := time.FixedZone("Asia/Tokyo", 9*60*60)
-			t := time.Now().In(jst)
-			if err := tw.Tweet(fmt.Sprintf("momocloTV が配信を開始しました\n%s", t.Format("from 2006/01/02 15:04:05"))); err != nil {
-				u.log.Error(err)
-				return
-			}
+			twitter.TweetUstream(ctx)
 		}()
 
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-
-			bot, err := linebot.Dial(ctx)
-			if err != nil {
-				u.log.Error(err)
-				return
-			}
-			defer bot.Close()
-
-			if err := bot.NotifyUstream(); err != nil {
-				u.log.Error(err)
-				return
-			}
+			linebot.NotifyUstream(ctx)
 		}()
 
 		wg.Wait()

@@ -3,19 +3,17 @@ package app
 import (
 	"encoding/json"
 	"net/http"
-	"os"
 	"sync"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/linebot"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
-	"github.com/utahta/momoclo-channel/twitter"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/urlfetch"
 )
 
 // Queue for crawler.Channel
@@ -56,7 +54,6 @@ func (h *QueueHandler) parseParams(r *http.Request) (*crawler.Channel, *Error) {
 func (h *QueueHandler) tweet(ctx context.Context, ch *crawler.Channel) *Error {
 	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
 	defer cancel()
-	client := urlfetch.Client(ctx)
 
 	var wg sync.WaitGroup
 	wg.Add(len(ch.Items))
@@ -67,20 +64,7 @@ func (h *QueueHandler) tweet(ctx context.Context, ch *crawler.Channel) *Error {
 			if err := model.NewTweetItem(item).Put(ctx); err != nil {
 				return
 			}
-
-			tw := twitter.NewChannelClient(
-				os.Getenv("TWITTER_CONSUMER_KEY"),
-				os.Getenv("TWITTER_CONSUMER_SECRET"),
-				os.Getenv("TWITTER_ACCESS_TOKEN"),
-				os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
-			)
-			tw.Log = log.NewGaeLogger(ctx)
-			tw.Api.HttpClient = client
-
-			if err := tw.TweetItem(ch.Title, item); err != nil {
-				h.log.Error(err)
-				return
-			}
+			twitter.TweetChannelItem(ctx, ch.Title, item)
 		}(ctx, item)
 	}
 	wg.Wait()
@@ -101,18 +85,7 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 			if err := model.NewLineItem(item).Put(ctx); err != nil {
 				return
 			}
-
-			bot, err := linebot.Dial(ctx)
-			if err != nil {
-				h.log.Error(err)
-				return
-			}
-			defer bot.Close()
-
-			if err := bot.NotifyChannel(ch.Title, item); err != nil {
-				h.log.Error(err)
-				return
-			}
+			linebot.NotifyChannel(ctx, ch.Title, item)
 		}(ctx, item)
 	}
 	wg.Wait()

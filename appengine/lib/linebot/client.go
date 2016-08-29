@@ -1,6 +1,7 @@
 package linebot
 
 import (
+	"fmt"
 	"net"
 	"os"
 	"time"
@@ -70,19 +71,19 @@ func (c *Client) notifyAll(fn func(context.Context, []string) error) error {
 }
 
 func (c *Client) NotifyChannel(title string, item *crawler.ChannelItem) error {
-	// make gRPC request params.
-	reqItem := &pb.NotifyChannelRequest_Item{Title: item.Title, Url: item.Url}
+	req := &pb.NotifyMessageRequest{
+		Text: fmt.Sprintf("%s\n%s\n%s", title, item.Title, item.Url),
+	}
 	for _, image := range item.Images {
-		reqItem.Images = append(reqItem.Images, &pb.NotifyChannelRequest_Item_Image{Url: image.Url})
+		req.ImageUrls = append(req.ImageUrls, image.Url)
 	}
 	for _, video := range item.Videos {
-		reqItem.Videos = append(reqItem.Videos, &pb.NotifyChannelRequest_Item_Video{Url: video.Url})
+		req.VideoUrls = append(req.VideoUrls, video.Url)
 	}
-	req := &pb.NotifyChannelRequest{Title: title, Item: reqItem}
 
 	return c.notifyAll(func(ctx context.Context, to []string) error {
 		req.To = to
-		if _, err := c.LineBotClient.NotifyChannel(ctx, req); err != nil {
+		if _, err := c.LineBotClient.NotifyMessage(ctx, req); err != nil {
 			return errors.Wrapf(err, "Failed to notify channel. title:%s", item.Title)
 		}
 		c.Log.Infof("Notify channel. title:%s count:%d", item.Title, len(to))
@@ -91,15 +92,29 @@ func (c *Client) NotifyChannel(title string, item *crawler.ChannelItem) error {
 }
 
 func (c *Client) NotifyUstream() error {
-	// make gRPC request params.
-	req := &pb.NotifyUstreamRequest{}
-
+	req := &pb.NotifyMessageRequest{
+		Text: "momocloTV が配信を開始しました",
+	}
 	return c.notifyAll(func(ctx context.Context, to []string) error {
 		req.To = to
-		if _, err := c.LineBotClient.NotifyUstream(ctx, req); err != nil {
+		if _, err := c.LineBotClient.NotifyMessage(ctx, req); err != nil {
 			return errors.Wrap(err, "Failed to notify ustream.")
 		}
 		c.Log.Info("Notify ustream. count:%d", len(to))
+		return nil
+	})
+}
+
+func (c *Client) NotifyReminder(text string) error {
+	req := &pb.NotifyMessageRequest{
+		Text: text,
+	}
+	return c.notifyAll(func(ctx context.Context, to []string) error {
+		req.To = to
+		if _, err := c.LineBotClient.NotifyMessage(ctx, req); err != nil {
+			return errors.Wrap(err, "Failed to notify reminder.")
+		}
+		c.Log.Info("Notify reminder. count:%d", len(to))
 		return nil
 	})
 }

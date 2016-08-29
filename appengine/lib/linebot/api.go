@@ -33,3 +33,17 @@ func NotifyUstream(ctx context.Context) {
 		return
 	}
 }
+
+func NotifyReminder(ctx context.Context, text string) {
+	bot, err := Dial(ctx)
+	if err != nil {
+		log.GaeLog(ctx).Error(err)
+		return
+	}
+	defer bot.Close()
+
+	if err := bot.NotifyReminder(text); err != nil {
+		log.GaeLog(ctx).Error(err)
+		return
+	}
+}

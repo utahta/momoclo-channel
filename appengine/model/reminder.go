@@ -3,7 +3,6 @@ package model
 import (
 	"time"
 
-	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
@@ -11,21 +10,9 @@ import (
 
 type ReminderOnce struct {
 	Id        int64 `datastore:"-" goon:"id"`
-	Message   string
+	Text      string
 	RemindAt  time.Time
 	CreatedAt time.Time
-}
-
-func NewReminderOnce() *ReminderOnce {
-	return &ReminderOnce{
-		Message:  "test",
-		RemindAt: time.Now(),
-	}
-}
-
-func (r *ReminderOnce) Put(ctx context.Context) {
-	g := goon.FromContext(ctx)
-	g.Put(r)
 }
 
 type ReminderOnceQuery struct {
@@ -37,7 +24,7 @@ func NewReminderOnceQuery(ctx context.Context) *ReminderOnceQuery {
 }
 
 func (r *ReminderOnceQuery) GetAll() ([]*ReminderOnce, error) {
-	t := time.Now()
+	t := time.Now().In(time.FixedZone("Asia/Tokyo", 9*60*60))
 	duration := time.Duration(t.Second())*time.Second + time.Duration(t.Nanosecond())*time.Nanosecond
 	t = t.Add(-duration)
 	q := datastore.NewQuery("ReminderOnce").Filter("RemindAt >=", t).Order("RemindAt")

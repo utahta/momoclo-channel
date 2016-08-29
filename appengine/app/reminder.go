@@ -2,8 +2,10 @@ package app
 
 import (
 	"net/http"
+	"sync"
 	"time"
 
+	"github.com/utahta/momoclo-channel/appengine/lib/linebot"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"golang.org/x/net/context"
@@ -31,6 +33,7 @@ func (r *ReminderNotification) Notify() *Error {
 	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 	now := time.Now().In(jst)
 	for _, row := range rows {
+		row.RemindAt = row.RemindAt.In(jst)
 		if row.RemindAt.Year() != now.Year() ||
 			row.RemindAt.Month() != now.Month() ||
 			row.RemindAt.Day() != now.Day() ||
@@ -39,19 +42,20 @@ func (r *ReminderNotification) Notify() *Error {
 			continue
 		}
 
-		//var wg sync.WaitGroup
-		//
+		var wg sync.WaitGroup
+
 		//wg.Add(1)
 		//go func() {
 		//	defer wg.Done()
 		//}()
 		//
-		//wg.Add(1)
-		//go func() {
-		//	defer wg.Done()
-		//}()
-		//
-		//wg.Wait()
+		wg.Add(1)
+		go func(text string) {
+			defer wg.Done()
+			linebot.NotifyReminder(ctx, text)
+		}(row.Text)
+
+		wg.Wait()
 	}
 	return nil
 }

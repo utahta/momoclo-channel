@@ -3,53 +3,15 @@ syntax = "proto3";
 package linebot;
 
 service LineBot {
-    rpc NotifyChannel (NotifyChannelRequest) returns (NotifyChannelResponse) {}
-    rpc NotifyAppendUser (NotifyAppendUserRequest) returns (NotifyAppendUserResponse) {}
-    rpc NotifyDeleteUser (NotifyDeleteUserRequest) returns (NotifyDeleteUserResponse) {}
-    rpc NotifyUstream (NotifyUstreamRequest) returns (NotifyUstreamResponse) {}
+    rpc NotifyMessage (NotifyMessageRequest) returns (NotifyMessageResponse) {}
 }
 
-message NotifyChannelRequest {
+message NotifyMessageRequest {
     repeated string to = 1;
-    string title = 2;
-
-    message Item {
-        string title = 1;
-        string url = 2;
-
-        message Image {
-            string url = 1;
-        }
-        repeated Image images = 3;
-
-        message Video {
-            string url = 1;
-        }
-        repeated Video videos = 4;
-    }
-    Item item = 3;
+    string text = 2;
+    repeated string imageUrls = 3;
+    repeated string videoUrls = 4;
 }
 
-message NotifyChannelResponse {
-}
-
-message NotifyAppendUserRequest {
-    string to = 1;
-}
-
-message NotifyAppendUserResponse {
-}
-
-message NotifyDeleteUserRequest {
-    string to = 1;
-}
-
-message NotifyDeleteUserResponse {
-}
-
-message NotifyUstreamRequest {
-    repeated string to = 1;
-}
-
-message NotifyUstreamResponse {
+message NotifyMessageResponse {
 }

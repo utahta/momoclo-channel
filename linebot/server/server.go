@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net"
 
 	"github.com/line/line-bot-sdk-go/linebot"
@@ -25,57 +24,21 @@ func New(channelID int64, channelSecret, channelMID string) (*notificationServer
 	return &notificationServer{Client: client, Log: log.NewBasicLogger()}, nil
 }
 
-func (s *notificationServer) NotifyChannel(c context.Context, r *pb.NotifyChannelRequest) (*pb.NotifyChannelResponse, error) {
-	s.Log.Infof("start notify channel. params:%#v", r)
+func (s *notificationServer) NotifyMessage(c context.Context, r *pb.NotifyMessageRequest) (*pb.NotifyMessageResponse, error) {
+	s.Log.Infof("start notify message. params:%#v", r)
 
 	mm := s.Client.NewMultipleMessage()
-	mm.AddText(fmt.Sprintf("%s\n%s\n%s", r.Title, r.Item.Title, r.Item.Url))
-	for _, img := range r.Item.Images {
-		mm.AddImage(img.Url, img.Url)
+	mm.AddText(r.Text)
+	for _, url := range r.ImageUrls {
+		mm.AddImage(url, url)
 	}
 	_, err := mm.Send(r.To)
 	if err != nil {
-		s.Log.Errorf("Failed to send channel. error:%v", err)
+		s.Log.Errorf("Failed to send message. error:%v", err)
 	}
 
-	s.Log.Info("end notify channel.")
-	return &pb.NotifyChannelResponse{}, nil
-}
-
-func (s *notificationServer) NotifyAppendUser(c context.Context, r *pb.NotifyAppendUserRequest) (*pb.NotifyAppendUserResponse, error) {
-	s.Log.Infof("start append user. params:%#v", r)
-
-	_, err := s.Client.SendText([]string{r.To}, "通知ノフ設定オンにしました（・Θ・）")
-	if err != nil {
-		s.Log.Errorf("failed to send text. error:%v", err)
-	}
-
-	s.Log.Info("end append user.")
-	return &pb.NotifyAppendUserResponse{}, nil
-}
-
-func (s *notificationServer) NotifyDeleteUser(c context.Context, r *pb.NotifyDeleteUserRequest) (*pb.NotifyDeleteUserResponse, error) {
-	s.Log.Infof("start delete user. params:%#v", r)
-
-	_, err := s.Client.SendText([]string{r.To}, "通知ノフ設定オフにしました（・Θ・）")
-	if err != nil {
-		s.Log.Errorf("failed to send text. error:%v", err)
-	}
-
-	s.Log.Infof("end delete user.")
-	return &pb.NotifyDeleteUserResponse{}, nil
-}
-
-func (s *notificationServer) NotifyUstream(c context.Context, r *pb.NotifyUstreamRequest) (*pb.NotifyUstreamResponse, error) {
-	s.Log.Infof("start notify ustream. params:%#v", r)
-
-	_, err := s.Client.SendText(r.To, "momocloTV が配信を開始しました")
-	if err != nil {
-		s.Log.Errorf("failed to send text. error:%v", err)
-	}
-
-	s.Log.Infof("end notify ustream.")
-	return &pb.NotifyUstreamResponse{}, nil
+	s.Log.Info("end notify message.")
+	return &pb.NotifyMessageResponse{}, nil
 }
 
 func (s *notificationServer) Run(port string) error {

@@ -5,3 +5,6 @@ cron:
 - description: minutely ustream job
   url: /cron/ustream
   schedule: every 1 minutes
+- description: 5 minutely reminder job
+  url: /cron/reminder
+  schedule: every 5 minutes

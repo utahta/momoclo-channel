@@ -18,6 +18,8 @@ func (h *CronHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		err = newCrawler(ctx).Crawl()
 	case "/cron/ustream":
 		err = newUstreamNotification(ctx).Notify()
+	case "/cron/reminder":
+		err = newReminderNotification(ctx).Notify()
 	default:
 		http.NotFound(w, r)
 	}

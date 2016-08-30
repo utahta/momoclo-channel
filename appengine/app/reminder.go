@@ -7,6 +7,7 @@ import (
 
 	"github.com/utahta/momoclo-channel/appengine/lib/linebot"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"golang.org/x/net/context"
 )
@@ -40,11 +41,12 @@ func (r *ReminderNotification) Notify() *Error {
 
 		var wg sync.WaitGroup
 
-		//wg.Add(1)
-		//go func() {
-		//	defer wg.Done()
-		//}()
-		//
+		wg.Add(1)
+		go func(text string) {
+			defer wg.Done()
+			twitter.TweetText(ctx, text)
+		}(row.Text)
+
 		wg.Add(1)
 		go func(text string) {
 			defer wg.Done()

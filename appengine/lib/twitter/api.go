@@ -54,3 +54,11 @@ func TweetUstream(ctx context.Context) {
 		return
 	}
 }
+
+func TweetText(ctx context.Context, text string) {
+	tw := newMessageClient(ctx)
+	if err := tw.Tweet(text); err != nil {
+		tw.Log.Error(err)
+		return
+	}
+}

@@ -34,8 +34,10 @@ func (r *ReminderNotification) Notify() *Error {
 	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 	now := time.Now().In(jst)
 	for _, row := range rows {
-		if ok, err := row.Valid(now); !ok || err != nil {
-			r.log.Error(err)
+		if ok, err := row.Valid(now); !ok {
+			if err != nil {
+				r.log.Error(err)
+			}
 			continue
 		}
 

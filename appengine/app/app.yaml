@@ -30,3 +30,6 @@ handlers:
 - url: /queue/line
   script: _go_app
   login: admin
+
+- url: /linebot/callback
+  script: _go_app

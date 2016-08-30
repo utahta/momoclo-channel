@@ -20,4 +20,5 @@ func init() {
 func initRoutes() {
 	http.Handle("/cron/", &CronHandler{})
 	http.Handle("/queue/", &QueueHandler{})
+	http.Handle("/linebot/", &LinebotHandler{})
 }

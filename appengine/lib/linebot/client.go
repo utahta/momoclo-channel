@@ -24,7 +24,7 @@ type Client struct {
 }
 
 func Dial(ctx context.Context) (*Client, error) {
-	address := os.Getenv("LINE_SERVER_ADDRESS")
+	address := os.Getenv("LINEBOT_SERVER_ADDRESS")
 
 	dialOption := grpc.WithDialer(func(addr string, timeout time.Duration) (net.Conn, error) {
 		return socket.DialTimeout(ctx, "tcp", addr, timeout)

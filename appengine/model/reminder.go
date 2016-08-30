@@ -72,12 +72,12 @@ func (r *Reminder) Valid(now time.Time) (bool, error) {
 	switch r.Type {
 	case ReminderOnce:
 		r.RemindAt = r.RemindAt.In(now.Location())
-		if r.RemindAt.Year() == now.Year() || r.RemindAt.Month() == now.Month() || r.RemindAt.Day() == now.Day() ||
-			r.RemindAt.Hour() == now.Hour() || r.RemindAt.Minute() == now.Minute() {
+		if r.RemindAt.Year() == now.Year() && r.RemindAt.Month() == now.Month() && r.RemindAt.Day() == now.Day() &&
+			r.RemindAt.Hour() == now.Hour() && r.RemindAt.Minute() == now.Minute() {
 			return true, nil
 		}
 	case ReminderWeekly:
-		if r.Weekday == now.Weekday() || r.Hour == now.Hour() || r.Minute == now.Minute() {
+		if r.Weekday == now.Weekday() && r.Hour == now.Hour() && r.Minute == now.Minute() {
 			return true, nil
 		}
 	default:

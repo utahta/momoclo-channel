@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/mjibson/goon"
-	"github.com/pkg/errors"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
@@ -21,12 +20,6 @@ func NewLineUser(id string) *LineUser {
 
 func (u *LineUser) Put(ctx context.Context) error {
 	g := goon.FromContext(ctx)
-
-	// check for cached item
-	if g.Get(u) == nil {
-		return errors.Errorf("LineUser already exists.")
-	}
-
 	return g.RunInTransaction(func(g *goon.Goon) error {
 		err := g.Get(u)
 		if err != nil && err != datastore.ErrNoSuchEntity {

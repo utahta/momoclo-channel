@@ -3,10 +3,15 @@ package app
 import (
 	"net/http"
 	"time"
+	"os"
+	"strconv"
 
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	//mbot "github.com/utahta/momoclo-channel/appengine/lib/linebot"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
+	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/utahta/momoclo-channel/appengine/model"
 )
 
 type LinebotHandler struct {
@@ -20,16 +25,73 @@ func (h *LinebotHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	switch r.URL.Path {
 	case "/linebot/callback":
-		err = h.callback(ctx)
+		err = h.callback(ctx, r)
 	default:
 		http.NotFound(w, r)
 	}
 	err.Handle(ctx, w)
 }
 
-func (h *LinebotHandler) callback(ctx context.Context) *Error {
+func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error {
 	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
 	defer cancel()
-	
+
+	bot, err := h.newBotClient()
+	if err != nil {
+		return newError(err, http.StatusInternalServerError)
+	}
+
+	received, err := bot.ParseRequest(req)
+	if err != nil {
+		if err == linebot.ErrInvalidSignature {
+			return newError(err, http.StatusBadRequest)
+		}
+		return newError(err, http.StatusInternalServerError)
+	}
+
+	for _, result := range received.Results {
+		content := result.Content()
+		if content == nil {
+			h.log.Error("Invalid content.")
+			continue
+		}
+
+		if content.IsOperation && content.OpType == linebot.OpTypeAddedAsFriend {
+
+		} else if content.IsOperation && content.OpType == linebot.OpTypeBlocked {
+
+		} else if content.IsMessage && content.ContentType == linebot.ContentTypeText {
+			text, err := content.TextContent()
+			if err != nil {
+				h.log.Error(err)
+				continue
+			}
+
+			h.log.Info(text.Text)
+
+		}
+	}
 	return nil
+}
+
+func (h *LinebotHandler) appendUser(ctx context.Context, text *linebot.ReceivedTextContent) error {
+	user := model.NewLineUser(text.From)
+	user.Enabled = true
+	if err := user.Put(ctx); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (h *LinebotHandler) newBotClient() (*linebot.Client, error) {
+	var (
+		channelID     int64
+		channelSecret = os.Getenv("LINEBOT_CHANNEL_SECRET")
+		channelMID    = os.Getenv("LINEBOT_CHANNEL_MID")
+	)
+	channelID, err := strconv.ParseInt(os.Getenv("LINEBOT_CHANNEL_ID"), 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	return linebot.NewClient(channelID, channelSecret, channelMID)
 }

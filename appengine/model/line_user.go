@@ -11,11 +11,12 @@ import (
 
 type LineUser struct {
 	Id        string `datastore:"-" goon:"id"`
+	Enabled   bool
 	CreatedAt time.Time
 }
 
 func NewLineUser(id string) *LineUser {
-	return &LineUser{Id: id}
+	return &LineUser{Id: id, Enabled: true}
 }
 
 func (u *LineUser) Put(ctx context.Context) error {
@@ -54,7 +55,7 @@ func NewLineUserQuery(ctx context.Context) *LineUserQuery {
 }
 
 func (u *LineUserQuery) GetIds() ([]string, error) {
-	q := datastore.NewQuery("LineUser").KeysOnly().Limit(u.Limit)
+	q := datastore.NewQuery("LineUser").Filter("Enabled =", true).KeysOnly().Limit(u.Limit)
 	if u.cursor.String() != "" {
 		q = q.Start(u.cursor)
 	}

@@ -24,7 +24,7 @@ func (r *ReminderNotification) Notify() *Error {
 	ctx, cancel := context.WithTimeout(r.context, 50*time.Second)
 	defer cancel()
 
-	q := model.NewReminderOnceQuery(ctx)
+	q := model.NewReminderQuery(ctx)
 	rows, err := q.GetAll()
 	if err != nil {
 		return newError(err, http.StatusInternalServerError)
@@ -33,12 +33,8 @@ func (r *ReminderNotification) Notify() *Error {
 	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 	now := time.Now().In(jst)
 	for _, row := range rows {
-		row.RemindAt = row.RemindAt.In(jst)
-		if row.RemindAt.Year() != now.Year() ||
-			row.RemindAt.Month() != now.Month() ||
-			row.RemindAt.Day() != now.Day() ||
-			row.RemindAt.Hour() != now.Hour() ||
-			row.RemindAt.Minute() != now.Minute() {
+		if ok, err := row.Valid(now); !ok || err != nil {
+			r.log.Error(err)
 			continue
 		}
 
@@ -56,6 +52,10 @@ func (r *ReminderNotification) Notify() *Error {
 		}(row.Text)
 
 		wg.Wait()
+
+		if row.IsOnce() {
+			row.Disable(ctx)
+		}
 	}
 	return nil
 }

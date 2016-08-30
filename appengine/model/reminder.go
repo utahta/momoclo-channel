@@ -23,12 +23,12 @@ type Reminder struct {
 	Enabled bool
 
 	// Once
-	RemindAt time.Time
+	RemindAt time.Time `datastore:",noindex"`
 
 	// Weekly
-	Weekday time.Weekday
-	Hour    int
-	Minute  int
+	Weekday time.Weekday `datastore:",noindex"`
+	Hour    int          `datastore:",noindex"`
+	Minute  int          `datastore:",noindex"`
 }
 
 func NewReminderOnce(text string, remindAt time.Time) *Reminder {

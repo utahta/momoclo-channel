@@ -20,7 +20,7 @@ func NotifyChannel(ctx context.Context, title string, item *crawler.ChannelItem)
 	}
 }
 
-func NotifyUstream(ctx context.Context) {
+func NotifyMessage(ctx context.Context, text string) {
 	bot, err := Dial(ctx)
 	if err != nil {
 		log.GaeLog(ctx).Error(err)
@@ -28,21 +28,7 @@ func NotifyUstream(ctx context.Context) {
 	}
 	defer bot.Close()
 
-	if err := bot.NotifyUstream(); err != nil {
-		log.GaeLog(ctx).Error(err)
-		return
-	}
-}
-
-func NotifyReminder(ctx context.Context, text string) {
-	bot, err := Dial(ctx)
-	if err != nil {
-		log.GaeLog(ctx).Error(err)
-		return
-	}
-	defer bot.Close()
-
-	if err := bot.NotifyReminder(text); err != nil {
+	if err := bot.NotifyMessage(text); err != nil {
 		log.GaeLog(ctx).Error(err)
 		return
 	}

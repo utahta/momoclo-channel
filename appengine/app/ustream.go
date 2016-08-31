@@ -60,7 +60,7 @@ func (u *UstreamNotification) Notify() *Error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			linebot.NotifyUstream(ctx)
+			linebot.NotifyMessage(ctx, "momocloTV が配信を開始しました")
 		}()
 
 		wg.Wait()

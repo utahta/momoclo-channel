@@ -91,30 +91,16 @@ func (c *Client) NotifyChannel(title string, item *crawler.ChannelItem) error {
 	})
 }
 
-func (c *Client) NotifyUstream() error {
-	req := &pb.NotifyMessageRequest{
-		Text: "momocloTV が配信を開始しました",
-	}
-	return c.notifyAll(func(ctx context.Context, to []string) error {
-		req.To = to
-		if _, err := c.LineBotClient.NotifyMessage(ctx, req); err != nil {
-			return errors.Wrap(err, "Failed to notify ustream.")
-		}
-		c.Log.Info("Notify ustream. count:%d", len(to))
-		return nil
-	})
-}
-
-func (c *Client) NotifyReminder(text string) error {
+func (c *Client) NotifyMessage(text string) error {
 	req := &pb.NotifyMessageRequest{
 		Text: text,
 	}
 	return c.notifyAll(func(ctx context.Context, to []string) error {
 		req.To = to
 		if _, err := c.LineBotClient.NotifyMessage(ctx, req); err != nil {
-			return errors.Wrap(err, "Failed to notify reminder.")
+			return errors.Wrap(err, "Failed to notify message.")
 		}
-		c.Log.Info("Notify reminder. count:%d", len(to))
+		c.Log.Info("Notify message. count:%d", len(to))
 		return nil
 	})
 }

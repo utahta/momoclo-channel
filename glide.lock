@@ -1,8 +1,8 @@
-hash: 3d536b9b8674abee7e6dc396ea88ac7a756c28e40cba11276397b72de915736e
-updated: 2016-08-20T21:24:10.948236118+09:00
+hash: 751be541bd90467a6ca0d71c7136ff15f6b12972286d8af169ad9c460ab09278
+updated: 2016-08-31T23:05:52.909322108+09:00
 imports:
 - name: github.com/andybalholm/cascadia
-  version: 3ad29d1ad1c4f2023e355603324348cf1f4b2d48
+  version: 27eb6e82a0c2e7b6399b5d0f0c2558005e13b754
 - name: github.com/azr/backoff
   version: 53511d3c733003985b0b76f733df1f4d0095ee6a
 - name: github.com/ChimeraCoder/anaconda
@@ -18,7 +18,7 @@ imports:
   subpackages:
   - oauth
 - name: github.com/golang/protobuf
-  version: c3cefd437628a0b7d31b34fe44b3a7a540e98527
+  version: 1f49d83d9aa00e6ce4fc8258c71cc7786aec968a
   subpackages:
   - proto
 - name: github.com/joho/godotenv
@@ -29,43 +29,49 @@ imports:
   version: 76f54ee73233b171ca9ee82ef837a1fc4d3809c0
 - name: github.com/kennygrant/sanitize
   version: ce9fd1f6ce32afaa38b51feea32320fc8875e8e4
+- name: github.com/line/line-bot-sdk-go
+  version: 8635ae812e60724b61ee9f0f9d9bf5c43a49f306
+  subpackages:
+  - linebot
 - name: github.com/mjibson/goon
   version: f99149e651e1f35d52dfbf8ac32aa87385d828fc
 - name: github.com/pkg/errors
-  version: a22138067af1c4942683050411a841ade67fe1eb
+  version: 17b591df37844cde689f4d5813e5cea0927d8dd2
 - name: github.com/PuerkitoBio/goquery
-  version: 7f4291566cf7cac3be222a933e01a2bed97532b1
+  version: 9043fe2599aa764f74ab233cf2fa983072a419cd
 - name: golang.org/x/net
-  version: 075e191f18186a8ff2becaf64478e30f4545cdad
+  version: 9bc2a3340c92c17a20edcd0080e93851ed58f5d5
   subpackages:
   - context
-  - html
   - http2
   - trace
-  - html/atom
+  - html
   - http2/hpack
   - lex/httplex
   - internal/timeseries
+  - html/atom
 - name: google.golang.org/appengine
-  version: b4728023490a62e70ba739ff62aa65ffcca84210
+  version: 4f7eeb5305a4ba1966344836ba4af9996b7b4e05
   subpackages:
   - log
   - taskqueue
-  - urlfetch
   - datastore
+  - urlfetch
+  - socket
   - internal
   - internal/app_identity
   - internal/modules
   - internal/datastore
   - internal/taskqueue
   - internal/urlfetch
+  - internal/socket
   - internal/log
+  - memcache
   - internal/base
   - internal/remote_api
-  - memcache
   - internal/memcache
 - name: google.golang.org/grpc
-  version: c2781963b3af261a37e0f14fdcb7c1fa13259e1f
+  version: 79b7c349179cdd6efd8bac4a1ce7f01b98c16e9b
   subpackages:
   - codes
   - credentials

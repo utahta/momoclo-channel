@@ -4,6 +4,7 @@ import:
 - package: github.com/jteeuwen/go-pkg-rss
 - package: github.com/kennygrant/sanitize
 - package: github.com/pkg/errors
+  version: ^0.7.0
 - package: google.golang.org/appengine
   subpackages:
   - log

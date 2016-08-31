@@ -2,16 +2,17 @@ package app
 
 import (
 	"net/http"
-	"time"
 	"os"
+	"regexp"
 	"strconv"
+	"time"
 
+	"github.com/line/line-bot-sdk-go/linebot"
+	mbot "github.com/utahta/momoclo-channel/appengine/lib/linebot"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
-	//mbot "github.com/utahta/momoclo-channel/appengine/lib/linebot"
+	"github.com/utahta/momoclo-channel/appengine/model"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
-	"github.com/line/line-bot-sdk-go/linebot"
-	"github.com/utahta/momoclo-channel/appengine/model"
 )
 
 type LinebotHandler struct {
@@ -57,9 +58,17 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 		}
 
 		if content.IsOperation && content.OpType == linebot.OpTypeAddedAsFriend {
-
+			err := h.appendUser(ctx, content)
+			if err != nil {
+				h.log.Error(err)
+				continue
+			}
 		} else if content.IsOperation && content.OpType == linebot.OpTypeBlocked {
-
+			err := h.deleteUser(ctx, content)
+			if err != nil {
+				h.log.Error(err)
+				continue
+			}
 		} else if content.IsMessage && content.ContentType == linebot.ContentTypeText {
 			text, err := content.TextContent()
 			if err != nil {
@@ -67,19 +76,57 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 				continue
 			}
 
-			h.log.Info(text.Text)
-
+			if err := h.parseText(ctx, text); err != nil {
+				h.log.Error(err)
+				continue
+			}
 		}
 	}
 	return nil
 }
 
-func (h *LinebotHandler) appendUser(ctx context.Context, text *linebot.ReceivedTextContent) error {
-	user := model.NewLineUser(text.From)
+func (h *LinebotHandler) appendUser(ctx context.Context, content *linebot.ReceivedContent) error {
+	user := model.NewLineUser(content.From)
 	user.Enabled = true
 	if err := user.Put(ctx); err != nil {
 		return err
 	}
+	mbot.NotifyMessage(ctx, "通知ノフ設定オンにしました（・Θ・）")
+	return nil
+}
+
+func (h *LinebotHandler) deleteUser(ctx context.Context, content *linebot.ReceivedContent) error {
+	user := model.NewLineUser(content.From)
+	user.Enabled = false
+	if err := user.Put(ctx); err != nil {
+		return err
+	}
+	mbot.NotifyMessage(ctx, "通知ノフ設定オフにしました（・Θ・）")
+	return nil
+}
+
+func (h *LinebotHandler) parseText(ctx context.Context, text *linebot.ReceivedTextContent) error {
+	var (
+		matched bool
+		err     error
+	)
+	matched, err = regexp.MatchString("^(おん|オン|on)$", text.Text)
+	if err != nil {
+		return err
+	}
+	if matched {
+		return h.appendUser(ctx, text.ReceivedContent)
+	}
+
+	matched, err = regexp.MatchString("^(おふ|オフ|off)$", text.Text)
+	if err != nil {
+		return err
+	}
+	if matched {
+		return h.deleteUser(ctx, text.ReceivedContent)
+	}
+
+	mbot.NotifyMessage(ctx, "?（・Θ・）?")
 	return nil
 }
 

@@ -52,7 +52,7 @@ func (r *ReminderNotification) Notify() *Error {
 		wg.Add(1)
 		go func(text string) {
 			defer wg.Done()
-			linebot.NotifyReminder(ctx, text)
+			linebot.NotifyMessage(ctx, text)
 		}(row.Text)
 
 		wg.Wait()

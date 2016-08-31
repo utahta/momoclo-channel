@@ -1,4 +1,4 @@
-.PHONY: install test build-prots serve deploy-dev deploy-prod
+.PHONY: install test build-protos serve-app deploy-app-dev deploy-app-prod
 
 install:
 	@glide install

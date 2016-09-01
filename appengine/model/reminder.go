@@ -98,9 +98,17 @@ func (r *ReminderQuery) GetAll() ([]*Reminder, error) {
 	q := datastore.NewQuery("Reminder").Filter("Enabled =", true)
 
 	var dst []*Reminder
-	_, err := q.GetAll(r.context, &dst)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to get all Reminders.")
+	for t := q.Run(r.context); ; {
+		var rd Reminder
+		k, err := t.Next(&rd)
+		if err == datastore.Done {
+			break
+		}
+		if err != nil {
+			return nil, errors.Wrap(err, "Failed to get all Reminders.")
+		}
+		rd.Id = k.IntID()
+		dst = append(dst, &rd)
 	}
 	return dst, nil
 }

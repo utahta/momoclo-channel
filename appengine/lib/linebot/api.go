@@ -33,3 +33,17 @@ func NotifyMessage(ctx context.Context, text string) {
 		return
 	}
 }
+
+func NotifyMessageTo(ctx context.Context, to []string, text string) {
+	bot, err := Dial(ctx)
+	if err != nil {
+		log.GaeLog(ctx).Error(err)
+		return
+	}
+	defer bot.Close()
+
+	if err := bot.NotifyMessageTo(to, text); err != nil {
+		log.GaeLog(ctx).Error(err)
+		return
+	}
+}

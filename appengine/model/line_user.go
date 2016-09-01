@@ -18,21 +18,31 @@ func NewLineUser(id string) *LineUser {
 	return &LineUser{Id: id, Enabled: true}
 }
 
+func (u *LineUser) Get(ctx context.Context) error {
+	g := goon.FromContext(ctx)
+	if err := g.Get(u); err != nil && err != datastore.ErrNoSuchEntity {
+		return err
+	}
+	return nil
+}
+
 func (u *LineUser) Put(ctx context.Context) error {
 	g := goon.FromContext(ctx)
 	return g.RunInTransaction(func(g *goon.Goon) error {
-		err := g.Get(u)
-		if err != nil && err != datastore.ErrNoSuchEntity {
+		tmp := NewLineUser(u.Id)
+		if err := g.Get(tmp); err != nil && err != datastore.ErrNoSuchEntity {
 			return err
 		}
 
-		jst, err := time.LoadLocation("Asia/Tokyo")
-		if err != nil {
-			return err
+		if u.CreatedAt.IsZero() {
+			jst, err := time.LoadLocation("Asia/Tokyo")
+			if err != nil {
+				return err
+			}
+			u.CreatedAt = time.Now().In(jst)
 		}
-		u.CreatedAt = time.Now().In(jst)
 
-		_, err = g.Put(u)
+		_, err := g.Put(u)
 		return err
 	}, nil)
 }

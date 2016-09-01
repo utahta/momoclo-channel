@@ -104,3 +104,15 @@ func (c *Client) NotifyMessage(text string) error {
 		return nil
 	})
 }
+
+func (c *Client) NotifyMessageTo(to []string, text string) error {
+	req := &pb.NotifyMessageRequest{
+		To: to,
+		Text: text,
+	}
+	if _, err := c.LineBotClient.NotifyMessage(c.context, req); err != nil {
+		return errors.Wrap(err, "Failed to notify message to.")
+	}
+	c.Log.Info("Notify message to. count:%d", len(to))
+	return nil
+}

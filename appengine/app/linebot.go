@@ -58,13 +58,13 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 		}
 
 		if content.IsOperation && content.OpType == linebot.OpTypeAddedAsFriend {
-			err := h.appendUser(ctx, content)
+			err := h.appendUser(ctx, content.From)
 			if err != nil {
 				h.log.Error(err)
 				continue
 			}
 		} else if content.IsOperation && content.OpType == linebot.OpTypeBlocked {
-			err := h.deleteUser(ctx, content)
+			err := h.deleteUser(ctx, content.From)
 			if err != nil {
 				h.log.Error(err)
 				continue
@@ -76,7 +76,7 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 				continue
 			}
 
-			if err := h.parseText(ctx, text); err != nil {
+			if err := h.handleText(ctx, text.From, text.Text); err != nil {
 				h.log.Error(err)
 				continue
 			}
@@ -85,48 +85,49 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 	return nil
 }
 
-func (h *LinebotHandler) appendUser(ctx context.Context, content *linebot.ReceivedContent) error {
-	user := model.NewLineUser(content.From)
+func (h *LinebotHandler) appendUser(ctx context.Context, from string) error {
+	user := model.NewLineUser(from)
 	user.Enabled = true
 	if err := user.Put(ctx); err != nil {
 		return err
 	}
-	mbot.NotifyMessage(ctx, "通知ノフ設定オンにしました（・Θ・）")
+	mbot.NotifyMessageTo(ctx, []string{user.Id}, "通知ノフ設定オンにしました（・Θ・）")
 	return nil
 }
 
-func (h *LinebotHandler) deleteUser(ctx context.Context, content *linebot.ReceivedContent) error {
-	user := model.NewLineUser(content.From)
+func (h *LinebotHandler) deleteUser(ctx context.Context, from string) error {
+	user := model.NewLineUser(from)
+	user.Get(ctx)
 	user.Enabled = false
 	if err := user.Put(ctx); err != nil {
 		return err
 	}
-	mbot.NotifyMessage(ctx, "通知ノフ設定オフにしました（・Θ・）")
+	mbot.NotifyMessageTo(ctx, []string{user.Id}, "通知ノフ設定オフにしました（・Θ・）")
 	return nil
 }
 
-func (h *LinebotHandler) parseText(ctx context.Context, text *linebot.ReceivedTextContent) error {
+func (h *LinebotHandler) handleText(ctx context.Context, from, text string) error {
 	var (
 		matched bool
 		err     error
 	)
-	matched, err = regexp.MatchString("^(おん|オン|on)$", text.Text)
+	matched, err = regexp.MatchString("^(おん|オン|on)$", text)
 	if err != nil {
 		return err
 	}
 	if matched {
-		return h.appendUser(ctx, text.ReceivedContent)
+		return h.appendUser(ctx, from)
 	}
 
-	matched, err = regexp.MatchString("^(おふ|オフ|off)$", text.Text)
+	matched, err = regexp.MatchString("^(おふ|オフ|off)$", text)
 	if err != nil {
 		return err
 	}
 	if matched {
-		return h.deleteUser(ctx, text.ReceivedContent)
+		return h.deleteUser(ctx, from)
 	}
 
-	mbot.NotifyMessage(ctx, "?（・Θ・）?")
+	mbot.NotifyMessageTo(ctx, []string{from}, "?（・Θ・）?")
 	return nil
 }
 

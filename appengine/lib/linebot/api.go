@@ -44,3 +44,16 @@ func NotifyMessageTo(ctx context.Context, to []string, text string) {
 		return
 	}
 }
+
+func NotifyImageTo(ctx context.Context, to []string, url, thumbnailLink string) {
+	bot, err := NewClient(ctx)
+	if err != nil {
+		log.GaeLog(ctx).Error(err)
+		return
+	}
+
+	if err := bot.NotifyImageTo(to, url, thumbnailLink); err != nil {
+		log.GaeLog(ctx).Error(err)
+		return
+	}
+}

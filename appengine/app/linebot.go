@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/utahta/momoclo-channel/appengine/lib/googleapi/customsearch"
 	mbot "github.com/utahta/momoclo-channel/appengine/lib/linebot"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
@@ -106,26 +107,93 @@ func (h *LinebotHandler) deleteUser(ctx context.Context, from string) error {
 }
 
 func (h *LinebotHandler) handleText(ctx context.Context, from, text string) error {
+	if ok, err := h.handleOnOff(ctx, from, text); ok || err != nil {
+		return err
+	}
+
+	if ok, err := h.handleMemberImage(ctx, from, text); ok || err != nil {
+		return err
+	}
+
+	mbot.NotifyMessageTo(ctx, []string{from}, "?（・Θ・）?")
+	return nil
+}
+
+func (h *LinebotHandler) handleOnOff(ctx context.Context, from, text string) (bool, error) {
 	var (
 		matched bool
 		err     error
 	)
 	matched, err = regexp.MatchString("^(おん|オン|on)$", text)
 	if err != nil {
-		return err
+		return false, err
 	}
 	if matched {
-		return h.appendUser(ctx, from)
+		return true, h.appendUser(ctx, from)
 	}
 
 	matched, err = regexp.MatchString("^(おふ|オフ|off)$", text)
 	if err != nil {
-		return err
+		return false, err
 	}
 	if matched {
-		return h.deleteUser(ctx, from)
+		return true, h.deleteUser(ctx, from)
 	}
 
-	mbot.NotifyMessageTo(ctx, []string{from}, "?（・Θ・）?")
-	return nil
+	return false, nil
+}
+
+func (h *LinebotHandler) handleMemberImage(ctx context.Context, from, text string) (bool, error) {
+	var (
+		matched bool
+		err     error
+	)
+	word := ""
+	matched, err = regexp.MatchString("玉井|[たタ][まマ][いイ]|[しシ][おオ][りリ][んン]?|詩織|玉さん|[たタ][まマ]さん", text)
+	if err != nil {
+		return false, err
+	}
+	if matched {
+		word = "玉井詩織"
+	}
+	matched, err = regexp.MatchString("百田|[もモ][もモ][たタ]|[夏かカ][菜なナ][子こコ]", text)
+	if err != nil {
+		return false, err
+	}
+	if matched {
+		word = "百田夏菜子"
+	}
+	matched, err = regexp.MatchString("有安|[あア][りリ][やヤ][すス]|[もモ][もモ][かカ]|杏果", text)
+	if err != nil {
+		return false, err
+	}
+	if matched {
+		word = "有安杏果"
+	}
+	matched, err = regexp.MatchString("佐々木|[さサ][さサ][きキ]|[あア][やヤ][かカ]|彩夏|[あア]ー[りリ][んン]", text)
+	if err != nil {
+		return false, err
+	}
+	if matched {
+		word = "佐々木彩夏"
+	}
+	matched, err = regexp.MatchString("高城|[たタ][かカ][ぎギ]|[れレ][にニ]", text)
+	if err != nil {
+		return false, err
+	}
+	if matched {
+		word = "高城れに"
+	}
+
+	if word == "" {
+		return false, nil
+	}
+
+	res, err := customsearch.SearchImage(ctx, word)
+	if err != nil {
+		return false, err
+	}
+
+	mbot.NotifyImageTo(ctx, []string{from}, res.Url, res.ThumbnailUrl)
+	return true, nil
 }

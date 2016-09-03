@@ -95,3 +95,11 @@ func (c *Client) NotifyMessageTo(to []string, text string) error {
 	c.Log.Infof("Notify message to. count:%d", len(to))
 	return nil
 }
+
+func (c *Client) NotifyImageTo(to []string, url, thumbnailUrl string) error {
+	if _, err := c.LineBotClient.SendImage(to, url, thumbnailUrl); err != nil {
+		return errors.Wrap(err, "Failed to notify image to.")
+	}
+	c.Log.Infof("Notify image to. count:%d", len(to))
+	return nil
+}

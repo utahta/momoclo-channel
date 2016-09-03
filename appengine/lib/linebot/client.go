@@ -100,7 +100,7 @@ func (c *Client) NotifyMessage(text string) error {
 		if _, err := c.LineBotClient.NotifyMessage(ctx, req); err != nil {
 			return errors.Wrap(err, "Failed to notify message.")
 		}
-		c.Log.Info("Notify message. count:%d", len(to))
+		c.Log.Infof("Notify message. count:%d", len(to))
 		return nil
 	})
 }
@@ -113,6 +113,6 @@ func (c *Client) NotifyMessageTo(to []string, text string) error {
 	if _, err := c.LineBotClient.NotifyMessage(c.context, req); err != nil {
 		return errors.Wrap(err, "Failed to notify message to.")
 	}
-	c.Log.Info("Notify message to. count:%d", len(to))
+	c.Log.Infof("Notify message to. count:%d", len(to))
 	return nil
 }

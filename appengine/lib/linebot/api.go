@@ -7,12 +7,11 @@ import (
 )
 
 func NotifyChannel(ctx context.Context, title string, item *crawler.ChannelItem) {
-	bot, err := Dial(ctx)
+	bot, err := NewClient(ctx)
 	if err != nil {
 		log.GaeLog(ctx).Error(err)
 		return
 	}
-	defer bot.Close()
 
 	if err := bot.NotifyChannel(title, item); err != nil {
 		log.GaeLog(ctx).Error(err)
@@ -21,12 +20,11 @@ func NotifyChannel(ctx context.Context, title string, item *crawler.ChannelItem)
 }
 
 func NotifyMessage(ctx context.Context, text string) {
-	bot, err := Dial(ctx)
+	bot, err := NewClient(ctx)
 	if err != nil {
 		log.GaeLog(ctx).Error(err)
 		return
 	}
-	defer bot.Close()
 
 	if err := bot.NotifyMessage(text); err != nil {
 		log.GaeLog(ctx).Error(err)
@@ -35,12 +33,11 @@ func NotifyMessage(ctx context.Context, text string) {
 }
 
 func NotifyMessageTo(ctx context.Context, to []string, text string) {
-	bot, err := Dial(ctx)
+	bot, err := NewClient(ctx)
 	if err != nil {
 		log.GaeLog(ctx).Error(err)
 		return
 	}
-	defer bot.Close()
 
 	if err := bot.NotifyMessageTo(to, text); err != nil {
 		log.GaeLog(ctx).Error(err)

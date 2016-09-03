@@ -2,9 +2,7 @@ package app
 
 import (
 	"net/http"
-	"os"
 	"regexp"
-	"strconv"
 	"time"
 
 	"github.com/line/line-bot-sdk-go/linebot"
@@ -37,10 +35,11 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
 	defer cancel()
 
-	bot, err := h.newBotClient()
+	client, err := mbot.NewClient(ctx)
 	if err != nil {
 		return newError(err, http.StatusInternalServerError)
 	}
+	bot := client.LineBotClient
 
 	received, err := bot.ParseRequest(req)
 	if err != nil {
@@ -129,17 +128,4 @@ func (h *LinebotHandler) handleText(ctx context.Context, from, text string) erro
 
 	mbot.NotifyMessageTo(ctx, []string{from}, "?（・Θ・）?")
 	return nil
-}
-
-func (h *LinebotHandler) newBotClient() (*linebot.Client, error) {
-	var (
-		channelID     int64
-		channelSecret = os.Getenv("LINEBOT_CHANNEL_SECRET")
-		channelMID    = os.Getenv("LINEBOT_CHANNEL_MID")
-	)
-	channelID, err := strconv.ParseInt(os.Getenv("LINEBOT_CHANNEL_ID"), 10, 64)
-	if err != nil {
-		return nil, err
-	}
-	return linebot.NewClient(channelID, channelSecret, channelMID)
 }

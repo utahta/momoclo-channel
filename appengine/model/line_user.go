@@ -12,6 +12,7 @@ type LineUser struct {
 	Id        string `datastore:"-" goon:"id"`
 	Enabled   bool
 	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func NewLineUser(id string) *LineUser {
@@ -34,15 +35,17 @@ func (u *LineUser) Put(ctx context.Context) error {
 			return err
 		}
 
-		if u.CreatedAt.IsZero() {
-			jst, err := time.LoadLocation("Asia/Tokyo")
-			if err != nil {
-				return err
-			}
-			u.CreatedAt = time.Now().In(jst)
+		jst, err := time.LoadLocation("Asia/Tokyo")
+		now := time.Now().In(jst)
+		if err != nil {
+			return err
 		}
+		if u.CreatedAt.IsZero() {
+			u.CreatedAt = now
+		}
+		u.UpdatedAt = now
 
-		_, err := g.Put(u)
+		_, err = g.Put(u)
 		return err
 	}, nil)
 }

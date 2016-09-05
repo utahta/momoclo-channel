@@ -1,5 +1,8 @@
 # momoclo-channel
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/utahta/momoclo-channel)](https://goreportcard.com/report/github.com/utahta/momoclo-channel)
+[![Build Status](https://travis-ci.org/utahta/momoclo-channel.svg?branch=master)](https://travis-ci.org/utahta/momoclo-channel)
+
 Momoiro Clover Z Information Notification on GAE/Go
 
 - Twitter [@botnofu](https://twitter.com/botnofu)

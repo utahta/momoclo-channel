@@ -37,7 +37,6 @@ func (p *youtubeChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 
 	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 	items := []*ChannelItem{}
-	err = nil
 	for _, ch := range feed.Channels {
 		for _, item := range ch.Items {
 			url := item.Links[0].Href

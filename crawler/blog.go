@@ -126,7 +126,8 @@ func (p *blogChannelParser) parseList(r io.Reader) ([]*ChannelItem, error) {
 			return false
 		}
 
-		publishedAt, err := time.ParseInLocation(
+		var publishedAt time.Time
+		publishedAt, err = time.ParseInLocation(
 			"2006-01-02 15:04:05",
 			strings.TrimSpace(strings.Replace(s.Find("[amb-component='entryItemDatetime']").Text(), "NEW!", "", 1)),
 			loc,
@@ -168,7 +169,8 @@ func (p *blogChannelParser) parseImages(doc *goquery.Document) (images []*Channe
 			return true
 		}
 
-		matched, err := regexp.MatchString("^http://stat.ameba.jp/.*", src)
+		var matched bool
+		matched, err = regexp.MatchString("^http://stat.ameba.jp/.*", src)
 		if err != nil {
 			err = errors.Wrapf(err, "Failed to regexp match string. src:%s", src)
 			return false
@@ -188,7 +190,8 @@ func (p *blogChannelParser) parseVideos(doc *goquery.Document) (videos []*Channe
 			return true
 		}
 
-		matched, err := regexp.MatchString("^http://static.blog-video.jp/.*", src)
+		var matched bool
+		matched, err = regexp.MatchString("^http://static.blog-video.jp/.*", src)
 		if err != nil {
 			err = errors.Wrapf(err, "Failed to regexp match string. src:%s", src)
 			return false
@@ -197,7 +200,8 @@ func (p *blogChannelParser) parseVideos(doc *goquery.Document) (videos []*Channe
 			return true
 		}
 
-		u, err := url.Parse(src)
+		var u *url.URL
+		u, err = url.Parse(src)
 		if err != nil {
 			err = errors.Wrapf(err, "Failed to parse url. src:%s", src)
 			return false

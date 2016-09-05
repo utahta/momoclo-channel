@@ -39,7 +39,8 @@ func (p *aeNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 	items := []*ChannelItem{}
 	err = nil
 	doc.Find("[class='schedule'] > [class='article']").EachWithBreak(func(i int, s *goquery.Selection) bool {
-		publishedAt, err := time.ParseInLocation(
+		var publishedAt time.Time
+		publishedAt, err = time.ParseInLocation(
 			"2006/01/02",
 			strings.TrimSpace(fmt.Sprintf("%s/%s", s.Find("[class='year clearfix']").Text(), s.Find("[class='date clearfix']").Text())),
 			loc,
@@ -56,7 +57,8 @@ func (p *aeNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
 			return false
 		}
 
-		u, err := url.Parse(c.Url)
+		var u *url.URL
+		u, err = url.Parse(c.Url)
 		if err != nil {
 			err = errors.Wrapf(err, "Failed to parse url. url:%s", c.Url)
 			return false

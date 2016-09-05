@@ -58,14 +58,14 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 		}
 
 		if content.IsOperation && content.OpType == linebot.OpTypeAddedAsFriend {
-			h.log.Info("append user. from:%s", content.From)
+			h.log.Infof("append user. from:%s", content.From)
 			err := h.appendUser(ctx, content.From)
 			if err != nil {
 				h.log.Error(err)
 				continue
 			}
 		} else if content.IsOperation && content.OpType == linebot.OpTypeBlocked {
-			h.log.Info("delete user. from:%s", content.From)
+			h.log.Infof("delete user. from:%s", content.From)
 			err := h.deleteUser(ctx, content.From)
 			if err != nil {
 				h.log.Error(err)
@@ -77,7 +77,7 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 				h.log.Error(err)
 				continue
 			}
-			h.log.Info("handle text. from:%s text:%s ", text.From, text.Text)
+			h.log.Infof("handle text. from:%s text:%s ", text.From, text.Text)
 
 			if err := h.handleText(ctx, text.From, text.Text); err != nil {
 				h.log.Error(err)

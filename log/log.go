@@ -41,22 +41,22 @@ func NewSilentLogger() Logger {
 	return &silentLogger{}
 }
 
-func (_ silentLogger) Fatal(_ ...interface{})               {}
-func (_ silentLogger) Fatalf(_ string, _ ...interface{})    {}
-func (_ silentLogger) Panic(_ ...interface{})               {}
-func (_ silentLogger) Panicf(_ string, _ ...interface{})    {}
-func (_ silentLogger) Critical(_ ...interface{})            {}
-func (_ silentLogger) Criticalf(_ string, _ ...interface{}) {}
-func (_ silentLogger) Error(_ ...interface{})               {}
-func (_ silentLogger) Errorf(_ string, _ ...interface{})    {}
-func (_ silentLogger) Warning(_ ...interface{})             {}
-func (_ silentLogger) Warningf(_ string, _ ...interface{})  {}
-func (_ silentLogger) Notice(_ ...interface{})              {}
-func (_ silentLogger) Noticef(_ string, _ ...interface{})   {}
-func (_ silentLogger) Info(_ ...interface{})                {}
-func (_ silentLogger) Infof(_ string, _ ...interface{})     {}
-func (_ silentLogger) Debug(_ ...interface{})               {}
-func (_ silentLogger) Debugf(_ string, _ ...interface{})    {}
+func (l silentLogger) Fatal(_ ...interface{})               {}
+func (l silentLogger) Fatalf(_ string, _ ...interface{})    {}
+func (l silentLogger) Panic(_ ...interface{})               {}
+func (l silentLogger) Panicf(_ string, _ ...interface{})    {}
+func (l silentLogger) Critical(_ ...interface{})            {}
+func (l silentLogger) Criticalf(_ string, _ ...interface{}) {}
+func (l silentLogger) Error(_ ...interface{})               {}
+func (l silentLogger) Errorf(_ string, _ ...interface{})    {}
+func (l silentLogger) Warning(_ ...interface{})             {}
+func (l silentLogger) Warningf(_ string, _ ...interface{})  {}
+func (l silentLogger) Notice(_ ...interface{})              {}
+func (l silentLogger) Noticef(_ string, _ ...interface{})   {}
+func (l silentLogger) Info(_ ...interface{})                {}
+func (l silentLogger) Infof(_ string, _ ...interface{})     {}
+func (l silentLogger) Debug(_ ...interface{})               {}
+func (l silentLogger) Debugf(_ string, _ ...interface{})    {}
 
 type logger struct {
 	log *log.Logger

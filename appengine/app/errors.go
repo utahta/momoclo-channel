@@ -21,5 +21,5 @@ func (e *Error) Handle(ctx context.Context, w http.ResponseWriter) {
 		return
 	}
 	http.Error(w, e.Error.Error(), e.Code)
-	log.GaeLog(ctx).Errorf("error:%v code:%d", e.Error, e.Code)
+	log.GaeLog(ctx).Errorf("error:%+v code:%d", e.Error, e.Code)
 }

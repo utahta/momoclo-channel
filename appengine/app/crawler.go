@@ -43,13 +43,13 @@ func (c *Crawler) Crawl() *Error {
 
 			ch, err := cli.Fetch()
 			if err != nil {
-				c.log.Errorf("Failed to fetch. error:%v", err)
+				c.log.Errorf("Failed to fetch. error:%+v", err)
 				return
 			}
 
 			bin, err := json.Marshal(ch)
 			if err != nil {
-				c.log.Errorf("Failed to encode to json. error:%v", err)
+				c.log.Errorf("Failed to encode to json. error:%+v", err)
 				return
 			}
 			params := url.Values{"channel": {string(bin)}}
@@ -67,7 +67,7 @@ func (c *Crawler) pushTweetQueue(ctx context.Context, params url.Values) {
 	task := taskqueue.NewPOSTTask("/queue/tweet", params)
 	_, err := taskqueue.Add(ctx, task, "queue-tweet")
 	if err != nil {
-		c.log.Errorf("Failed to add taskqueue for tweet. error:%v", err)
+		c.log.Errorf("Failed to add taskqueue for tweet. error:%+v", err)
 	}
 }
 
@@ -75,7 +75,7 @@ func (c *Crawler) pushLineQueue(ctx context.Context, params url.Values) {
 	task := taskqueue.NewPOSTTask("/queue/line", params)
 	_, err := taskqueue.Add(ctx, task, "queue-line")
 	if err != nil {
-		c.log.Errorf("Failed to add taskqueue for line. error:%v", err)
+		c.log.Errorf("Failed to add taskqueue for line. error:%+v", err)
 	}
 }
 

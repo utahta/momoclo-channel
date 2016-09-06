@@ -33,25 +33,25 @@ func GaeLog(ctx context.Context) mlog.Logger {
 }
 
 func (l gaeLogger) Fatal(args ...interface{}) {
-	log.Fatal(fmt.Sprintf("FATAL: %s", args...))
+	log.Fatal(fmt.Sprintf("FATAL: %+v", args...))
 }
 func (l gaeLogger) Fatalf(format string, args ...interface{}) {
 	log.Fatalf("FATAL: %s", fmt.Sprintf(format, args...))
 }
 func (l gaeLogger) Panic(args ...interface{}) {
-	log.Panic(fmt.Sprintf("PANIC: %s", args...))
+	log.Panic(fmt.Sprintf("PANIC: %+v", args...))
 }
 func (l gaeLogger) Panicf(format string, args ...interface{}) {
 	log.Panicf("PANIC: %s", fmt.Sprintf(format, args...))
 }
 func (l gaeLogger) Critical(args ...interface{}) {
-	glog.Criticalf(l.context, "%s", fmt.Sprint(args...))
+	glog.Criticalf(l.context, "%+v", fmt.Sprint(args...))
 }
 func (l gaeLogger) Criticalf(format string, args ...interface{}) {
 	glog.Criticalf(l.context, format, args...)
 }
 func (l gaeLogger) Error(args ...interface{}) {
-	glog.Errorf(l.context, "%s", fmt.Sprint(args...))
+	glog.Errorf(l.context, "%+v", fmt.Sprint(args...))
 }
 func (l gaeLogger) Errorf(format string, args ...interface{}) {
 	glog.Errorf(l.context, format, args...)

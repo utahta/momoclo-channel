@@ -77,12 +77,23 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 				h.log.Error(err)
 				continue
 			}
-			h.log.Infof("handle text. from:%s text:%s ", text.From, text.Text)
+			h.log.Infof("handle text content. from:%s text:%s ", text.From, text.Text)
 
-			if err := h.handleText(ctx, text.From, text.Text); err != nil {
-				h.log.Error(err)
+			if ok, err := h.handleOnOff(ctx, text.From, text.Text); ok || err != nil {
+				if err != nil {
+					h.log.Error(err)
+				}
 				continue
 			}
+
+			if ok, err := h.handleMemberImage(ctx, text.From, text.Text); ok || err != nil {
+				if err != nil {
+					h.log.Error(err)
+				}
+				continue
+			}
+
+			mbot.NotifyMessageTo(ctx, []string{text.From}, "?（・Θ・）?")
 		}
 	}
 	return nil
@@ -106,19 +117,6 @@ func (h *LinebotHandler) deleteUser(ctx context.Context, from string) error {
 		return err
 	}
 	mbot.NotifyMessageTo(ctx, []string{user.Id}, "通知ノフ設定オフにしました（・Θ・）")
-	return nil
-}
-
-func (h *LinebotHandler) handleText(ctx context.Context, from, text string) error {
-	if ok, err := h.handleOnOff(ctx, from, text); ok || err != nil {
-		return err
-	}
-
-	if ok, err := h.handleMemberImage(ctx, from, text); ok || err != nil {
-		return err
-	}
-
-	mbot.NotifyMessageTo(ctx, []string{from}, "?（・Θ・）?")
 	return nil
 }
 

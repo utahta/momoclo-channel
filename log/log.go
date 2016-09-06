@@ -83,25 +83,25 @@ func Basic() Logger {
 }
 
 func (l logger) Fatal(args ...interface{}) {
-	l.log.Fatal(fmt.Sprintf("FATAL: %s", args...))
+	l.log.Fatal(fmt.Sprintf("FATAL: %+v", args...))
 }
 func (l logger) Fatalf(format string, args ...interface{}) {
 	l.log.Fatalf("FATAL: %s", fmt.Sprintf(format, args...))
 }
 func (l logger) Panic(args ...interface{}) {
-	l.log.Panic(fmt.Sprintf("PANIC: %s", args...))
+	l.log.Panic(fmt.Sprintf("PANIC: %+v", args...))
 }
 func (l logger) Panicf(format string, args ...interface{}) {
 	l.log.Panicf("PANIC: %s", fmt.Sprintf(format, args...))
 }
 func (l logger) Critical(args ...interface{}) {
-	l.log.Print(fmt.Sprintf("CRIT: %s", args...))
+	l.log.Print(fmt.Sprintf("CRIT: %+v", args...))
 }
 func (l logger) Criticalf(format string, args ...interface{}) {
 	l.log.Printf("CRIT: %s", fmt.Sprintf(format, args...))
 }
 func (l logger) Error(args ...interface{}) {
-	l.log.Print(fmt.Sprintf("ERROR: %s", args...))
+	l.log.Print(fmt.Sprintf("ERROR: %+v", args...))
 }
 func (l logger) Errorf(format string, args ...interface{}) {
 	l.log.Printf("ERROR: %s", fmt.Sprintf(format, args...))

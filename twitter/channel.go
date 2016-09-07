@@ -87,10 +87,10 @@ func (t *ChannelClient) TweetItem(title string, item *crawler.ChannelItem) error
 }
 
 func (t *ChannelClient) truncateText(channelTitle string, item *crawler.ChannelItem) string {
-	const maxTweetTextLen = 101 // ハッシュタグや url を除いて投稿可能な文字数
+	const maxTweetTextLen = 77 // ハッシュタグや URL や画像を除いて投稿可能な文字数
 
 	title := []rune(fmt.Sprintf("%s %s", channelTitle, item.Title))
-	if len(title) > maxTweetTextLen {
+	if len(title) >= maxTweetTextLen {
 		title = append(title[0:maxTweetTextLen-3], []rune("...")...)
 	}
 	return fmt.Sprintf("%s %s #momoclo #ももクロ", string(title), item.Url)

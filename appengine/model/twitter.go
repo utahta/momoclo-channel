@@ -35,13 +35,16 @@ func (ti *TweetItem) Put(ctx context.Context) error {
 	g := goon.FromContext(ctx)
 
 	// check for cached item
-	if g.Get(ti) == nil {
+	err := g.Get(ti)
+	if err == nil {
 		return errors.Errorf("TweetItem already exists.")
+	} else if err != datastore.ErrNoSuchEntity {
+		return err
 	}
 
 	return g.RunInTransaction(func(g *goon.Goon) error {
 		err := g.Get(ti)
-		if err != nil && err != datastore.ErrNoSuchEntity {
+		if err != datastore.ErrNoSuchEntity {
 			return err
 		}
 

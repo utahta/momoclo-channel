@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on momoclo-channel</title>
+    <link>https://utahta.github.io/momoclo-channel/post/</link>
+    <description>Recent content in Posts on momoclo-channel</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; &lt;a href=&#34;https://github.com/utahta&#34;&gt;utahta&lt;/a&gt; 2016</copyright>
+    <lastBuildDate>Sat, 24 Sep 2016 17:41:32 +0900</lastBuildDate>
+    <atom:link href="https://utahta.github.io/momoclo-channel/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>LINE BOT</title>
+      <link>https://utahta.github.io/momoclo-channel/post/linebot/</link>
+      <pubDate>Sat, 24 Sep 2016 17:41:32 +0900</pubDate>
+      
+      <guid>https://utahta.github.io/momoclo-channel/post/linebot/</guid>
+      <description>
+
+&lt;h2 id=&#34;機能&#34;&gt;機能&lt;/h2&gt;
+
+&lt;p&gt;下記の更新情報を通知します。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ももクロちゃんたちのブログ&lt;/li&gt;
+&lt;li&gt;AEニュース&lt;/li&gt;
+&lt;li&gt;ニュータイプ放送局&lt;/li&gt;
+&lt;li&gt;momocloTV の配信&lt;/li&gt;
+&lt;li&gt;ラジオ等のリマインダー（10分前）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;コマンドを入力するおまけ機能もあります。&lt;/p&gt;
+
+&lt;h2 id=&#34;コマンド&#34;&gt;コマンド&lt;/h2&gt;
+
+&lt;h3 id=&#34;おん&#34;&gt;おん&lt;/h3&gt;
+
+&lt;p&gt;通知設定を有効にします。&lt;/p&gt;
+
+&lt;h3 id=&#34;おふ&#34;&gt;おふ&lt;/h3&gt;
+
+&lt;p&gt;通知設定を無効にします。&lt;/p&gt;
+
+&lt;h3 id=&#34;メンバーの名前&#34;&gt;メンバーの名前&lt;/h3&gt;
+
+&lt;p&gt;それぞれメンバーの画像が返ります。
+例えば、かなこちゃんと送ると百田夏菜子さんの画像が返ってきます。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;止めたいとき&#34;&gt;止めたいとき&lt;/h2&gt;
+
+&lt;p&gt;LINE BOT をブロックしてください。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

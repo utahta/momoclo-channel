@@ -1,0 +1,23 @@
+baseurl = "https://utahta.github.io/momoclo-channel/"
+languageCode = "en-us"
+title = "momoclo-channel"
+theme = "hemingway"
+copyright = "&copy; <a href=\"https://github.com/utahta\">utahta</a> 2016"
+
+[params]
+
+[params.highlight]
+style = "github"
+languages = ["go", "dockerfile"]
+
+[[params.social]]
+url = "https://github.com/utahta"
+fa_icon = "fa-github"
+
+[[params.social]]
+url = "https://twitter.com/utahta"
+fa_icon = "fa-twitter"
+
+[[params.social]]
+url = "/index.xml"
+fa_icon = "fa-rss"

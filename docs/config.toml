@@ -1,11 +1,35 @@
 baseurl = "https://utahta.github.io/momoclo-channel/"
 languageCode = "en-us"
 title = "momoclo-channel"
-copyright = "&copy; <a href=\"https://github.com/utahta\">utahta</a> 2016"
-theme = "slim"
 
 [params]
-  GithubID = "utahta"
-  TwitterID = "utahta"
-  Summary = false
-  Content = true
+    author = "utahta"
+
+    version = ""
+    logo = ""
+    favicon = ""
+
+    permalink = "#"
+
+    custom_css = []
+    custom_js  = []
+
+    highlight_css  = ""
+
+    [params.palette]
+        primary = "red"
+        accent  = "light-green"
+
+    [social]
+        twitter = "utahta"
+        github  = "utahta"
+
+[[menu.main]]
+	name   = ""
+	url    = "/"
+	weight = 0
+
+[[menu.main]]
+	name   = "LINE BOT"
+	url    = "linebot/"
+	weight = 10

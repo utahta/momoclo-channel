@@ -58,51 +58,38 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 		}
 
 		if content.IsOperation {
-			opContent, err := content.OperationContent()
-			if err != nil {
+			if err := h.handleOperation(ctx, content); err != nil {
 				h.log.Error(err)
 				continue
-			}
-			from := opContent.Params[0]
-
-			if content.OpType == linebot.OpTypeAddedAsFriend {
-				h.log.Infof("append user. from:%s", from)
-				err := h.appendUser(ctx, from)
-				if err != nil {
-					h.log.Error(err)
-					continue
-				}
-			} else if content.OpType == linebot.OpTypeBlocked {
-				h.log.Infof("delete user. from:%s", from)
-				err := h.deleteUser(ctx, from)
-				if err != nil {
-					h.log.Error(err)
-					continue
-				}
 			}
 		} else if content.IsMessage && content.ContentType == linebot.ContentTypeText {
-			text, err := content.TextContent()
-			if err != nil {
+			if err := h.handleTextMessage(ctx, content); err != nil {
 				h.log.Error(err)
 				continue
 			}
-			h.log.Infof("handle text content. from:%s text:%s ", text.From, text.Text)
+		}
+	}
+	return nil
+}
 
-			if ok, err := h.handleOnOff(ctx, text.From, text.Text); ok || err != nil {
-				if err != nil {
-					h.log.Error(err)
-				}
-				continue
-			}
+func (h *LinebotHandler) handleOperation(ctx context.Context, content *linebot.ReceivedContent) error {
+	opContent, err := content.OperationContent()
+	if err != nil {
+		return err
+	}
+	from := opContent.Params[0]
 
-			if ok, err := h.handleMemberImage(ctx, text.From, text.Text); ok || err != nil {
-				if err != nil {
-					h.log.Error(err)
-				}
-				continue
-			}
-
-			mbot.NotifyMessageTo(ctx, []string{text.From}, "?（・Θ・）?")
+	if content.OpType == linebot.OpTypeAddedAsFriend {
+		h.log.Infof("append user. from:%s", from)
+		err := h.appendUser(ctx, from)
+		if err != nil {
+			return err
+		}
+	} else if content.OpType == linebot.OpTypeBlocked {
+		h.log.Infof("delete user. from:%s", from)
+		err := h.deleteUser(ctx, from)
+		if err != nil {
+			return err
 		}
 	}
 	return nil
@@ -126,6 +113,25 @@ func (h *LinebotHandler) deleteUser(ctx context.Context, from string) error {
 		return err
 	}
 	mbot.NotifyMessageTo(ctx, []string{user.Id}, "通知ノフ設定オフにしました（・Θ・）")
+	return nil
+}
+
+func (h *LinebotHandler) handleTextMessage(ctx context.Context, content *linebot.ReceivedContent) error {
+	text, err := content.TextContent()
+	if err != nil {
+		return err
+	}
+	h.log.Infof("handle text content. from:%s text:%s ", text.From, text.Text)
+
+	if ok, err := h.handleOnOff(ctx, text.From, text.Text); ok || err != nil {
+		return err
+	}
+
+	if ok, err := h.handleMemberImage(ctx, text.From, text.Text); ok || err != nil {
+		return err
+	}
+
+	mbot.NotifyMessageTo(ctx, []string{text.From}, "?（・Θ・）?\nヘルプ\nhttps://utahta.github.io/momoclo-channel/linebot/")
 	return nil
 }
 

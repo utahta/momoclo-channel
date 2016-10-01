@@ -33,3 +33,10 @@ handlers:
 
 - url: /linebot/callback
   script: _go_app
+
+- url: /linenotify/on
+  script: _go_app
+- url: /linenotify/off
+  script: _go_app
+- url: /linenotify/callback
+  script: _go_app

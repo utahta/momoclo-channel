@@ -2,9 +2,11 @@ package app
 
 import (
 	"net/http"
+	"net/url"
 	"regexp"
 	"time"
 
+	"fmt"
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/utahta/momoclo-channel/appengine/lib/googleapi/customsearch"
 	mbot "github.com/utahta/momoclo-channel/appengine/lib/linebot"
@@ -15,11 +17,13 @@ import (
 
 type LinebotHandler struct {
 	log log.Logger
+	req *http.Request
 }
 
 func (h *LinebotHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	h.log = log.NewGaeLogger(ctx)
+	h.req = r
 	var err *Error
 
 	switch r.URL.Path {
@@ -76,12 +80,19 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 
 func (h *LinebotHandler) followUser(ctx context.Context, event *linebot.Event) error {
 	h.log.Infof("follow user. event:%v", event)
-	return mbot.ReplyText(ctx, event.ReplyToken, "通知ノフ設定オンにしました（・Θ・）")
+
+	url, err := url.Parse(h.req.URL.String())
+	if err != nil {
+		return err
+	}
+	url.Path = "/linenotify/on"
+
+	return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("下記URLから通知設定を有効にしてください（・Θ・）\n%s", url.String()))
 }
 
 func (h *LinebotHandler) unfollowUser(ctx context.Context, event *linebot.Event) error {
 	h.log.Infof("unfollow user. event:%v", event)
-	return mbot.ReplyText(ctx, event.ReplyToken, "通知ノフ設定オフにしました（・Θ・）")
+	return mbot.ReplyText(ctx, event.ReplyToken, "下記URLから通知設定を解除してください（・Θ・）\nhttps://notify-bot.line.me/my/")
 }
 
 func (h *LinebotHandler) handleTextMessage(ctx context.Context, message *linebot.TextMessage, event *linebot.Event) error {

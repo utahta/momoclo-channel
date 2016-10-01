@@ -1,8 +1,8 @@
 hash: 751be541bd90467a6ca0d71c7136ff15f6b12972286d8af169ad9c460ab09278
-updated: 2016-09-20T10:36:54.560167237+09:00
+updated: 2016-10-01T11:32:22.857915857+09:00
 imports:
 - name: github.com/andybalholm/cascadia
-  version: 27eb6e82a0c2e7b6399b5d0f0c2558005e13b754
+  version: 1c31af6f6c1a7b101ed05aacc7d8a738b43ae86e
 - name: github.com/azr/backoff
   version: 53511d3c733003985b0b76f733df1f4d0095ee6a
 - name: github.com/ChimeraCoder/anaconda
@@ -18,7 +18,7 @@ imports:
   subpackages:
   - oauth
 - name: github.com/golang/protobuf
-  version: 1f49d83d9aa00e6ce4fc8258c71cc7786aec968a
+  version: df1d3ca07d2d07bba352d5b73c4313b4e2a6203e
   subpackages:
   - proto
 - name: github.com/joho/godotenv
@@ -30,31 +30,31 @@ imports:
 - name: github.com/kennygrant/sanitize
   version: ce9fd1f6ce32afaa38b51feea32320fc8875e8e4
 - name: github.com/line/line-bot-sdk-go
-  version: 8635ae812e60724b61ee9f0f9d9bf5c43a49f306
+  version: 67a895d818935f885bdb9d0e51e895fe9ecf68d6
   subpackages:
   - linebot
 - name: github.com/mjibson/goon
-  version: f99149e651e1f35d52dfbf8ac32aa87385d828fc
+  version: 3618e6f56803ad77c732374326bb1e78f99097d4
 - name: github.com/pkg/errors
-  version: 17b591df37844cde689f4d5813e5cea0927d8dd2
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/goquery
-  version: 9043fe2599aa764f74ab233cf2fa983072a419cd
+  version: 152b1a2c8f5d0340f658bb656032a39b94e52958
 - name: golang.org/x/net
-  version: 9bc2a3340c92c17a20edcd0080e93851ed58f5d5
+  version: 0d8126fc6144eb5257485c59148128691e8ff849
   subpackages:
   - context
   - html
   - context/ctxhttp
   - html/atom
 - name: google.golang.org/api
-  version: a69f0f19d246419bb931b0ac8f4f8d3f3e6d4feb
+  version: adba394bac5800ff2e620d040e9401528f5b7615
   subpackages:
   - customsearch/v1
   - gensupport
   - googleapi
   - googleapi/internal/uritemplates
 - name: google.golang.org/appengine
-  version: 4f7eeb5305a4ba1966344836ba4af9996b7b4e05
+  version: 150dc57a1b433e64154302bdc40b6bb8aefa313a
   subpackages:
   - log
   - taskqueue
@@ -67,8 +67,8 @@ imports:
   - internal/taskqueue
   - internal/urlfetch
   - internal/log
-  - memcache
   - internal/base
   - internal/remote_api
+  - memcache
   - internal/memcache
 testImports: []

@@ -30,7 +30,7 @@ func (h *LinenotifyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "/linenotify/on":
 		err = h.handleOn(ctx, w, r)
 	case "/linenotify/off":
-		err = h.handleOff(ctx, r)
+		err = h.handleOff(ctx, w, r)
 	case "/linenotify/callback":
 		err = h.handleCallback(ctx, w, r)
 	default:
@@ -48,6 +48,7 @@ func callbackURI(req *http.Request) (string, error) {
 	return url.String(), nil
 }
 
+// LINE Notify と連携する
 func (h *LinenotifyHandler) handleOn(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
 	uri, err := callbackURI(req)
 	if err != nil {
@@ -68,18 +69,26 @@ func (h *LinenotifyHandler) handleOn(ctx context.Context, w http.ResponseWriter,
 	return nil
 }
 
-func (h *LinenotifyHandler) handleOff(ctx context.Context, req *http.Request) *Error {
+// LINE Notify の連携を解除する
+func (h *LinenotifyHandler) handleOff(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+	// Using feature that provided in official.
+	http.Redirect(w, req, "https://notify-bot.line.me/my/", http.StatusFound)
 	return nil
 }
 
+// LINE Notify 連携ページからの認証パラメータを受付
 func (h *LinenotifyHandler) handleCallback(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
-	resp := linenotify.ParseAuthResponse(req)
+	params, err := linenotify.ParseCallbackParameters(req)
+	if err != nil {
+		return newError(err, http.StatusInternalServerError)
+	}
+
 	state, err := req.Cookie("state")
 	if err != nil {
 		return newError(err, http.StatusInternalServerError)
 	}
 
-	if resp.State != state.Value {
+	if params.State != state.Value {
 		return newError(errors.New("Invalid csrf token."), http.StatusBadRequest)
 	}
 
@@ -88,7 +97,7 @@ func (h *LinenotifyHandler) handleCallback(ctx context.Context, w http.ResponseW
 		return newError(err, http.StatusInternalServerError)
 	}
 
-	reqToken := linenotify.NewRequestToken(resp.Code, uri, os.Getenv("LINENOTIFY_CLIENT_ID"), os.Getenv("LINENOTIFY_CLIENT_SECRET"))
+	reqToken := linenotify.NewRequestToken(params.Code, uri, os.Getenv("LINENOTIFY_CLIENT_ID"), os.Getenv("LINENOTIFY_CLIENT_SECRET"))
 	reqToken.Client = urlfetch.Client(ctx)
 
 	_, err = reqToken.Get()

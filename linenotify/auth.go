@@ -5,6 +5,8 @@ import (
 	"encoding/base64"
 	"net/http"
 	"net/url"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -18,7 +20,7 @@ type RequestAuthorization struct {
 	State        string
 }
 
-type ResponseAuthorization struct {
+type CallbackParameters struct {
 	Code             string
 	State            string
 	Error            string
@@ -75,11 +77,15 @@ func generateState() (string, error) {
 	return base64.StdEncoding.EncodeToString(b), nil
 }
 
-func ParseAuthResponse(r *http.Request) *ResponseAuthorization {
-	resp := &ResponseAuthorization{}
+func ParseCallbackParameters(r *http.Request) (*CallbackParameters, error) {
+	resp := &CallbackParameters{}
 	resp.Code = r.FormValue("code")
 	resp.State = r.FormValue("state")
 	resp.Error = r.FormValue("error")
 	resp.ErrorDescription = r.FormValue("error_description")
-	return resp
+
+	if resp.Error != "" {
+		return nil, errors.Errorf("authorize failure. %s", resp.ErrorDescription)
+	}
+	return resp, nil
 }

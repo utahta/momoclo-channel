@@ -6,6 +6,7 @@ import (
 
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
+	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/linenotify"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
@@ -13,9 +14,6 @@ import (
 
 func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize string) {
 	glog := log.GaeLog(ctx)
-	if message != "" {
-		message = fmt.Sprintf("\n%s", message) // [Notify Name] が先頭に入るので改行して調整
-	}
 
 	query := model.NewLineNotificationQuery(ctx)
 	items, err := query.GetAll()
@@ -44,13 +42,37 @@ func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize s
 				return
 			}
 			if err := req.Notify(token, message, imageThumbnail, imageFullsize); err != nil {
-				glog.Error(err)
+				if err == linenotify.ErrorNotifyInvalidAccessToken {
+					item.Delete(ctx)
+					glog.Infof("Delete LINE Notify token. hash:%s", item.Id)
+				} else {
+					glog.Error(err)
+					return
+				}
 			}
 		}(item)
 	}
 	wg.Wait()
+
+	glog.Infof("LINE Notify. message:%s imageURL:%s len:%d", message, imageFullsize, len(items))
 }
 
 func NotifyMessage(ctx context.Context, message string) {
-	notifyMessage(ctx, message, "", "")
+	// [Notify Name] が付くので先頭に改行をいれて調整
+	notifyMessage(ctx, fmt.Sprintf("\n%s", message), "", "")
+}
+
+func NotifyChannelItem(ctx context.Context, title string, item *crawler.ChannelItem) {
+	message := fmt.Sprintf("\n%s\n%s\n%s", title, item.Title, item.Url)
+
+	if len(item.Images) > 0 {
+		image := item.Images[0]
+		notifyMessage(ctx, message, image.Url, image.Url)
+
+		for _, image := range item.Images[1:] {
+			notifyMessage(ctx, " ", image.Url, image.Url)
+		}
+	} else {
+		notifyMessage(ctx, message, "", "")
+	}
 }

@@ -18,6 +18,7 @@ import (
 type LineNotification struct {
 	Id         string `datastore:"-" goon:"id"`
 	TokenCrypt string `datastore:",noindex"`
+	Admin 	   bool
 	CreatedAt  time.Time
 }
 
@@ -93,6 +94,11 @@ func (l *LineNotification) Put(ctx context.Context) error {
 	}, nil)
 }
 
+func (l *LineNotification) Delete(ctx context.Context) error {
+	g := goon.FromContext(ctx)
+	return g.Delete(g.Key(l))
+}
+
 type LineNotificationQuery struct {
 	context context.Context
 }
@@ -102,9 +108,12 @@ func NewLineNotificationQuery(ctx context.Context) *LineNotificationQuery {
 }
 
 func (l *LineNotificationQuery) GetAll() ([]*LineNotification, error) {
+	g := goon.FromContext(l.context)
+
 	items := []*LineNotification{}
 	q := datastore.NewQuery("LineNotification")
-	_, err := q.GetAll(l.context, &items)
+
+	_, err := g.GetAll(q, &items)
 	if err != nil {
 		return nil, err
 	}

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	//"github.com/utahta/momoclo-channel/appengine/lib/linebot"
+	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 	"github.com/utahta/momoclo-channel/appengine/model"
@@ -85,8 +85,7 @@ func (h *QueueHandler) line(ctx context.Context, ch *crawler.Channel) *Error {
 			if err := model.NewLineItem(item).Put(ctx); err != nil {
 				return
 			}
-			//FIXME
-			//linebot.NotifyChannel(ctx, ch.Title, item)
+			linenotify.NotifyChannelItem(ctx, ch.Title, item)
 		}(ctx, item)
 	}
 	wg.Wait()

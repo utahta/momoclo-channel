@@ -1,6 +1,7 @@
 package linenotify
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
@@ -12,6 +13,9 @@ import (
 
 func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize string) {
 	glog := log.GaeLog(ctx)
+	if message != "" {
+		message = fmt.Sprintf("\n%s", message) // [Notify Name] が先頭に入るので改行して調整
+	}
 
 	query := model.NewLineNotificationQuery(ctx)
 	items, err := query.GetAll()

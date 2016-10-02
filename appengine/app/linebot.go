@@ -1,12 +1,12 @@
 package app
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
 	"time"
 
-	"fmt"
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/utahta/momoclo-channel/appengine/lib/googleapi/customsearch"
 	mbot "github.com/utahta/momoclo-channel/appengine/lib/linebot"

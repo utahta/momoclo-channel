@@ -18,7 +18,7 @@ import (
 type LineNotification struct {
 	Id         string `datastore:"-" goon:"id"`
 	TokenCrypt string `datastore:",noindex"`
-	Admin 	   bool
+	Admin      bool
 	CreatedAt  time.Time
 }
 

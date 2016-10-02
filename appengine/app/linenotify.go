@@ -9,6 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/linenotify"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine"
@@ -100,10 +101,16 @@ func (h *LinenotifyHandler) handleCallback(ctx context.Context, w http.ResponseW
 	reqToken := linenotify.NewRequestToken(params.Code, uri, os.Getenv("LINENOTIFY_CLIENT_ID"), os.Getenv("LINENOTIFY_CLIENT_SECRET"))
 	reqToken.Client = urlfetch.Client(ctx)
 
-	_, err = reqToken.Get()
+	token, err := reqToken.Get()
 	if err != nil {
 		return newError(err, http.StatusInternalServerError)
 	}
+
+	ln, err := model.NewLineNotification(token)
+	if err != nil {
+		return newError(err, http.StatusInternalServerError)
+	}
+	ln.Put(ctx) // save to datastore
 
 	t, err := template.New("callback").Parse("<html><body><h1>通知ノフ設定オンにしました（・Θ・）</h1></body></html>")
 	if err != nil {

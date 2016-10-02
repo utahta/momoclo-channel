@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	RESPONSE_MODE_FORM_POST = "form_post"
+	ResponseModeFormPost = "form_post"
 )
 
 type RequestAuthorization struct {
@@ -36,7 +36,7 @@ func NewRequestAuthorization(clientID, redirectURI string) (*RequestAuthorizatio
 	return &RequestAuthorization{
 		ClientID:     clientID,
 		RedirectURI:  redirectURI,
-		ResponseMode: RESPONSE_MODE_FORM_POST,
+		ResponseMode: ResponseModeFormPost,
 		State:        state,
 	}, nil
 }

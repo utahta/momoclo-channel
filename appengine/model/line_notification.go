@@ -93,39 +93,20 @@ func (l *LineNotification) Put(ctx context.Context) error {
 	}, nil)
 }
 
-//type LineUserQuery struct {
-//	context context.Context
-//	cursor  datastore.Cursor
-//	Limit   int
-//}
-//
-//func NewLineUserQuery(ctx context.Context) *LineUserQuery {
-//	return &LineUserQuery{context: ctx, Limit: 100}
-//}
-//
-//func (u *LineUserQuery) GetIds() ([]string, error) {
-//	q := datastore.NewQuery("LineUser").Filter("Enabled =", true).KeysOnly().Limit(u.Limit)
-//	if u.cursor.String() != "" {
-//		q = q.Start(u.cursor)
-//	}
-//
-//	ids := []string{}
-//	t := q.Run(u.context)
-//	for {
-//		k, err := t.Next(nil)
-//		if err == datastore.Done {
-//			break
-//		}
-//		if err != nil {
-//			return nil, err
-//		}
-//		ids = append(ids, k.StringID())
-//	}
-//
-//	var err error
-//	u.cursor, err = t.Cursor()
-//	if err != nil {
-//		return nil, err
-//	}
-//	return ids, nil
-//}
+type LineNotificationQuery struct {
+	context context.Context
+}
+
+func NewLineNotificationQuery(ctx context.Context) *LineNotificationQuery {
+	return &LineNotificationQuery{context: ctx}
+}
+
+func (l *LineNotificationQuery) GetAll() ([]*LineNotification, error) {
+	items := []*LineNotification{}
+	q := datastore.NewQuery("LineNotification")
+	_, err := q.GetAll(l.context, &items)
+	if err != nil {
+		return nil, err
+	}
+	return items, nil
+}

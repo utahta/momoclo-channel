@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	//"github.com/utahta/momoclo-channel/appengine/lib/linebot"
+	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 	"github.com/utahta/momoclo-channel/appengine/model"
@@ -52,8 +52,7 @@ func (r *ReminderNotification) Notify() *Error {
 		wg.Add(1)
 		go func(text string) {
 			defer wg.Done()
-			//FIXME
-			//linebot.NotifyMessage(ctx, text)
+			linenotify.NotifyMessage(ctx, text)
 		}(row.Text)
 
 		wg.Wait()

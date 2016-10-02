@@ -93,7 +93,7 @@ func offMessage() string {
 func (h *LinebotHandler) followUser(ctx context.Context, event *linebot.Event) error {
 	h.log.Infof("follow user. event:%v", event)
 
-	message := "友だち登録ありがとうございます。\nこちらは、ももクロちゃんのブログやAE NEWS等を通知する機能と連携したり、画像を返したりするBOTです。"
+	message := "友だち追加ありがとうございます。\nこちらは、ももクロちゃんのブログやAE NEWS等を通知する機能と連携したり、画像を返したりするBOTです。"
 	return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s\n\n%s\n\n%s", message, onMessage(h.req), offMessage()))
 }
 

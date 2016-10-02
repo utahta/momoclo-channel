@@ -78,21 +78,28 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 	return nil
 }
 
+func onMessage(req *http.Request) string {
+	u := &url.URL{}
+	*u = *req.URL
+	u.Path = "/linenotify/on"
+
+	return fmt.Sprintf("通知機能を有効にする場合は、下記URLから設定を行ってください（・Θ・）\n%s", u.String())
+}
+
+func offMessage() string {
+	return "通知機能を無効にする場合は、下記URLから解除を行ってください（・Θ・）\nhttps://notify-bot.line.me/my/"
+}
+
 func (h *LinebotHandler) followUser(ctx context.Context, event *linebot.Event) error {
 	h.log.Infof("follow user. event:%v", event)
 
-	url, err := url.Parse(h.req.URL.String())
-	if err != nil {
-		return err
-	}
-	url.Path = "/linenotify/on"
-
-	return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("下記URLから通知設定を有効にしてください（・Θ・）\n%s", url.String()))
+	message := "友だち登録ありがとうございます。\nこちらは、ももクロちゃんのブログやAE NEWS等を通知する機能と連携したり、画像を返したりするBOTです。"
+	return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s\n\n%s\n\n%s", message, onMessage(h.req), offMessage()))
 }
 
 func (h *LinebotHandler) unfollowUser(ctx context.Context, event *linebot.Event) error {
 	h.log.Infof("unfollow user. event:%v", event)
-	return mbot.ReplyText(ctx, event.ReplyToken, "下記URLから通知設定を解除してください（・Θ・）\nhttps://notify-bot.line.me/my/")
+	return nil
 }
 
 func (h *LinebotHandler) handleTextMessage(ctx context.Context, message *linebot.TextMessage, event *linebot.Event) error {
@@ -120,7 +127,7 @@ func (h *LinebotHandler) handleOnOff(ctx context.Context, message *linebot.TextM
 		return err
 	}
 	if matched {
-		return h.followUser(ctx, event)
+		return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s", onMessage(h.req)))
 	}
 
 	matched, err = regexp.MatchString("^(おふ|オフ|off)$", text)
@@ -128,7 +135,7 @@ func (h *LinebotHandler) handleOnOff(ctx context.Context, message *linebot.TextM
 		return err
 	}
 	if matched {
-		return h.unfollowUser(ctx, event)
+		return mbot.ReplyText(ctx, event.ReplyToken, offMessage())
 	}
 
 	return nil

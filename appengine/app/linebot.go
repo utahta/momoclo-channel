@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -29,6 +30,8 @@ func (h *LinebotHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/linebot/callback":
 		err = h.callback(ctx, r)
+	case "/linebot/help":
+		err = h.help(ctx, w, r)
 	default:
 		http.NotFound(w, r)
 	}
@@ -78,15 +81,23 @@ func (h *LinebotHandler) callback(ctx context.Context, req *http.Request) *Error
 	return nil
 }
 
-func onMessage(req *http.Request) string {
+func (h *LinebotHandler) help(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+	tpl := template.Must(template.ParseFiles("view/linebot/help.html"))
+	if err := tpl.Execute(w, nil); err != nil {
+		return newError(err, http.StatusInternalServerError)
+	}
+	return nil
+}
+
+func (h *LinebotHandler) onMessage() string {
 	u := &url.URL{}
-	*u = *req.URL
+	*u = *h.req.URL
 	u.Path = "/linenotify/on"
 
 	return fmt.Sprintf("通知機能を有効にする場合は、下記URLから設定を行ってください（・Θ・）\n%s", u.String())
 }
 
-func offMessage() string {
+func (h *LinebotHandler) offMessage() string {
 	return "通知機能を無効にする場合は、下記URLから解除を行ってください（・Θ・）\nhttps://notify-bot.line.me/my/"
 }
 
@@ -94,7 +105,7 @@ func (h *LinebotHandler) followUser(ctx context.Context, event *linebot.Event) e
 	h.log.Infof("follow user. event:%v", event)
 
 	message := "友だち追加ありがとうございます。\nこちらは、ももクロちゃんのブログやAE NEWS等を通知する機能と連携したり、画像を返したりするBOTです。"
-	return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s\n\n%s\n\n%s", message, onMessage(h.req), offMessage()))
+	return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s\n\n%s\n\n%s", message, h.onMessage(), h.offMessage()))
 }
 
 func (h *LinebotHandler) unfollowUser(ctx context.Context, event *linebot.Event) error {
@@ -127,7 +138,7 @@ func (h *LinebotHandler) handleOnOff(ctx context.Context, message *linebot.TextM
 		return err
 	}
 	if matched {
-		return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s", onMessage(h.req)))
+		return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s", h.onMessage()))
 	}
 
 	matched, err = regexp.MatchString("^(おふ|オフ|off)$", text)
@@ -135,7 +146,7 @@ func (h *LinebotHandler) handleOnOff(ctx context.Context, message *linebot.TextM
 		return err
 	}
 	if matched {
-		return mbot.ReplyText(ctx, event.ReplyToken, offMessage())
+		return mbot.ReplyText(ctx, event.ReplyToken, h.offMessage())
 	}
 
 	return nil

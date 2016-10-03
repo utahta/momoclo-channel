@@ -114,7 +114,7 @@ func (h *LinebotHandler) unfollowUser(ctx context.Context, event *linebot.Event)
 }
 
 func (h *LinebotHandler) handleTextMessage(ctx context.Context, message *linebot.TextMessage, event *linebot.Event) error {
-	h.log.Infof("handle text content. event:%v", event)
+	h.log.Infof("handle text content. message:%s", message.Text)
 
 	if err := h.handleOnOff(ctx, message, event); err != nil {
 		return err
@@ -124,7 +124,7 @@ func (h *LinebotHandler) handleTextMessage(ctx context.Context, message *linebot
 		return err
 	}
 
-	return mbot.ReplyText(ctx, event.ReplyToken, "?（・Θ・）?\nヘルプ\nhttps://utahta.github.io/momoclo-channel/linebot/")
+	return mbot.ReplyText(ctx, event.ReplyToken, "ヘルプ（・Θ・）\nhttps://utahta.github.io/momoclo-channel/linebot/")
 }
 
 func (h *LinebotHandler) handleOnOff(ctx context.Context, message *linebot.TextMessage, event *linebot.Event) error {
@@ -201,7 +201,8 @@ func (h *LinebotHandler) handleMemberImage(ctx context.Context, message *linebot
 
 	res, err := customsearch.SearchImage(ctx, word)
 	if err != nil {
-		return err
+		h.log.Error(err)
+		return mbot.ReplyText(ctx, event.ReplyToken, "画像がみつかりませんでした（・Θ・）")
 	}
 	return mbot.ReplyImage(ctx, event.ReplyToken, res.Url, res.ThumbnailUrl)
 }

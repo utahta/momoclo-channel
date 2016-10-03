@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/googleapi/customsearch"
 	mbot "github.com/utahta/momoclo-channel/appengine/lib/linebot"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
@@ -20,6 +21,11 @@ type LinebotHandler struct {
 	log log.Logger
 	req *http.Request
 }
+
+var (
+	ErrorHandleOnOffNotMatch = errors.New("handle on off not match.")
+	ErrorHandleImageNotMatch = errors.New("handle image not match.")
+)
 
 func (h *LinebotHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
@@ -97,15 +103,11 @@ func (h *LinebotHandler) onMessage() string {
 	return fmt.Sprintf("通知機能を有効にする場合は、下記URLから設定を行ってください（・Θ・）\n%s", u.String())
 }
 
-func (h *LinebotHandler) offMessage() string {
-	return "通知機能を無効にする場合は、下記URLから解除を行ってください（・Θ・）\nhttps://notify-bot.line.me/my/"
-}
-
 func (h *LinebotHandler) followUser(ctx context.Context, event *linebot.Event) error {
 	h.log.Infof("follow user. event:%v", event)
 
 	message := "友だち追加ありがとうございます。\nこちらは、ももクロちゃんのブログやAE NEWS等を通知する機能と連携したり、画像を返したりするBOTです。"
-	return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s\n\n%s\n\n%s", message, h.onMessage(), h.offMessage()))
+	return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s\n\n%s", message, h.onMessage()))
 }
 
 func (h *LinebotHandler) unfollowUser(ctx context.Context, event *linebot.Event) error {
@@ -116,11 +118,11 @@ func (h *LinebotHandler) unfollowUser(ctx context.Context, event *linebot.Event)
 func (h *LinebotHandler) handleTextMessage(ctx context.Context, message *linebot.TextMessage, event *linebot.Event) error {
 	h.log.Infof("handle text content. message:%s", message.Text)
 
-	if err := h.handleOnOff(ctx, message, event); err != nil {
+	if err := h.handleOnOff(ctx, message, event); err != ErrorHandleOnOffNotMatch {
 		return err
 	}
 
-	if err := h.handleMemberImage(ctx, message, event); err != nil {
+	if err := h.handleMemberImage(ctx, message, event); err != ErrorHandleImageNotMatch {
 		return err
 	}
 
@@ -138,7 +140,7 @@ func (h *LinebotHandler) handleOnOff(ctx context.Context, message *linebot.TextM
 		return err
 	}
 	if matched {
-		return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s", h.onMessage()))
+		return mbot.ReplyText(ctx, event.ReplyToken, h.onMessage())
 	}
 
 	matched, err = regexp.MatchString("^(おふ|オフ|off)$", text)
@@ -146,10 +148,10 @@ func (h *LinebotHandler) handleOnOff(ctx context.Context, message *linebot.TextM
 		return err
 	}
 	if matched {
-		return mbot.ReplyText(ctx, event.ReplyToken, h.offMessage())
+		return mbot.ReplyText(ctx, event.ReplyToken, "通知機能を無効にする場合は、下記URLから解除を行ってください（・Θ・）\nhttps://notify-bot.line.me/my/")
 	}
 
-	return nil
+	return ErrorHandleOnOffNotMatch
 }
 
 func (h *LinebotHandler) handleMemberImage(ctx context.Context, message *linebot.TextMessage, event *linebot.Event) error {
@@ -196,7 +198,7 @@ func (h *LinebotHandler) handleMemberImage(ctx context.Context, message *linebot
 	}
 
 	if word == "" {
-		return nil
+		return ErrorHandleImageNotMatch
 	}
 
 	res, err := customsearch.SearchImage(ctx, word)

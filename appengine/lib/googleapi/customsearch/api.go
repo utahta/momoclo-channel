@@ -3,8 +3,8 @@ package customsearch
 import (
 	"math/rand"
 	"os"
-	"time"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"

@@ -96,11 +96,8 @@ func (h *LinebotHandler) help(ctx context.Context, w http.ResponseWriter, req *h
 }
 
 func (h *LinebotHandler) onMessage() string {
-	u := &url.URL{}
-	*u = *h.req.URL
-	u.Path = "/linenotify/on"
-
-	return fmt.Sprintf("通知機能を有効にする場合は、下記URLから設定を行ってください（・Θ・）\n%s", u.String())
+	onURL := &url.URL{Scheme: h.req.URL.Scheme, Host: h.req.URL.Host, Path: "/linenotify/on"}
+	return fmt.Sprintf("通知機能を有効にする場合は、下記URLから設定を行ってください（・Θ・）\n%s", onURL.String())
 }
 
 func (h *LinebotHandler) followUser(ctx context.Context, event *linebot.Event) error {
@@ -126,7 +123,8 @@ func (h *LinebotHandler) handleTextMessage(ctx context.Context, message *linebot
 		return err
 	}
 
-	return mbot.ReplyText(ctx, event.ReplyToken, "ヘルプ（・Θ・）\nhttps://utahta.github.io/momoclo-channel/linebot/")
+	helpURL := &url.URL{Scheme: h.req.URL.Scheme, Host: h.req.URL.Host, Path: "/linebot/help"}
+	return mbot.ReplyText(ctx, event.ReplyToken, fmt.Sprintf("ヘルプ（・Θ・）\n%s", helpURL.String()))
 }
 
 func (h *LinebotHandler) handleOnOff(ctx context.Context, message *linebot.TextMessage, event *linebot.Event) error {

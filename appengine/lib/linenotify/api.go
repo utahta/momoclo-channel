@@ -13,7 +13,7 @@ import (
 )
 
 func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize string) {
-	glog := log.GaeLog(ctx)
+	glog := log.NewGaeLogger(ctx)
 
 	query := model.NewLineNotificationQuery(ctx)
 	items, err := query.GetAll()
@@ -25,7 +25,7 @@ func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize s
 	req := linenotify.NewRequestNotify()
 	req.Client = urlfetch.Client(ctx)
 
-	var workQueue = make(chan bool, 20) // max goroutine
+	var workQueue = make(chan bool, 10) // max goroutine
 	var wg sync.WaitGroup
 	for _, item := range items {
 		workQueue <- true

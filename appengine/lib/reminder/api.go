@@ -1,7 +1,6 @@
-package app
+package reminder
 
 import (
-	"net/http"
 	"sync"
 	"time"
 
@@ -12,23 +11,11 @@ import (
 	"golang.org/x/net/context"
 )
 
-type ReminderNotification struct {
-	context context.Context
-	log     log.Logger
-}
-
-func newReminderNotification(ctx context.Context) *ReminderNotification {
-	return &ReminderNotification{context: ctx, log: log.NewGaeLogger(ctx)}
-}
-
-func (r *ReminderNotification) Notify() *Error {
-	ctx, cancel := context.WithTimeout(r.context, 50*time.Second)
-	defer cancel()
-
+func Notify(ctx context.Context) error {
 	q := model.NewReminderQuery(ctx)
 	rows, err := q.GetAll()
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		return err
 	}
 
 	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
@@ -36,7 +23,7 @@ func (r *ReminderNotification) Notify() *Error {
 	for _, row := range rows {
 		if ok, err := row.Valid(now); !ok {
 			if err != nil {
-				r.log.Error(err)
+				log.GaeLog(ctx).Error(err)
 			}
 			continue
 		}

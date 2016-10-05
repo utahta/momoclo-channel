@@ -10,7 +10,6 @@ import (
 )
 
 func initRoutes() {
-	http.Handle("/cron/", &CronHandler{})
 	http.Handle("/queue/", &QueueHandler{})
 	http.Handle("/linenotify/", &LinenotifyHandler{})
 
@@ -20,6 +19,13 @@ func initRoutes() {
 		var err *controller.Error
 
 		switch req.URL.Path {
+		case "/cron/crawl":
+			err = controller.CronCrawl(ctx, w, req)
+		case "/cron/ustream":
+			err = controller.CronUstream(ctx, w, req)
+		case "/cron/reminder":
+			err = controller.CronReminder(ctx, w, req)
+
 		case "/linebot/callback":
 			err = controller.LineBotCallback(ctx, w, req)
 		case "/linebot/help":

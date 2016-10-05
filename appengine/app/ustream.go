@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/appengine/lib/linebot"
+	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 	"github.com/utahta/momoclo-channel/appengine/model"
@@ -60,7 +60,7 @@ func (u *UstreamNotification) Notify() *Error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			linebot.NotifyMessage(ctx, "momocloTV が配信を開始しました")
+			linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました")
 		}()
 
 		wg.Wait()

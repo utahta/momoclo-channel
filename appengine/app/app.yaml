@@ -1,4 +1,4 @@
-version: v0-1-0
+version: v1-0-0
 runtime: go
 api_version: go1
 
@@ -32,4 +32,13 @@ handlers:
   login: admin
 
 - url: /linebot/callback
+  script: _go_app
+- url: /linebot/help
+  script: _go_app
+
+- url: /linenotify/on
+  script: _go_app
+- url: /linenotify/off
+  script: _go_app
+- url: /linenotify/callback
   script: _go_app

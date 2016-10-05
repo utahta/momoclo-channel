@@ -1,5 +1,5 @@
 hash: 751be541bd90467a6ca0d71c7136ff15f6b12972286d8af169ad9c460ab09278
-updated: 2016-10-01T11:32:22.857915857+09:00
+updated: 2016-10-06T01:23:10.364362862+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 1c31af6f6c1a7b101ed05aacc7d8a738b43ae86e
@@ -30,7 +30,7 @@ imports:
 - name: github.com/kennygrant/sanitize
   version: ce9fd1f6ce32afaa38b51feea32320fc8875e8e4
 - name: github.com/line/line-bot-sdk-go
-  version: 67a895d818935f885bdb9d0e51e895fe9ecf68d6
+  version: 547c8a8d13c8b5ceb7d92959dc5a4aafedd6035d
   subpackages:
   - linebot
 - name: github.com/mjibson/goon
@@ -40,7 +40,7 @@ imports:
 - name: github.com/PuerkitoBio/goquery
   version: 152b1a2c8f5d0340f658bb656032a39b94e52958
 - name: golang.org/x/net
-  version: 0d8126fc6144eb5257485c59148128691e8ff849
+  version: ffe101cce3477a6c6d8f0754d103bb0a84ec1266
   subpackages:
   - context
   - html
@@ -54,7 +54,7 @@ imports:
   - googleapi
   - googleapi/internal/uritemplates
 - name: google.golang.org/appengine
-  version: 150dc57a1b433e64154302bdc40b6bb8aefa313a
+  version: 926995697fa8241be2dc73eb318666e24f44ed51
   subpackages:
   - log
   - taskqueue

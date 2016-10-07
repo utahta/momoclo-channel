@@ -13,64 +13,67 @@ import (
 )
 
 const (
-	defaultMaxItemNum = 5
+	DefaultBlogMaxItemNum = 5
 )
 
 type blogChannelParser struct {
-	channel *Channel
-	option  *BlogChannelParserOption
+	channel    *Channel
+	maxItemNum int
 }
 
-type BlogChannelParserOption struct {
-	MaxItemNum int
-}
-
-func newBlogChannelClient(url string, title string, opt *BlogChannelParserOption) *ChannelClient {
-	if opt == nil {
-		opt = &BlogChannelParserOption{MaxItemNum: defaultMaxItemNum}
+func newBlogChannelClient(url string, title string, maxItemNum int, options ...ChannelClientOption) (*ChannelClient, error) {
+	if maxItemNum <= 0 {
+		maxItemNum = DefaultBlogMaxItemNum
 	}
 	c := newChannel(url, title)
-	return newChannelClient(c, &blogChannelParser{channel: c, option: opt})
+	return newChannelClient(c, &blogChannelParser{channel: c, maxItemNum: maxItemNum}, options...)
 }
 
-func NewTamaiBlogChannelClient(opt *BlogChannelParserOption) *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/tamai-sd/entrylist.html", "ももいろクローバーZ 玉井詩織 オフィシャルブログ「楽しおりん生活」", opt)
+func NewTamaiBlogChannelClient(maxItemNum int, options ...ChannelClientOption) (*ChannelClient, error) {
+	return newBlogChannelClient("http://ameblo.jp/tamai-sd/entrylist.html", "ももいろクローバーZ 玉井詩織 オフィシャルブログ「楽しおりん生活」", maxItemNum, options...)
 }
 
-func NewMomotaBlogChannelClient(opt *BlogChannelParserOption) *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/momota-sd/entrylist.html", "ももいろクローバーZ 百田夏菜子 オフィシャルブログ「でこちゃん日記」", opt)
+func NewMomotaBlogChannelClient(maxItemNum int, options ...ChannelClientOption) (*ChannelClient, error) {
+	return newBlogChannelClient("http://ameblo.jp/momota-sd/entrylist.html", "ももいろクローバーZ 百田夏菜子 オフィシャルブログ「でこちゃん日記」", maxItemNum, options...)
 }
 
-func NewAriyasuBlogChannelClient(opt *BlogChannelParserOption) *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/ariyasu-sd/entrylist.html", "ももいろクローバーZ 有安杏果 オフィシャルブログ「ももパワー充電所」", opt)
+func NewAriyasuBlogChannelClient(maxItemNum int, options ...ChannelClientOption) (*ChannelClient, error) {
+	return newBlogChannelClient("http://ameblo.jp/ariyasu-sd/entrylist.html", "ももいろクローバーZ 有安杏果 オフィシャルブログ「ももパワー充電所」", maxItemNum, options...)
 }
 
-func NewSasakiBlogChannelClient(opt *BlogChannelParserOption) *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/sasaki-sd/entrylist.html", "ももいろクローバーZ 佐々木彩夏 オフィシャルブログ「あーりんのほっぺ」", opt)
+func NewSasakiBlogChannelClient(maxItemNum int, options ...ChannelClientOption) (*ChannelClient, error) {
+	return newBlogChannelClient("http://ameblo.jp/sasaki-sd/entrylist.html", "ももいろクローバーZ 佐々木彩夏 オフィシャルブログ「あーりんのほっぺ」", maxItemNum, options...)
 }
 
-func NewTakagiBlogChannelClient(opt *BlogChannelParserOption) *ChannelClient {
-	return newBlogChannelClient("http://ameblo.jp/takagi-sd/entrylist.html", "ももいろクローバーZ 高城れに オフィシャルブログ「ビリビリ everyday」", opt)
+func NewTakagiBlogChannelClient(maxItemNum int, options ...ChannelClientOption) (*ChannelClient, error) {
+	return newBlogChannelClient("http://ameblo.jp/takagi-sd/entrylist.html", "ももいろクローバーZ 高城れに オフィシャルブログ「ビリビリ everyday」", maxItemNum, options...)
+}
+
+func fetchBlog(c *ChannelClient, err error) (*Channel, error) {
+	if err != nil {
+		return nil, err
+	}
+	return c.Fetch()
 }
 
 func FetchTamaiBlog() (*Channel, error) {
-	return NewTamaiBlogChannelClient(nil).Fetch()
+	return fetchBlog(NewTamaiBlogChannelClient(DefaultBlogMaxItemNum))
 }
 
 func FetchMomotaBlog() (*Channel, error) {
-	return NewMomotaBlogChannelClient(nil).Fetch()
+	return fetchBlog(NewMomotaBlogChannelClient(DefaultBlogMaxItemNum))
 }
 
 func FetchAriyasuBlog() (*Channel, error) {
-	return NewAriyasuBlogChannelClient(nil).Fetch()
+	return fetchBlog(NewAriyasuBlogChannelClient(DefaultBlogMaxItemNum))
 }
 
 func FetchSasakiBlog() (*Channel, error) {
-	return NewSasakiBlogChannelClient(nil).Fetch()
+	return fetchBlog(NewSasakiBlogChannelClient(DefaultBlogMaxItemNum))
 }
 
 func FetchTakagiBlog() (*Channel, error) {
-	return NewTakagiBlogChannelClient(nil).Fetch()
+	return fetchBlog(NewTakagiBlogChannelClient(DefaultBlogMaxItemNum))
 }
 
 func (p *blogChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {
@@ -116,7 +119,7 @@ func (p *blogChannelParser) parseList(r io.Reader) ([]*ChannelItem, error) {
 	items := []*ChannelItem{}
 	err = nil
 	doc.Find("[amb-component='archiveList'] > li").EachWithBreak(func(i int, s *goquery.Selection) bool {
-		if len(items) >= p.option.MaxItemNum {
+		if len(items) >= p.maxItemNum {
 			return false
 		}
 		title := strings.TrimSpace(s.Find("[amb-component='entryItemTitle']").Text())

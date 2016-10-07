@@ -15,13 +15,17 @@ type aeNewsChannelParser struct {
 	channel *Channel
 }
 
-func NewAeNewsChannelClient() *ChannelClient {
+func NewAeNewsChannelClient(options ...ChannelClientOption) (*ChannelClient, error) {
 	c := newChannel("http://www.momoclo.net/news/", "ANGEL EYES | News")
-	return newChannelClient(c, &aeNewsChannelParser{channel: c})
+	return newChannelClient(c, &aeNewsChannelParser{channel: c}, options...)
 }
 
 func FetchAeNews() (*Channel, error) {
-	return NewAeNewsChannelClient().Fetch()
+	cc, err := NewAeNewsChannelClient()
+	if err != nil {
+		return nil, err
+	}
+	return cc.Fetch()
 }
 
 func (p *aeNewsChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {

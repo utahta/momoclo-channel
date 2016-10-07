@@ -13,13 +13,17 @@ type youtubeChannelParser struct {
 	channel *Channel
 }
 
-func NewYoutubeChannelClient() *ChannelClient {
+func NewYoutubeChannelClient(options ...ChannelClientOption) (*ChannelClient, error) {
 	c := newChannel("https://www.youtube.com/feeds/videos.xml?channel_id=UC7pcEjI2U2vg6CqgbwIpjgg", "ニュータイプ放送局")
-	return newChannelClient(c, &youtubeChannelParser{channel: c})
+	return newChannelClient(c, &youtubeChannelParser{channel: c}, options...)
 }
 
 func FetchYoutube() (*Channel, error) {
-	return NewYoutubeChannelClient().Fetch()
+	cc, err := NewYoutubeChannelClient()
+	if err != nil {
+		return nil, err
+	}
+	return cc.Fetch()
 }
 
 func (p *youtubeChannelParser) Parse(r io.Reader) ([]*ChannelItem, error) {

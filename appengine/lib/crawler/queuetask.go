@@ -3,6 +3,7 @@ package crawler
 import (
 	"encoding/json"
 	"net/url"
+	"sync"
 
 	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
@@ -11,7 +12,6 @@ import (
 	"github.com/utahta/momoclo-channel/crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/taskqueue"
-	"sync"
 )
 
 type QueueTask struct {

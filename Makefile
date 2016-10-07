@@ -3,6 +3,10 @@
 install:
 	@glide install
 
+fmt:
+	gofmt -w .
+	goimports -w .
+
 test:
 	@go test -v ./crawler/...
 

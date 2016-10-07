@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
@@ -23,29 +24,42 @@ func Notify(ctx context.Context) error {
 	for _, row := range rows {
 		if ok, err := row.Valid(now); !ok {
 			if err != nil {
-				log.GaeLog(ctx).Error(err)
+				return err
 			}
 			continue
 		}
 
+		// Tweet, Line の出し分けが今のところ出来ないので要検討
+		const maxGoroutineNum = 2
+		errs := make([]error, maxGoroutineNum)
 		var wg sync.WaitGroup
+		wg.Add(maxGoroutineNum)
 
-		wg.Add(1)
 		go func(text string) {
 			defer wg.Done()
-			twitter.TweetText(ctx, text)
+			errs[0] = twitter.TweetMessage(ctx, text)
 		}(row.Text)
 
-		wg.Add(1)
 		go func(text string) {
 			defer wg.Done()
-			linenotify.NotifyMessage(ctx, text)
+			errs[1] = linenotify.NotifyMessage(ctx, text)
 		}(row.Text)
 
 		wg.Wait()
 
 		if row.IsOnce() {
 			row.Disable(ctx)
+		}
+
+		any := false
+		for _, err := range errs {
+			if err != nil {
+				any = true
+				log.GaeLog(ctx).Error(err)
+			}
+		}
+		if any {
+			return errors.Errorf("Errors occured in reminder.Notify. text:%s", row.Text)
 		}
 	}
 	return nil

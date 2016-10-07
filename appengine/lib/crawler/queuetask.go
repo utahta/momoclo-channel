@@ -3,12 +3,8 @@ package crawler
 import (
 	"encoding/json"
 	"net/url"
-	"sync"
 
-	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
-	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
-	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/taskqueue"
@@ -53,53 +49,7 @@ func (q *QueueTask) PushLine(ctx context.Context, ch *crawler.Channel) error {
 	return nil
 }
 
-// Run tweet task
-func (q *QueueTask) RunTweet(ctx context.Context, v url.Values) error {
-	ch, err := q.parseURLValues(v)
-	if err != nil {
-		return err
-	}
-
-	var wg sync.WaitGroup
-	wg.Add(len(ch.Items))
-	for _, item := range ch.Items {
-		go func(ctx context.Context, item *crawler.ChannelItem) {
-			defer wg.Done()
-
-			if err := model.NewTweetItem(item).Put(ctx); err != nil {
-				return
-			}
-			twitter.TweetChannelItem(ctx, ch.Title, item)
-		}(ctx, item)
-	}
-	wg.Wait()
-	return nil
-}
-
-// Run LINE task
-func (q *QueueTask) RunLine(ctx context.Context, v url.Values) error {
-	ch, err := q.parseURLValues(v)
-	if err != nil {
-		return err
-	}
-
-	var wg sync.WaitGroup
-	wg.Add(len(ch.Items))
-	for _, item := range ch.Items {
-		go func(ctx context.Context, item *crawler.ChannelItem) {
-			defer wg.Done()
-
-			if err := model.NewLineItem(item).Put(ctx); err != nil {
-				return
-			}
-			linenotify.NotifyChannelItem(ctx, ch.Title, item)
-		}(ctx, item)
-	}
-	wg.Wait()
-	return nil
-}
-
-func (q *QueueTask) parseURLValues(v url.Values) (*crawler.Channel, error) {
+func (q *QueueTask) ParseURLValues(v url.Values) (*crawler.Channel, error) {
 	var ch crawler.Channel
 	if err := json.Unmarshal([]byte(v.Get("channel")), &ch); err != nil {
 		return nil, err

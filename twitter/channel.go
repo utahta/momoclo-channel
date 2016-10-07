@@ -10,7 +10,6 @@ import (
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
-	"github.com/utahta/momoclo-channel/log"
 )
 
 const (
@@ -18,25 +17,19 @@ const (
 )
 
 type ChannelClient struct {
-	Api *anaconda.TwitterApi
-	Log log.Logger
+	*Client
 }
 
 type mediaImage struct {
 	Ids [maxUploadImages]string
 }
 
-func NewChannelClient(consumerKey, consumerSecret, accessToken, accessTokenSecret string) *ChannelClient {
-	t := &ChannelClient{}
-	t.auth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
-	t.Log = log.NewSilentLogger()
-	return t
-}
-
-func (t *ChannelClient) auth(consumerKey, consumerSecret, accessToken, accessTokenSecret string) {
-	anaconda.SetConsumerKey(consumerKey)
-	anaconda.SetConsumerSecret(consumerSecret)
-	t.Api = anaconda.NewTwitterApi(accessToken, accessTokenSecret)
+func NewChannelClient(consumerKey, consumerSecret, accessToken, accessTokenSecret string, options ...ClientOption) (*ChannelClient, error) {
+	c, err := newClient(consumerKey, consumerSecret, accessToken, accessTokenSecret, options...)
+	if err != nil {
+		return nil, err
+	}
+	return &ChannelClient{Client: c}, nil
 }
 
 func (t *ChannelClient) TweetItem(title string, item *crawler.ChannelItem) error {

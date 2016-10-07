@@ -10,8 +10,6 @@ import (
 )
 
 func initRoutes() {
-	http.Handle("/linenotify/", &LinenotifyHandler{})
-
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		ctx, cancel := context.WithTimeout(appengine.NewContext(req), 55*time.Second)
 		defer cancel()
@@ -34,6 +32,14 @@ func initRoutes() {
 			err = controller.LineBotCallback(ctx, w, req)
 		case "/linebot/help":
 			err = controller.LineBotHelp(ctx, w, req)
+
+		case "/linenotify/on":
+			err = controller.LinenotifyOn(ctx, w, req)
+		case "/linenotify/off":
+			err = controller.LinenotifyOff(ctx, w, req)
+		case "/linenotify/callback":
+			err = controller.LinenotifyCallback(ctx, w, req)
+
 		default:
 			http.NotFound(w, req)
 		}

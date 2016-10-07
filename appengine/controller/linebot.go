@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 
@@ -19,7 +18,7 @@ func LineBotCallback(ctx context.Context, w http.ResponseWriter, req *http.Reque
 		return newError(err, http.StatusInternalServerError)
 	}
 
-	ctx = context.WithValue(ctx, "baseURL", fmt.Sprintf("%s://%s", req.URL.Scheme, req.URL.Host))
+	ctx = context.WithValue(ctx, "baseURL", buildURL(req.URL, ""))
 	if err := mbot.HandleEvents(ctx, events); err != nil {
 		return newError(err, http.StatusInternalServerError)
 	}

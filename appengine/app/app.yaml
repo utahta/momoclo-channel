@@ -11,6 +11,9 @@ automatic_scaling:
   max_pending_latency: automatic
 
 handlers:
+- url: /images
+  static_dir: public/images
+
 - url: /cron/crawl
   script: _go_app
   login: admin

@@ -9,6 +9,7 @@ import (
 	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
+	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/ustream"
 	"golang.org/x/net/context"
@@ -38,7 +39,7 @@ func Notify(ctx context.Context) error {
 
 	if isLive {
 		const maxGoroutineNum = 2
-		errs := make([]error, maxGoroutineNum)
+		errFlg := util.NewAtomicBool(false)
 		var wg sync.WaitGroup
 		wg.Add(maxGoroutineNum)
 
@@ -46,24 +47,23 @@ func Notify(ctx context.Context) error {
 			defer wg.Done()
 			jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 			t := time.Now().In(jst)
-			errs[0] = twitter.TweetMessage(ctx, fmt.Sprintf("momocloTV が配信を開始しました\n%s", t.Format("from 2006/01/02 15:04:05")))
+			if err := twitter.TweetMessage(ctx, fmt.Sprintf("momocloTV が配信を開始しました\n%s", t.Format("from 2006/01/02 15:04:05"))); err != nil {
+				errFlg.Set(true)
+				log.GaeLog(ctx).Error(err)
+			}
 		}()
 
 		go func() {
 			defer wg.Done()
-			errs[1] = linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました")
+			if err := linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました"); err != nil {
+				errFlg.Set(true)
+				log.GaeLog(ctx).Error(err)
+			}
 		}()
 
 		wg.Wait()
 
-		any := false
-		for _, err := range errs {
-			if err != nil {
-				any = true
-				log.GaeLog(ctx).Error(err)
-			}
-		}
-		if any {
+		if errFlg.Enabled() {
 			return errors.New("Errors occurred in ustream.Notify")
 		}
 	}

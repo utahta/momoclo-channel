@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
 	"golang.org/x/net/context"
@@ -25,32 +26,26 @@ func TweetMessage(ctx context.Context, text string) error {
 
 // Tweet channel
 func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
-	errs := make([]error, len(ch.Items))
+	errFlg := util.NewAtomicBool(false)
 	var wg sync.WaitGroup
 	wg.Add(len(ch.Items))
-	for i, item := range ch.Items {
-		go func(ctx context.Context, item *crawler.ChannelItem, i int) {
+	for _, item := range ch.Items {
+		go func(ctx context.Context, item *crawler.ChannelItem) {
 			defer wg.Done()
 
 			if err := model.NewTweetItem(item).Put(ctx); err != nil {
 				return
 			}
 			if err := tweetChannelItem(ctx, ch.Title, item); err != nil {
-				errs[i] = err
+				errFlg.Set(true)
+				log.GaeLog(ctx).Error(err)
 				return
 			}
-		}(ctx, item, i)
+		}(ctx, item)
 	}
 	wg.Wait()
 
-	any := false
-	for _, err := range errs {
-		if err != nil {
-			any = true
-			log.GaeLog(ctx).Error(err)
-		}
-	}
-	if any {
+	if errFlg.Enabled() {
 		return errors.New("Errors occured in twitter.TweetChannel.")
 	}
 	return nil

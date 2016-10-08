@@ -3,9 +3,11 @@ package linenotify
 import (
 	"fmt"
 	"sync"
+	"sync/atomic"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/linenotify"
@@ -22,6 +24,7 @@ func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize s
 		return err
 	}
 
+	var errCount int32
 	req := linenotify.NewRequestNotify()
 	req.Client = urlfetch.Client(ctx)
 
@@ -39,6 +42,7 @@ func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize s
 			token, err := item.Token()
 			if err != nil {
 				glog.Error(err)
+				atomic.AddInt32(&errCount, 1)
 				return
 			}
 			if err := req.Notify(token, message, imageThumbnail, imageFullsize); err != nil {
@@ -47,14 +51,14 @@ func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize s
 					glog.Infof("Delete LINE Notify token. hash:%s", item.Id)
 				} else {
 					glog.Error(err)
-					return
 				}
+				atomic.AddInt32(&errCount, 1)
 			}
 		}(item)
 	}
 	wg.Wait()
 
-	glog.Infof("LINE Notify. message:%s imageURL:%s len:%d", message, imageFullsize, len(items))
+	glog.Infof("LINE Notify. message:%s imageURL:%s len:%d errCount:%d", message, imageFullsize, len(items), errCount)
 	return nil
 }
 
@@ -66,31 +70,25 @@ func NotifyMessage(ctx context.Context, message string) error {
 
 // Send channel message and images to LINE Notify
 func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
-	errs := make([]error, len(ch.Items))
+	errFlg := util.NewAtomicBool(false)
 	var wg sync.WaitGroup
 	wg.Add(len(ch.Items))
-	for i, item := range ch.Items {
-		go func(ctx context.Context, item *crawler.ChannelItem, i int) {
+	for _, item := range ch.Items {
+		go func(ctx context.Context, item *crawler.ChannelItem) {
 			defer wg.Done()
 
 			if err := model.NewLineItem(item).Put(ctx); err != nil {
 				return
 			}
 			if err := notifyChannelItem(ctx, ch.Title, item); err != nil {
-				errs[i] = err
+				errFlg.Set(true)
+				log.GaeLog(ctx).Error(err)
 			}
-		}(ctx, item, i)
+		}(ctx, item)
 	}
 	wg.Wait()
 
-	any := false
-	for _, err := range errs {
-		if err != nil {
-			any = true
-			log.GaeLog(ctx).Error(err)
-		}
-	}
-	if any {
+	if errFlg.Enabled() {
 		return errors.New("Errors occured in linenotify.NotifyChannel")
 	}
 	return nil

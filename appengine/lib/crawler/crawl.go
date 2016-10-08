@@ -2,10 +2,10 @@ package crawler
 
 import (
 	"sync"
-	"sync/atomic"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
@@ -18,7 +18,7 @@ func Crawl(ctx context.Context) error {
 	glog := log.NewGaeLogger(ctx)
 	clients := crawlChannelClients(ctx)
 
-	var errCount int32 = 0
+	errFlg := util.NewAtomicBool(false)
 	var wg sync.WaitGroup
 	wg.Add(len(clients))
 	for _, cli := range clients {
@@ -31,26 +31,26 @@ func Crawl(ctx context.Context) error {
 
 			ch, err := cli.Fetch()
 			if err != nil {
-				atomic.AddInt32(&errCount, 1)
+				errFlg.Set(true)
 				glog.Error(err)
 				return
 			}
 
 			q := NewQueueTask(glog)
 			if err := q.PushTweet(ctx, ch); err != nil {
-				atomic.AddInt32(&errCount, 1)
+				errFlg.Set(true)
 				glog.Error(err)
 			}
 			if err := q.PushLine(ctx, ch); err != nil {
-				atomic.AddInt32(&errCount, 1)
+				errFlg.Set(true)
 				glog.Error(err)
 			}
 		}(ctx, cli)
 	}
 	wg.Wait()
 
-	if errCount > 0 {
-		return errors.Errorf("Errors occured in crawler.Crawl. errCount:%d", errCount)
+	if errFlg.Enabled() {
+		return errors.New("Errors occured in crawler.Crawl.")
 	}
 	return nil
 }

@@ -48,11 +48,16 @@ func onMessage(ctx context.Context) string {
 	return fmt.Sprintf("通知機能を有効にする場合は、下記URLから設定を行ってください（・Θ・）\n%s", onURL)
 }
 
+func helpMessage(ctx context.Context) string {
+	helpURL := fmt.Sprintf("%s%s", ctx.Value("baseURL").(string), "/linebot/help")
+	return fmt.Sprintf("ヘルプ（・Θ・）\n%s", helpURL)
+}
+
 func followEvent(ctx context.Context, event *linebot.Event) error {
 	log.GaeLog(ctx).Infof("follow user. event:%v", event)
 
 	message := "友だち追加ありがとうございます。\nこちらは、ももクロちゃんのブログやAE NEWS等を通知する機能と連携したり、画像を返したりするBOTです。"
-	return ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s\n\n%s", message, onMessage(ctx)))
+	return ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s\n\n%s\n\n%s", message, onMessage(ctx), helpMessage(ctx)))
 }
 
 func unfollowEvent(ctx context.Context, event *linebot.Event) error {
@@ -71,8 +76,7 @@ func textMessageEvent(ctx context.Context, message *linebot.TextMessage, event *
 		return err
 	}
 
-	helpURL := fmt.Sprintf("%s%s", ctx.Value("baseURL").(string), "/linebot/help")
-	return ReplyText(ctx, event.ReplyToken, fmt.Sprintf("ヘルプ（・Θ・）\n%s", helpURL))
+	return ReplyText(ctx, event.ReplyToken, helpMessage(ctx))
 }
 
 func handleOnOff(ctx context.Context, message *linebot.TextMessage, event *linebot.Event) error {

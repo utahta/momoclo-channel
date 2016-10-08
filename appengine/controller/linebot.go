@@ -26,7 +26,7 @@ func LineBotCallback(ctx context.Context, w http.ResponseWriter, req *http.Reque
 }
 
 func LineBotHelp(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
-	tpl := template.Must(template.ParseFiles("../view/linebot/help.html"))
+	tpl := template.Must(template.ParseFiles("view/linebot/help.html"))
 	if err := tpl.Execute(w, nil); err != nil {
 		return newError(err, http.StatusInternalServerError)
 	}

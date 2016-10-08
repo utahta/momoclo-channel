@@ -6,7 +6,7 @@
 Momoiro Clover Z Information Notification on GAE/Go
 
 - Twitter [@botnofu](https://twitter.com/botnofu)
-- [LINE BOT](http://line.me/ti/p/%40pmm7800e)
+- [LINE BOT](https://line.me/R/ti/p/%40zen8019l)
 
 ## Contributing
 

@@ -1,5 +1,5 @@
-hash: 751be541bd90467a6ca0d71c7136ff15f6b12972286d8af169ad9c460ab09278
-updated: 2016-10-06T01:23:10.364362862+09:00
+hash: c59b97de285755b911cc7e5637e2cd94864f658a84292afa477e7b84fdf0df3a
+updated: 2016-10-08T15:45:54.281457951+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 1c31af6f6c1a7b101ed05aacc7d8a738b43ae86e
@@ -22,7 +22,7 @@ imports:
   subpackages:
   - proto
 - name: github.com/joho/godotenv
-  version: 4ed13390c0acd2ff4e371e64d8b97c8954138243
+  version: a01a834e1654b4c9ca5b3ad05159445cc9c7ad08
 - name: github.com/jteeuwen/go-pkg-rss
   version: 72391e6fd7384785fa3c46a405214a616d6c4a1d
 - name: github.com/jteeuwen/go-pkg-xmlx
@@ -30,45 +30,45 @@ imports:
 - name: github.com/kennygrant/sanitize
   version: ce9fd1f6ce32afaa38b51feea32320fc8875e8e4
 - name: github.com/line/line-bot-sdk-go
-  version: 547c8a8d13c8b5ceb7d92959dc5a4aafedd6035d
+  version: 7de5817af0beb177af416ed4bb48cca4248b8849
   subpackages:
   - linebot
 - name: github.com/mjibson/goon
-  version: 3618e6f56803ad77c732374326bb1e78f99097d4
+  version: 40012cc63c0968f97a523786a240b2f05302f4ba
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/goquery
-  version: 152b1a2c8f5d0340f658bb656032a39b94e52958
+  version: 56a198aba89cdf7a612e6c762eff9d788b9f2dae
 - name: golang.org/x/net
-  version: ffe101cce3477a6c6d8f0754d103bb0a84ec1266
+  version: f4b625ec9b21d620bb5ce57f2dfc3e08ca97fce6
   subpackages:
   - context
-  - html
   - context/ctxhttp
+  - html
   - html/atom
 - name: google.golang.org/api
-  version: adba394bac5800ff2e620d040e9401528f5b7615
+  version: 3cf64a039723963488f603d140d0aec154fdcd20
   subpackages:
   - customsearch/v1
   - gensupport
   - googleapi
   - googleapi/internal/uritemplates
 - name: google.golang.org/appengine
-  version: 926995697fa8241be2dc73eb318666e24f44ed51
+  version: 150dc57a1b433e64154302bdc40b6bb8aefa313a
   subpackages:
+  - datastore
   - log
   - taskqueue
-  - datastore
   - urlfetch
   - internal
   - internal/app_identity
   - internal/modules
+  - internal/urlfetch
   - internal/datastore
   - internal/taskqueue
-  - internal/urlfetch
   - internal/log
+  - memcache
   - internal/base
   - internal/remote_api
-  - memcache
   - internal/memcache
 testImports: []

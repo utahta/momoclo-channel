@@ -1,11 +1,29 @@
 package: github.com/utahta/momoclo-channel
 import:
+- package: github.com/ChimeraCoder/anaconda
 - package: github.com/PuerkitoBio/goquery
+  version: ^1.0.1
+- package: github.com/joho/godotenv
+  version: ^1.0.0
 - package: github.com/jteeuwen/go-pkg-rss
 - package: github.com/kennygrant/sanitize
-- package: github.com/pkg/errors
-  version: ^0.7.0
-- package: google.golang.org/appengine
+  version: ^1.0.0
+- package: github.com/line/line-bot-sdk-go
   subpackages:
+  - linebot
+- package: github.com/mjibson/goon
+- package: github.com/pkg/errors
+  version: ^0.8.0
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: google.golang.org/api
+  subpackages:
+  - customsearch/v1
+- package: google.golang.org/appengine
+  version: ^1.0.0
+  subpackages:
+  - datastore
   - log
   - taskqueue
+  - urlfetch

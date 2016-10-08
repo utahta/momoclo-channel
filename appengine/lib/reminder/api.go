@@ -1,34 +1,23 @@
-package app
+package reminder
 
 import (
-	"net/http"
 	"sync"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
+	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"golang.org/x/net/context"
 )
 
-type ReminderNotification struct {
-	context context.Context
-	log     log.Logger
-}
-
-func newReminderNotification(ctx context.Context) *ReminderNotification {
-	return &ReminderNotification{context: ctx, log: log.NewGaeLogger(ctx)}
-}
-
-func (r *ReminderNotification) Notify() *Error {
-	ctx, cancel := context.WithTimeout(r.context, 50*time.Second)
-	defer cancel()
-
+func Notify(ctx context.Context) error {
 	q := model.NewReminderQuery(ctx)
 	rows, err := q.GetAll()
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		return err
 	}
 
 	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
@@ -36,29 +25,41 @@ func (r *ReminderNotification) Notify() *Error {
 	for _, row := range rows {
 		if ok, err := row.Valid(now); !ok {
 			if err != nil {
-				r.log.Error(err)
+				return err
 			}
 			continue
 		}
 
+		// Tweet, Line の出し分けが今のところ出来ないので要検討
+		const maxGoroutineNum = 2
+		errFlg := util.NewAtomicBool(false)
 		var wg sync.WaitGroup
+		wg.Add(maxGoroutineNum)
 
-		wg.Add(1)
 		go func(text string) {
 			defer wg.Done()
-			twitter.TweetText(ctx, text)
+			if err := twitter.TweetMessage(ctx, text); err != nil {
+				errFlg.Set(true)
+				log.GaeLog(ctx).Error(err)
+			}
 		}(row.Text)
 
-		wg.Add(1)
 		go func(text string) {
 			defer wg.Done()
-			linenotify.NotifyMessage(ctx, text)
+			if err := linenotify.NotifyMessage(ctx, text); err != nil {
+				errFlg.Set(true)
+				log.GaeLog(ctx).Error(err)
+			}
 		}(row.Text)
 
 		wg.Wait()
 
 		if row.IsOnce() {
 			row.Disable(ctx)
+		}
+
+		if errFlg.Enabled() {
+			return errors.Errorf("Errors occured in reminder.Notify. text:%s", row.Text)
 		}
 	}
 	return nil

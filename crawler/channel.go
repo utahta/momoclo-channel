@@ -70,6 +70,8 @@ type ChannelClient struct {
 	parser  ChannelParser
 }
 
+type ChannelClientOption func(*ChannelClient) error
+
 func newChannel(url string, title string) *Channel {
 	return &Channel{
 		Url:    url,
@@ -78,19 +80,31 @@ func newChannel(url string, title string) *Channel {
 	}
 }
 
-func newChannelClient(c *Channel, parser ChannelParser) *ChannelClient {
-	return &ChannelClient{
-		Channel: c,
-		parser:  parser,
+func newChannelClient(c *Channel, parser ChannelParser, options ...ChannelClientOption) (*ChannelClient, error) {
+	cc := &ChannelClient{Channel: c, parser: parser}
+	for _, option := range options {
+		if err := option(cc); err != nil {
+			return nil, err
+		}
+	}
+	return cc, nil
+}
+
+// WithHTTPClient function
+func WithHTTPClient(c *http.Client) ChannelClientOption {
+	return func(cc *ChannelClient) error {
+		cc.Channel.Client = c
+		return nil
 	}
 }
 
+// Fetch items
 func (c *ChannelClient) Fetch() (*Channel, error) {
 	req, err := http.NewRequest("GET", c.Channel.Url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Cache-Control", "no-cache, max-age=0")
+	req.Header.Add("Cache-Control", "max-age=0, must-revalidate")
 
 	resp, err := c.Channel.Client.Do(req)
 	if err != nil {

@@ -1,7 +1,7 @@
-package app
+package ustream
 
 import (
-	"net/http"
+	"fmt"
 	"sync"
 	"time"
 
@@ -9,6 +9,7 @@ import (
 	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
+	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/ustream"
 	"golang.org/x/net/context"
@@ -16,54 +17,55 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
-type UstreamNotification struct {
-	context context.Context
-	log     log.Logger
-}
-
-func newUstreamNotification(ctx context.Context) *UstreamNotification {
-	return &UstreamNotification{context: ctx, log: log.NewGaeLogger(ctx)}
-}
-
-func (u *UstreamNotification) Notify() *Error {
-	ctx, cancel := context.WithTimeout(u.context, 50*time.Second)
-	defer cancel()
-
+func Notify(ctx context.Context) error {
 	c := ustream.NewClient()
 	c.HttpClient.Transport = &urlfetch.Transport{Context: ctx}
 
 	isLive, err := c.IsLive()
 	if err != nil {
-		return newError(errors.Wrap(err, "Failed to get ustream status"), http.StatusInternalServerError)
+		return errors.Wrap(err, "Failed to get ustream status")
 	}
 
 	status := model.NewUstreamStatus()
 	if err := status.Get(ctx); err != nil && err != datastore.ErrNoSuchEntity {
-		return newError(errors.Wrap(err, "Failed to get ustream status from datastore"), http.StatusInternalServerError)
+		return errors.Wrap(err, "Failed to get ustream status from datastore")
 	}
 
 	if status.IsLive == isLive {
 		return nil
 	}
 	status.IsLive = isLive
-	status.Put(u.context)
+	status.Put(ctx)
 
 	if isLive {
+		const maxGoroutineNum = 2
+		errFlg := util.NewAtomicBool(false)
 		var wg sync.WaitGroup
+		wg.Add(maxGoroutineNum)
 
-		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			twitter.TweetUstream(ctx)
+			jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+			t := time.Now().In(jst)
+			if err := twitter.TweetMessage(ctx, fmt.Sprintf("momocloTV が配信を開始しました\n%s", t.Format("from 2006/01/02 15:04:05"))); err != nil {
+				errFlg.Set(true)
+				log.GaeLog(ctx).Error(err)
+			}
 		}()
 
-		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました")
+			if err := linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました"); err != nil {
+				errFlg.Set(true)
+				log.GaeLog(ctx).Error(err)
+			}
 		}()
 
 		wg.Wait()
+
+		if errFlg.Enabled() {
+			return errors.New("Errors occurred in ustream.Notify")
+		}
 	}
 	return nil
 }

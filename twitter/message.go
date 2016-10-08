@@ -3,27 +3,19 @@ package twitter
 import (
 	"net/url"
 
-	"github.com/ChimeraCoder/anaconda"
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/log"
 )
 
 type MessageClient struct {
-	Api *anaconda.TwitterApi
-	Log log.Logger
+	*Client
 }
 
-func NewMessageClient(consumerKey, consumerSecret, accessToken, accessTokenSecret string) *MessageClient {
-	t := &MessageClient{}
-	t.auth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
-	t.Log = log.NewSilentLogger()
-	return t
-}
-
-func (t *MessageClient) auth(consumerKey, consumerSecret, accessToken, accessTokenSecret string) {
-	anaconda.SetConsumerKey(consumerKey)
-	anaconda.SetConsumerSecret(consumerSecret)
-	t.Api = anaconda.NewTwitterApi(accessToken, accessTokenSecret)
+func NewMessageClient(consumerKey, consumerSecret, accessToken, accessTokenSecret string, options ...ClientOption) (*MessageClient, error) {
+	c, err := newClient(consumerKey, consumerSecret, accessToken, accessTokenSecret, options...)
+	if err != nil {
+		return nil, err
+	}
+	return &MessageClient{Client: c}, nil
 }
 
 func (t *MessageClient) Tweet(msg string) error {

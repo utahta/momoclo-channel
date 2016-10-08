@@ -5,15 +5,19 @@ import (
 	"testing"
 )
 
+func retrieveClient(c *ChannelClient, err error) *ChannelClient {
+	return c
+}
+
 func TestBlogChannelParser(t *testing.T) {
 	var tests = []struct {
 		c *ChannelClient
 	}{
-		{NewTamaiBlogChannelClient(nil)},
-		{NewMomotaBlogChannelClient(nil)},
-		{NewAriyasuBlogChannelClient(nil)},
-		{NewSasakiBlogChannelClient(nil)},
-		{NewTakagiBlogChannelClient(nil)},
+		{retrieveClient(NewTamaiBlogChannelClient(DefaultBlogMaxItemNum))},
+		{retrieveClient(NewMomotaBlogChannelClient(DefaultBlogMaxItemNum))},
+		{retrieveClient(NewAriyasuBlogChannelClient(DefaultBlogMaxItemNum))},
+		{retrieveClient(NewSasakiBlogChannelClient(DefaultBlogMaxItemNum))},
+		{retrieveClient(NewTakagiBlogChannelClient(DefaultBlogMaxItemNum))},
 	}
 
 	for _, test := range tests {
@@ -28,11 +32,11 @@ func TestBlogChannelParserList(t *testing.T) {
 		c     *ChannelClient
 		input string
 	}{
-		{NewTamaiBlogChannelClient(nil), "testdata/blog/list_tamai_20160714.html"},
-		{NewMomotaBlogChannelClient(nil), "testdata/blog/list_momota_20160714.html"},
-		{NewAriyasuBlogChannelClient(nil), "testdata/blog/list_ariyasu_20160714.html"},
-		{NewSasakiBlogChannelClient(nil), "testdata/blog/list_sasaki_20160714.html"},
-		{NewTakagiBlogChannelClient(nil), "testdata/blog/list_takagi_20160714.html"},
+		{retrieveClient(NewTamaiBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/list_tamai_20160714.html"},
+		{retrieveClient(NewMomotaBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/list_momota_20160714.html"},
+		{retrieveClient(NewAriyasuBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/list_ariyasu_20160714.html"},
+		{retrieveClient(NewSasakiBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/list_sasaki_20160714.html"},
+		{retrieveClient(NewTakagiBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/list_takagi_20160714.html"},
 	}
 
 	for _, test := range tests {
@@ -58,16 +62,15 @@ func TestBlogChannelParserList(t *testing.T) {
 
 func TestBlogChannelParserListWithOption(t *testing.T) {
 	const expectMaxItemNum = 10
-	opt := &BlogChannelParserOption{MaxItemNum: expectMaxItemNum}
 	var tests = []struct {
 		c     *ChannelClient
 		input string
 	}{
-		{NewTamaiBlogChannelClient(opt), "testdata/blog/list_tamai_20160714.html"},
-		{NewMomotaBlogChannelClient(opt), "testdata/blog/list_momota_20160714.html"},
-		{NewAriyasuBlogChannelClient(opt), "testdata/blog/list_ariyasu_20160714.html"},
-		{NewSasakiBlogChannelClient(opt), "testdata/blog/list_sasaki_20160714.html"},
-		{NewTakagiBlogChannelClient(opt), "testdata/blog/list_takagi_20160714.html"},
+		{retrieveClient(NewTamaiBlogChannelClient(expectMaxItemNum)), "testdata/blog/list_tamai_20160714.html"},
+		{retrieveClient(NewMomotaBlogChannelClient(expectMaxItemNum)), "testdata/blog/list_momota_20160714.html"},
+		{retrieveClient(NewAriyasuBlogChannelClient(expectMaxItemNum)), "testdata/blog/list_ariyasu_20160714.html"},
+		{retrieveClient(NewSasakiBlogChannelClient(expectMaxItemNum)), "testdata/blog/list_sasaki_20160714.html"},
+		{retrieveClient(NewTakagiBlogChannelClient(expectMaxItemNum)), "testdata/blog/list_takagi_20160714.html"},
 	}
 
 	for _, test := range tests {
@@ -98,11 +101,11 @@ func TestBlogChannelParserItem(t *testing.T) {
 		expectedImageLen int
 		expectedVideoLen int
 	}{
-		{NewTamaiBlogChannelClient(nil), "testdata/blog/item_tamai_20160712.html", 6, 0},
-		{NewMomotaBlogChannelClient(nil), "testdata/blog/item_momota_20160712.html", 3, 0},
-		{NewAriyasuBlogChannelClient(nil), "testdata/blog/item_ariyasu_20160702.html", 0, 1},
-		{NewSasakiBlogChannelClient(nil), "testdata/blog/item_sasaki_20160712.html", 2, 0},
-		{NewTakagiBlogChannelClient(nil), "testdata/blog/item_takagi_20160712.html", 5, 0},
+		{retrieveClient(NewTamaiBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/item_tamai_20160712.html", 6, 0},
+		{retrieveClient(NewMomotaBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/item_momota_20160712.html", 3, 0},
+		{retrieveClient(NewAriyasuBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/item_ariyasu_20160702.html", 0, 1},
+		{retrieveClient(NewSasakiBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/item_sasaki_20160712.html", 2, 0},
+		{retrieveClient(NewTakagiBlogChannelClient(DefaultBlogMaxItemNum)), "testdata/blog/item_takagi_20160712.html", 5, 0},
 	}
 
 	for _, test := range tests {

@@ -6,7 +6,7 @@ import (
 )
 
 func TestYoutubeChannelParser(t *testing.T) {
-	c := NewYoutubeChannelClient()
+	c, _ := NewYoutubeChannelClient()
 	fp, err := os.Open("testdata/youtube/feed_20160715.xml")
 	if err != nil {
 		t.Error("Failed to open youtube testdata")

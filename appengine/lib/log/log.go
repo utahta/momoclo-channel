@@ -17,14 +17,15 @@ type gaeLogger struct {
 }
 
 var gaeLog mlog.Logger
+var gaeMux = new(sync.Mutex)
 
 func NewGaeLogger(ctx context.Context) mlog.Logger {
 	return &gaeLogger{context: ctx}
 }
+
 func GaeLog(ctx context.Context) mlog.Logger {
-	m := new(sync.Mutex)
-	m.Lock()
-	defer m.Unlock()
+	gaeMux.Lock()
+	defer gaeMux.Unlock()
 	if gaeLog != nil {
 		return gaeLog
 	}

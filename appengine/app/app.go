@@ -1,8 +1,6 @@
 package app
 
 import (
-	"net/http"
-
 	"github.com/joho/godotenv"
 	"github.com/utahta/momoclo-channel/log"
 )
@@ -15,11 +13,4 @@ func init() {
 	initRoutes()
 
 	log.Basic().Infof("init app")
-}
-
-func initRoutes() {
-	http.Handle("/cron/", &CronHandler{})
-	http.Handle("/queue/", &QueueHandler{})
-	http.Handle("/linebot/", &LinebotHandler{})
-	http.Handle("/linenotify/", &LinenotifyHandler{})
 }

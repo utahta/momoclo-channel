@@ -32,3 +32,11 @@ func LineBotHelp(ctx context.Context, w http.ResponseWriter, req *http.Request) 
 	}
 	return nil
 }
+
+func LineBotAbout(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+	tpl := template.Must(template.ParseFiles("view/linebot/about.html"))
+	if err := tpl.Execute(w, nil); err != nil {
+		return newError(err, http.StatusInternalServerError)
+	}
+	return nil
+}

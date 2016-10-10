@@ -32,6 +32,8 @@ func initRoutes() {
 			err = controller.LineBotCallback(ctx, w, req)
 		case "/linebot/help":
 			err = controller.LineBotHelp(ctx, w, req)
+		case "/linebot/about":
+			err = controller.LineBotAbout(ctx, w, req)
 
 		case "/linenotify/on":
 			err = controller.LinenotifyOn(ctx, w, req)

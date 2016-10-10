@@ -56,7 +56,7 @@ func helpMessage(ctx context.Context) string {
 func followEvent(ctx context.Context, event *linebot.Event) error {
 	log.GaeLog(ctx).Infof("follow user. event:%v", event)
 
-	message := "友だち追加ありがとうございます。\nこちらは、ももクロちゃんのブログやAE NEWS等を通知する機能と連携したり、画像を返したりするBOTです。"
+	message := "友だち追加ありがとうございます。\nこちらは、ももクロちゃんのブログやAE NEWS等を通知する機能との連携を補助したり、画像を返したりするBOTです。"
 	return ReplyText(ctx, event.ReplyToken, fmt.Sprintf("%s\n\n%s\n\n%s", message, onMessage(ctx), helpMessage(ctx)))
 }
 

@@ -3,7 +3,6 @@ package log
 import (
 	"fmt"
 	"log"
-	"sync"
 
 	mlog "github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
@@ -16,21 +15,14 @@ type gaeLogger struct {
 	context context.Context
 }
 
-var gaeLog mlog.Logger
-var gaeMux = new(sync.Mutex)
-
+// New logger for Google App Engine
 func NewGaeLogger(ctx context.Context) mlog.Logger {
 	return &gaeLogger{context: ctx}
 }
 
+// alias NewGaeLogger
 func GaeLog(ctx context.Context) mlog.Logger {
-	gaeMux.Lock()
-	defer gaeMux.Unlock()
-	if gaeLog != nil {
-		return gaeLog
-	}
-	gaeLog = NewGaeLogger(ctx)
-	return gaeLog
+	return NewGaeLogger(ctx)
 }
 
 func (l gaeLogger) Fatal(args ...interface{}) {

@@ -47,7 +47,7 @@ func Notify(ctx context.Context) error {
 			defer wg.Done()
 			jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 			t := time.Now().In(jst)
-			if err := twitter.TweetMessage(ctx, fmt.Sprintf("momocloTV が配信を開始しました\n%s", t.Format("from 2006/01/02 15:04:05"))); err != nil {
+			if err := twitter.TweetMessage(ctx, fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))); err != nil {
 				errFlg.Set(true)
 				log.GaeLog(ctx).Error(err)
 			}
@@ -55,7 +55,7 @@ func Notify(ctx context.Context) error {
 
 		go func() {
 			defer wg.Done()
-			if err := linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました"); err != nil {
+			if err := linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"); err != nil {
 				errFlg.Set(true)
 				log.GaeLog(ctx).Error(err)
 			}

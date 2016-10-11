@@ -13,6 +13,12 @@ automatic_scaling:
 handlers:
 - url: /images
   static_dir: public/images
+- url: /robots.txt
+  static_files: public/robots.txt
+  upload: public/robots.txt
+- url: /favicon.ico
+  static_files: public/favicon.ico
+  upload: public/favicon.ico
 
 - url: /cron/crawl
   script: _go_app

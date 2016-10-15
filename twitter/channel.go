@@ -139,15 +139,32 @@ func (t *ChannelClient) uploadVideos(item *crawler.ChannelItem) []*anaconda.Vide
 			continue
 		}
 
-		media, err := t.Api.UploadVideoInit(len(bytes), "video/mp4")
+		totalBytes := len(bytes)
+		media, err := t.Api.UploadVideoInit(totalBytes, "video/mp4")
 		if err != nil {
 			t.Log.Errorf("failed to upload video init. url:%s err:%v\n", video.Url, err)
 			continue
 		}
-		if err = t.Api.UploadVideoAppend(media.MediaIDString, 0, base64.StdEncoding.EncodeToString(bytes)); err != nil {
+
+		mediaMaxLen := 5 * 1024 * 1024 // 5MB
+		segment := 0
+		for i := 0; i < totalBytes; i += mediaMaxLen {
+			var mediaData string
+			if i+mediaMaxLen < totalBytes {
+				mediaData = base64.StdEncoding.EncodeToString(bytes[i:i+mediaMaxLen])
+			} else {
+				mediaData = base64.StdEncoding.EncodeToString(bytes[i:])
+			}
+			if err = t.Api.UploadVideoAppend(media.MediaIDString, segment, mediaData); err != nil {
+				break
+			}
+			segment += 1
+		}
+		if err != nil {
 			t.Log.Errorf("failed to upload video append. url:%s err:%v\n", video.Url, err)
 			continue
 		}
+
 		v, err := t.Api.UploadVideoFinalize(media.MediaIDString)
 		if err != nil {
 			t.Log.Errorf("failed to upload video finalize. url:%s err:%v\n", video.Url, err)

@@ -19,6 +19,7 @@ func newClient(consumerKey, consumerSecret, accessToken, accessTokenSecret strin
 	anaconda.SetConsumerKey(consumerKey)
 	anaconda.SetConsumerSecret(consumerSecret)
 	c.Api = anaconda.NewTwitterApi(accessToken, accessTokenSecret)
+	c.Log = log.NewBasicLogger()
 
 	for _, option := range options {
 		if err := option(c); err != nil {

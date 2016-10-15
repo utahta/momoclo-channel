@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"sync"
 )
 
 type Logger interface {
@@ -66,20 +65,13 @@ func NewIOLogger(io io.Writer) Logger {
 	return &logger{log: log.New(io, "", log.LstdFlags)}
 }
 
-var basicLog Logger
-
 func NewBasicLogger() Logger {
 	return NewIOLogger(os.Stderr)
 }
+
+// alias NewBasicLogger()
 func Basic() Logger {
-	m := new(sync.Mutex)
-	m.Lock()
-	defer m.Unlock()
-	if basicLog != nil {
-		return basicLog
-	}
-	basicLog = NewBasicLogger()
-	return basicLog
+	return NewBasicLogger()
 }
 
 func (l logger) Fatal(args ...interface{}) {

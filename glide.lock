@@ -1,5 +1,5 @@
 hash: c59b97de285755b911cc7e5637e2cd94864f658a84292afa477e7b84fdf0df3a
-updated: 2016-10-08T15:45:54.281457951+09:00
+updated: 2016-10-18T22:51:48.910366334+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 1c31af6f6c1a7b101ed05aacc7d8a738b43ae86e
@@ -28,13 +28,13 @@ imports:
 - name: github.com/jteeuwen/go-pkg-xmlx
   version: 76f54ee73233b171ca9ee82ef837a1fc4d3809c0
 - name: github.com/kennygrant/sanitize
-  version: ce9fd1f6ce32afaa38b51feea32320fc8875e8e4
+  version: 7fdd72ab580907c39c5f0b8b98b8d89e5476f424
 - name: github.com/line/line-bot-sdk-go
   version: 7de5817af0beb177af416ed4bb48cca4248b8849
   subpackages:
   - linebot
 - name: github.com/mjibson/goon
-  version: 40012cc63c0968f97a523786a240b2f05302f4ba
+  version: cd609af4b72b42722419414a522f235038d5ec0b
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/goquery

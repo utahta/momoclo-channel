@@ -151,7 +151,7 @@ func (t *ChannelClient) uploadVideos(item *crawler.ChannelItem) []*anaconda.Vide
 		for i := 0; i < totalBytes; i += mediaMaxLen {
 			var mediaData string
 			if i+mediaMaxLen < totalBytes {
-				mediaData = base64.StdEncoding.EncodeToString(bytes[i:i+mediaMaxLen])
+				mediaData = base64.StdEncoding.EncodeToString(bytes[i : i+mediaMaxLen])
 			} else {
 				mediaData = base64.StdEncoding.EncodeToString(bytes[i:])
 			}

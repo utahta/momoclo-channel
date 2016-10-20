@@ -18,8 +18,10 @@ import (
 )
 
 func Notify(ctx context.Context) error {
-	c := ustream.NewClient()
-	c.HttpClient.Transport = &urlfetch.Transport{Context: ctx}
+	c, err := ustream.NewClient(ustream.WithHTTPTransport(&urlfetch.Transport{Context: ctx}))
+	if err != nil {
+		return err
+	}
 
 	isLive, err := c.IsLive()
 	if err != nil {

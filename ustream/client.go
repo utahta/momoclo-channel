@@ -9,15 +9,32 @@ import (
 )
 
 type Client struct {
-	HttpClient *http.Client
+	httpClient *http.Client
 }
 
-func NewClient() *Client {
-	return &Client{HttpClient: http.DefaultClient}
+type ClientOption func(*Client) error
+
+func NewClient(options ...ClientOption) (*Client, error) {
+	c := &Client{httpClient: http.DefaultClient}
+
+	for _, option := range options {
+		if err := option(c); err != nil {
+			return nil, err
+		}
+	}
+	return c, nil
+}
+
+// WithHTTPTransport function
+func WithHTTPTransport(t http.RoundTripper) ClientOption {
+	return func(client *Client) error {
+		client.httpClient.Transport = t
+		return nil
+	}
 }
 
 func (c *Client) IsLive() (bool, error) {
-	resp, err := c.HttpClient.Get("https://api.ustream.tv/channels/4979543.json")
+	resp, err := c.httpClient.Get("https://api.ustream.tv/channels/4979543.json")
 	if err != nil {
 		return false, errors.Wrap(err, "Failed to get ustream")
 	}

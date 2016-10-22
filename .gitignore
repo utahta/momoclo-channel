@@ -32,4 +32,3 @@ env
 .env.dev
 .env.prod
 vendor
-linebot-server

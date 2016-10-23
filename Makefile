@@ -8,7 +8,7 @@ fmt:
 	goimports -w .
 
 test:
-	@go test -v -race ./crawler/... ./ustream/... ./appengine/lib/util/...
+	@go test -v -race ./crawler/... ./ustream/... ./appengine/lib/util/... ./appengine/model/...
 
 build-protos:
 	@protoc linebot/protos/linebot.proto --go_out=plugins=grpc:.

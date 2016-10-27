@@ -11,14 +11,14 @@ import (
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
-	"github.com/utahta/ustchecker"
+	"github.com/utahta/uststat"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/urlfetch"
 )
 
 func Notify(ctx context.Context) error {
-	c, err := ustchecker.New(ustchecker.WithHTTPTransport(&urlfetch.Transport{Context: ctx}))
+	c, err := uststat.New(uststat.WithHTTPTransport(&urlfetch.Transport{Context: ctx}))
 	if err != nil {
 		return err
 	}

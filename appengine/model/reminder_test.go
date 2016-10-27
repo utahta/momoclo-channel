@@ -45,4 +45,3 @@ func TestReminderQuery_GetAll(t *testing.T) {
 		t.Errorf("Expected text test1, got %d", res[0].Text)
 	}
 }
-

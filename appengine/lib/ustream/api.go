@@ -11,19 +11,19 @@ import (
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
-	"github.com/utahta/momoclo-channel/ustream"
+	"github.com/utahta/ustchecker"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/urlfetch"
 )
 
 func Notify(ctx context.Context) error {
-	c, err := ustream.NewClient(ustream.WithHTTPTransport(&urlfetch.Transport{Context: ctx}))
+	c, err := ustchecker.New(ustchecker.WithHTTPTransport(&urlfetch.Transport{Context: ctx}))
 	if err != nil {
 		return err
 	}
 
-	isLive, err := c.IsLive()
+	isLive, err := c.IsLiveByChannelID("4979543")
 	if err != nil {
 		return errors.Wrap(err, "Failed to get ustream status")
 	}

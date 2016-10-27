@@ -12,6 +12,7 @@ import:
   subpackages:
   - linebot
 - package: github.com/mjibson/goon
+- package: github.com/utahta/ustchecker
 - package: github.com/pkg/errors
   version: ^0.8.0
 - package: golang.org/x/net

@@ -1,8 +1,8 @@
-hash: c59b97de285755b911cc7e5637e2cd94864f658a84292afa477e7b84fdf0df3a
-updated: 2016-10-18T22:51:48.910366334+09:00
+hash: 04da99e95c56b26881c9069f1d7e14448d35b80ffb97f1323b0c24d513a1ca21
+updated: 2016-10-27T22:58:53.929787476+09:00
 imports:
 - name: github.com/andybalholm/cascadia
-  version: 1c31af6f6c1a7b101ed05aacc7d8a738b43ae86e
+  version: 65919c611220063037b1db8eb334acaf17a6d8ea
 - name: github.com/azr/backoff
   version: 53511d3c733003985b0b76f733df1f4d0095ee6a
 - name: github.com/ChimeraCoder/anaconda
@@ -14,11 +14,11 @@ imports:
 - name: github.com/dustin/gojson
   version: 2e71ec9dd5adce3b168cd0dbde03b5cc04951c30
 - name: github.com/garyburd/go-oauth
-  version: 719b069913e1151a73ea30d2ea4f90deda3ce234
+  version: 1dd5f05ec64cbda548d22836ceb6cc7ae749c2ee
   subpackages:
   - oauth
 - name: github.com/golang/protobuf
-  version: df1d3ca07d2d07bba352d5b73c4313b4e2a6203e
+  version: 98fa357170587e470c5f27d3c3ea0947b71eb455
   subpackages:
   - proto
 - name: github.com/joho/godotenv
@@ -30,7 +30,7 @@ imports:
 - name: github.com/kennygrant/sanitize
   version: 7fdd72ab580907c39c5f0b8b98b8d89e5476f424
 - name: github.com/line/line-bot-sdk-go
-  version: 7de5817af0beb177af416ed4bb48cca4248b8849
+  version: cf2ef03b526492fbd832df3e1ace2936fcbdedcb
   subpackages:
   - linebot
 - name: github.com/mjibson/goon
@@ -39,15 +39,17 @@ imports:
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/goquery
   version: 56a198aba89cdf7a612e6c762eff9d788b9f2dae
+- name: github.com/utahta/ustchecker
+  version: 3620e664d5dcaade299eac51e2dc00a60daa3a78
 - name: golang.org/x/net
-  version: f4b625ec9b21d620bb5ce57f2dfc3e08ca97fce6
+  version: c46f265c325130a7a6c7b27db8c6fe14b64f1a68
   subpackages:
   - context
   - context/ctxhttp
   - html
   - html/atom
 - name: google.golang.org/api
-  version: 3cf64a039723963488f603d140d0aec154fdcd20
+  version: 3ef9447cad8d725923ca024dab57786299cf745a
   subpackages:
   - customsearch/v1
   - gensupport
@@ -60,6 +62,7 @@ imports:
   - log
   - taskqueue
   - urlfetch
+  - aetest
   - internal
   - internal/app_identity
   - internal/modules
@@ -67,8 +70,10 @@ imports:
   - internal/datastore
   - internal/taskqueue
   - internal/log
+  - user
   - memcache
   - internal/base
   - internal/remote_api
+  - internal/user
   - internal/memcache
 testImports: []

@@ -4,8 +4,8 @@ import (
 	"sync"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
-	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
@@ -18,7 +18,7 @@ func Crawl(ctx context.Context) error {
 	glog := log.NewGaeLogger(ctx)
 	clients := crawlChannelClients(ctx)
 
-	errFlg := util.NewAtomicBool(false)
+	errFlg := atomicbool.New(false)
 	var wg sync.WaitGroup
 	wg.Add(len(clients))
 	for _, cli := range clients {

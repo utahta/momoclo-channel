@@ -6,8 +6,8 @@ import (
 	"sync/atomic"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
-	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/linenotify"
@@ -70,7 +70,7 @@ func NotifyMessage(ctx context.Context, message string) error {
 
 // Send channel message and images to LINE Notify
 func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
-	errFlg := util.NewAtomicBool(false)
+	errFlg := atomicbool.New(false)
 	var wg sync.WaitGroup
 	wg.Add(len(ch.Items))
 	for _, item := range ch.Items {

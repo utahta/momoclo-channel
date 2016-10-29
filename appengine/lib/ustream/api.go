@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
-	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/uststat"
 	"golang.org/x/net/context"
@@ -41,7 +41,7 @@ func Notify(ctx context.Context) error {
 
 	if isLive {
 		const maxGoroutineNum = 2
-		errFlg := util.NewAtomicBool(false)
+		errFlg := atomicbool.New(false)
 		var wg sync.WaitGroup
 		wg.Add(maxGoroutineNum)
 

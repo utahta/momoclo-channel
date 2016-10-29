@@ -4,8 +4,8 @@ import (
 	"sync"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
-	"github.com/utahta/momoclo-channel/appengine/lib/util"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/crawler"
 	"golang.org/x/net/context"
@@ -26,7 +26,7 @@ func TweetMessage(ctx context.Context, text string) error {
 
 // Tweet channel
 func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
-	errFlg := util.NewAtomicBool(false)
+	errFlg := atomicbool.New(false)
 	var wg sync.WaitGroup
 	wg.Add(len(ch.Items))
 	for _, item := range ch.Items {

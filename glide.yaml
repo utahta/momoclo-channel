@@ -28,3 +28,4 @@ import:
   - log
   - taskqueue
   - urlfetch
+- package: github.com/utahta/go-atomicbool

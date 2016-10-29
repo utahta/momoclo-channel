@@ -1,5 +1,5 @@
-hash: d05763cc65bd6aeae6fe3cc8f3e5033ea9483000da06eda866b82252452d91ee
-updated: 2016-10-27T23:30:49.270313476+09:00
+hash: 74b0ffd8e555f6efa2f7df7041362ca5230eda50cc4fec254fceb9f82ec1e64d
+updated: 2016-10-29T12:38:14.206993074+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 65919c611220063037b1db8eb334acaf17a6d8ea
@@ -33,23 +33,27 @@ imports:
   version: cf2ef03b526492fbd832df3e1ace2936fcbdedcb
   subpackages:
   - linebot
+- name: github.com/mattn/go-scan
+  version: c32d62d79bafeac8906774425844a0e03470316f
 - name: github.com/mjibson/goon
   version: cd609af4b72b42722419414a522f235038d5ec0b
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/goquery
   version: 56a198aba89cdf7a612e6c762eff9d788b9f2dae
+- name: github.com/utahta/go-atomicbool
+  version: 8c6eeea43c52804cb9689cde24f07d0f0951b544
 - name: github.com/utahta/uststat
-  version: aeca0c942f94ec8ae3efc5e6e17be782deb2917b
+  version: da10706843d6d91fa5c6417b7238c872c97cb29c
 - name: golang.org/x/net
-  version: c46f265c325130a7a6c7b27db8c6fe14b64f1a68
+  version: dffc95cbb4ff9af8614b2741ec26371fffcc19b3
   subpackages:
   - context
   - context/ctxhttp
   - html
   - html/atom
 - name: google.golang.org/api
-  version: 3ef9447cad8d725923ca024dab57786299cf745a
+  version: 037d03010933c9fa8e57559c1b7faeec971688d1
   subpackages:
   - customsearch/v1
   - gensupport

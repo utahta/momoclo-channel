@@ -3,10 +3,10 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/utahta/momoclo-channel)](https://goreportcard.com/report/github.com/utahta/momoclo-channel)
 [![Build Status](https://travis-ci.org/utahta/momoclo-channel.svg?branch=master)](https://travis-ci.org/utahta/momoclo-channel)
 
-Momoiro Clover Z Information Notification on GAE/Go
+The momoclo-channel gives you information about Momoiro Clover Z with Twitter and LINE Notify.
 
 - Twitter [@botnofu](https://twitter.com/botnofu)
-- [LINE BOT](https://line.me/R/ti/p/%40zen8019l)
+- [LINE BOT for linking with LINE Notify](https://line.me/R/ti/p/%40zen8019l)
 
 ## Contributing
 

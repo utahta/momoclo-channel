@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
+	gcontext "github.com/gorilla/context"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"golang.org/x/net/context"
 )
@@ -37,4 +38,11 @@ func buildURL(u *url.URL, path string) string {
 	buf.WriteString(path)
 
 	return buf.String()
+}
+
+func getContext(req *http.Request) context.Context {
+	if ctx, ok := gcontext.Get(req, "appengine-context").(context.Context); ok {
+		return ctx
+	}
+	return nil
 }

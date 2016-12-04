@@ -9,45 +9,51 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-channel/linenotify"
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
 )
 
 // LINE Notify と連携する
-func LinenotifyOn(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	reqAuth, err := linenotify.NewRequestAuthorization(os.Getenv("LINENOTIFY_CLIENT_ID"), buildURL(req.URL, "/linenotify/callback"))
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 	http.SetCookie(w, &http.Cookie{Name: "state", Value: reqAuth.State, Expires: time.Now().Add(60 * time.Second), Secure: true})
 
 	err = reqAuth.Redirect(w, req)
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }
 
 // LINE Notify の連携を解除する
-func LinenotifyOff(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func LinenotifyOff(w http.ResponseWriter, req *http.Request) {
 	// Using feature that provided in official.
 	http.Redirect(w, req, "https://notify-bot.line.me/my/", http.StatusFound)
-	return nil
 }
 
-func LinenotifyCallback(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	params, err := linenotify.ParseCallbackParameters(req)
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 
 	state, err := req.Cookie("state")
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 
 	if params.State != state.Value {
-		return newError(errors.New("Invalid csrf token."), http.StatusBadRequest)
+		newError(errors.New("Invalid csrf token."), http.StatusBadRequest).Handle(ctx, w)
+		return
 	}
 
 	reqToken := linenotify.NewRequestToken(
@@ -60,22 +66,25 @@ func LinenotifyCallback(ctx context.Context, w http.ResponseWriter, req *http.Re
 
 	token, err := reqToken.Get()
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 
 	ln, err := model.NewLineNotification(token)
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 	ln.Put(ctx) // save to datastore
 
 	t, err := template.New("callback").Parse("<html><body><h1>通知ノフ設定オンにしました（・Θ・）</h1></body></html>")
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 	err = t.Execute(w, nil)
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }

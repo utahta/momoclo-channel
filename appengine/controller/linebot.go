@@ -9,34 +9,42 @@ import (
 	"golang.org/x/net/context"
 )
 
-func LineBotCallback(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func LineBotCallback(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	events, err := mbot.ParseRequest(ctx, req)
 	if err != nil {
 		if err == linebot.ErrInvalidSignature {
-			return newError(err, http.StatusBadRequest)
+			newError(err, http.StatusBadRequest).Handle(ctx, w)
+			return
 		}
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 
 	ctx = context.WithValue(ctx, "baseURL", buildURL(req.URL, ""))
 	if err := mbot.HandleEvents(ctx, events); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }
 
-func LineBotHelp(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func LineBotHelp(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	tpl := template.Must(template.ParseFiles("view/linebot/help.html"))
 	if err := tpl.Execute(w, nil); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }
 
-func LineBotAbout(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func LineBotAbout(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	tpl := template.Must(template.ParseFiles("view/linebot/about.html"))
 	if err := tpl.Execute(w, nil); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }

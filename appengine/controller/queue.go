@@ -7,39 +7,46 @@ import (
 	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
-	"golang.org/x/net/context"
 )
 
-func QueueTweet(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func QueueTweet(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	if err := req.ParseForm(); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 
 	q := crawler.NewQueueTask(log.NewGaeLogger(ctx))
 	ch, err := q.ParseURLValues(req.Form)
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 
 	if err := twitter.TweetChannel(ctx, ch); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }
 
-func QueueLine(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func QueueLine(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	if err := req.ParseForm(); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 
 	q := crawler.NewQueueTask(log.NewGaeLogger(ctx))
 	ch, err := q.ParseURLValues(req.Form)
 	if err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
 
 	if err := linenotify.NotifyChannel(ctx, ch); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }

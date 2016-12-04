@@ -1,5 +1,5 @@
-hash: 74b0ffd8e555f6efa2f7df7041362ca5230eda50cc4fec254fceb9f82ec1e64d
-updated: 2016-10-29T12:38:14.206993074+09:00
+hash: 6e18036773b12b9d299ea51199365616af4c437b0b7a9c9f5cfb5fe5d05ef45d
+updated: 2016-12-04T23:15:39.594480567+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 65919c611220063037b1db8eb334acaf17a6d8ea
@@ -21,6 +21,10 @@ imports:
   version: 98fa357170587e470c5f27d3c3ea0947b71eb455
   subpackages:
   - proto
+- name: github.com/gorilla/context
+  version: 1ea25387ff6f684839d82767c1733ff4d4d15d0a
+- name: github.com/gorilla/mux
+  version: 0eeaf8392f5b04950925b8a69fe70f110fa7cbfc
 - name: github.com/joho/godotenv
   version: a01a834e1654b4c9ca5b3ad05159445cc9c7ad08
 - name: github.com/jteeuwen/go-pkg-rss
@@ -41,8 +45,12 @@ imports:
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/goquery
   version: 56a198aba89cdf7a612e6c762eff9d788b9f2dae
+- name: github.com/urfave/negroni
+  version: fde5e16d32adc7ad637e9cd9ad21d4ebc6192535
 - name: github.com/utahta/go-atomicbool
   version: 8c6eeea43c52804cb9689cde24f07d0f0951b544
+- name: github.com/utahta/ustream-live-status
+  version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: github.com/utahta/uststat
   version: da10706843d6d91fa5c6417b7238c872c97cb29c
 - name: golang.org/x/net
@@ -62,22 +70,22 @@ imports:
 - name: google.golang.org/appengine
   version: 150dc57a1b433e64154302bdc40b6bb8aefa313a
   subpackages:
-  - datastore
-  - log
-  - taskqueue
-  - urlfetch
   - aetest
+  - datastore
   - internal
   - internal/app_identity
-  - internal/modules
-  - internal/urlfetch
-  - internal/datastore
-  - internal/taskqueue
-  - internal/log
-  - user
-  - memcache
   - internal/base
-  - internal/remote_api
-  - internal/user
+  - internal/datastore
+  - internal/log
   - internal/memcache
+  - internal/modules
+  - internal/remote_api
+  - internal/taskqueue
+  - internal/urlfetch
+  - internal/user
+  - log
+  - memcache
+  - taskqueue
+  - urlfetch
+  - user
 testImports: []

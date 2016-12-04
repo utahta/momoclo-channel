@@ -6,29 +6,34 @@ import (
 	"github.com/utahta/momoclo-channel/appengine/lib/crawler"
 	"github.com/utahta/momoclo-channel/appengine/lib/reminder"
 	"github.com/utahta/momoclo-channel/appengine/lib/ustream"
-	"golang.org/x/net/context"
 )
 
 // Notify reminder
-func CronReminder(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func CronReminder(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	if err := reminder.Notify(ctx); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }
 
 // Notify ustream
-func CronUstream(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func CronUstream(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	if err := ustream.Notify(ctx); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }
 
 // Crawling
-func CronCrawl(ctx context.Context, w http.ResponseWriter, req *http.Request) *Error {
+func CronCrawl(w http.ResponseWriter, req *http.Request) {
+	ctx := getContext(req)
+
 	if err := crawler.Crawl(ctx); err != nil {
-		return newError(err, http.StatusInternalServerError)
+		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		return
 	}
-	return nil
 }

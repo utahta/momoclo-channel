@@ -2,49 +2,33 @@ package app
 
 import (
 	"net/http"
-	"time"
 
+	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 	"github.com/utahta/momoclo-channel/appengine/controller"
-	"golang.org/x/net/context"
-	"google.golang.org/appengine"
+	"github.com/utahta/momoclo-channel/appengine/middleware"
 )
 
 func initRoutes() {
-	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		ctx, cancel := context.WithTimeout(appengine.NewContext(req), 55*time.Second)
-		defer cancel()
-		var err *controller.Error
+	n := negroni.New()
+	n.Use(negroni.HandlerFunc(middleware.Appengine))
 
-		switch req.URL.Path {
-		case "/cron/crawl":
-			err = controller.CronCrawl(ctx, w, req)
-		case "/cron/ustream":
-			err = controller.CronUstream(ctx, w, req)
-		case "/cron/reminder":
-			err = controller.CronReminder(ctx, w, req)
+	router := mux.NewRouter()
+	router.HandleFunc("/cron/crawl", controller.CronCrawl).Methods("GET")
+	router.HandleFunc("/cron/ustream", controller.CronUstream).Methods("GET")
+	router.HandleFunc("/cron/reminder", controller.CronReminder).Methods("GET")
 
-		case "/queue/tweet":
-			err = controller.QueueTweet(ctx, w, req)
-		case "/queue/line":
-			err = controller.QueueLine(ctx, w, req)
+	router.HandleFunc("/queue/tweet", controller.QueueTweet).Methods("POST")
+	router.HandleFunc("/queue/line", controller.QueueLine).Methods("POST")
 
-		case "/linebot/callback":
-			err = controller.LineBotCallback(ctx, w, req)
-		case "/linebot/help":
-			err = controller.LineBotHelp(ctx, w, req)
-		case "/linebot/about":
-			err = controller.LineBotAbout(ctx, w, req)
+	router.HandleFunc("/linebot/callback", controller.LineBotCallback).Methods("POST")
+	router.HandleFunc("/linebot/help", controller.LineBotHelp).Methods("GET")
+	router.HandleFunc("/linebot/about", controller.LineBotAbout).Methods("GET")
 
-		case "/linenotify/on":
-			err = controller.LinenotifyOn(ctx, w, req)
-		case "/linenotify/off":
-			err = controller.LinenotifyOff(ctx, w, req)
-		case "/linenotify/callback":
-			err = controller.LinenotifyCallback(ctx, w, req)
+	router.HandleFunc("/linenotify/callback", controller.LinenotifyCallback)
+	router.HandleFunc("/linenotify/on", controller.LinenotifyCallback).Methods("GET")
+	router.HandleFunc("/linenotify/off", controller.LinenotifyCallback).Methods("GET")
 
-		default:
-			http.NotFound(w, req)
-		}
-		err.Handle(ctx, w)
-	})
+	n.UseHandler(router)
+	http.Handle("/", n)
 }

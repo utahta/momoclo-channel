@@ -26,8 +26,8 @@ func initRoutes() {
 	router.HandleFunc("/linebot/about", controller.LineBotAbout).Methods("GET")
 
 	router.HandleFunc("/linenotify/callback", controller.LinenotifyCallback)
-	router.HandleFunc("/linenotify/on", controller.LinenotifyCallback).Methods("GET")
-	router.HandleFunc("/linenotify/off", controller.LinenotifyCallback).Methods("GET")
+	router.HandleFunc("/linenotify/on", controller.LinenotifyOn).Methods("GET")
+	router.HandleFunc("/linenotify/off", controller.LinenotifyOff).Methods("GET")
 
 	n.UseHandler(router)
 	http.Handle("/", n)

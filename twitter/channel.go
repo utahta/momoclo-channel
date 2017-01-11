@@ -9,7 +9,7 @@ import (
 
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-crawler"
 )
 
 const (

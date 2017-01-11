@@ -41,6 +41,10 @@ func (r *RequestNotify) Notify(token, message, imageThumbnail, imageFullsize str
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	resp, err := r.Client.Do(req)
+	if err != nil {
+		return err
+	}
+
 	if resp.StatusCode == http.StatusUnauthorized {
 		return ErrorNotifyInvalidAccessToken
 	}

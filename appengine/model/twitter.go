@@ -5,7 +5,7 @@ import (
 
 	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )

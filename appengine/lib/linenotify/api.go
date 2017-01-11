@@ -9,8 +9,8 @@ import (
 	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
-	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/linenotify"
+	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
 )

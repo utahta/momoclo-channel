@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
-	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
 )
@@ -68,6 +68,6 @@ func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	}
 }
 
-func retrieveChannelClient(c *crawler.ChannelClient, err error) *crawler.ChannelClient {
+func retrieveChannelClient(c *crawler.ChannelClient, _ error) *crawler.ChannelClient {
 	return c
 }

@@ -1,4 +1,4 @@
-.PHONY: install test build-protos serve-app deploy-app-dev deploy-app-prod
+.PHONY: install fmt test serve-app deploy-app-dev deploy-app-prod
 
 install:
 	@glide install
@@ -8,10 +8,7 @@ fmt:
 	goimports -w .
 
 test:
-	@go test -v -race ./crawler/... ./appengine/model/...
-
-build-protos:
-	@protoc linebot/protos/linebot.proto --go_out=plugins=grpc:.
+	@go test -v -race ./appengine/model/...
 
 serve-app:
 	@cd appengine/app && make serve
@@ -22,5 +19,3 @@ deploy-app-prod:
 deploy-app-dev:
 	@cd appengine/app && make deploy-dev
 
-deploy-linebot:
-	@cd cmd/linebot_server && make deploy

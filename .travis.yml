@@ -2,6 +2,10 @@ language: go
 go:
   - 1.6
 sudo: false
+before_install:
+  - openssl aes-256-cbc -K $encrypted_75579ba057cb_key -iv $encrypted_75579ba057cb_iv -in .netrc.enc -out .netrc -d
+  - chmod 600 .netrc
+  - cp .netrc ~
 install:
   - wget -q -O - https://github.com/Masterminds/glide/releases/download/0.10.2/glide-0.10.2-linux-amd64.tar.gz | tar xvz
   - linux-amd64/glide install

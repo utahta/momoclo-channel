@@ -35,7 +35,6 @@ func Crawl(ctx context.Context) error {
 				glog.Error(err)
 				return
 			}
-			glog.Infof("%+v", ch)
 
 			q := NewQueueTask(glog)
 			if err := q.PushTweet(ctx, ch); err != nil {

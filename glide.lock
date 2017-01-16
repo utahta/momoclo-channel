@@ -1,5 +1,5 @@
-hash: 808bd36503bbabdea4577ede374c5da2f9e802dc286a4ec55b1327c1680e44e0
-updated: 2017-01-11T23:28:38.830211039+09:00
+hash: 8808fbb02d1e7eece96a998ff0ac7039455dd66ebe1e691acfeb4c9db97b38fe
+updated: 2017-01-16T22:10:26.22201674+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 65919c611220063037b1db8eb334acaf17a6d8ea
@@ -50,7 +50,7 @@ imports:
 - name: github.com/utahta/go-atomicbool
   version: 8c6eeea43c52804cb9689cde24f07d0f0951b544
 - name: github.com/utahta/momoclo-crawler
-  version: bece46e548d1ce70887c311420860dc438e0dbb6
+  version: 5bad0706b835c8669db411b74ce73717ea64deec
 - name: github.com/utahta/ustream-live-status
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: github.com/utahta/uststat

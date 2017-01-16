@@ -36,3 +36,4 @@ import:
 - package: github.com/urfave/negroni
   version: ^0.2.0
 - package: github.com/utahta/momoclo-crawler
+  version: 5bad0706b835c8669db411b74ce73717ea64deec

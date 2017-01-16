@@ -41,10 +41,6 @@ func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
 			if err := model.NewTweetItem(item).Put(ctx); err != nil {
 				return
 			}
-			if _, err := model.PutLatestBlogPost(ctx, item.Url); err != nil {
-				log.GaeLog(ctx).Error(err)
-				// go on
-			}
 
 			if err := tweetChannelItem(ctx, ch.Title, item); err != nil {
 				errFlg.Set(true)

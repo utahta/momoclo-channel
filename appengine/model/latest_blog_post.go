@@ -7,6 +7,7 @@ import (
 
 	"github.com/mjibson/goon"
 	"golang.org/x/net/context"
+	"google.golang.org/appengine/datastore"
 )
 
 const (
@@ -78,4 +79,38 @@ func PutLatestBlogPost(ctx context.Context, url string) (*LatestBlogPost, error)
 		return nil, err
 	}
 	return l, nil
+}
+
+func getLatestBlogPostURL(ctx context.Context, code string) string {
+	q := datastore.NewQuery("LatestBlogPost").Filter("Code =", code)
+
+	var posts []*LatestBlogPost
+	if _, err := q.GetAll(ctx, &posts); err != nil {
+		return ""
+	}
+
+	if len(posts) == 0 {
+		return ""
+	}
+	return posts[0].URL
+}
+
+func GetTamaiLatestBlogPostURL(ctx context.Context) string {
+	return getLatestBlogPostURL(ctx, BlogPostCodeTamai)
+}
+
+func GetMomotaLatestBlogPostURL(ctx context.Context) string {
+	return getLatestBlogPostURL(ctx, BlogPostCodeMomota)
+}
+
+func GetAriyasuLatestBlogPostURL(ctx context.Context) string {
+	return getLatestBlogPostURL(ctx, BlogPostCodeAriyasu)
+}
+
+func GetSasakiLatestBlogPostURL(ctx context.Context) string {
+	return getLatestBlogPostURL(ctx, BlogPostCodeSasaki)
+}
+
+func GetTakagiLatestBlogPostURL(ctx context.Context) string {
+	return getLatestBlogPostURL(ctx, BlogPostCodeTakagi)
 }

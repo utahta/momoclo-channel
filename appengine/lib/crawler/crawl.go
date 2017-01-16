@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
@@ -36,6 +37,14 @@ func Crawl(ctx context.Context) error {
 				return
 			}
 
+			// update latest blog post
+			for _, item := range ch.Items {
+				if _, err := model.PutLatestBlogPost(ctx, item.Url); err != nil {
+					glog.Error(err)
+					// go on
+				}
+			}
+
 			q := NewQueueTask(glog)
 			if err := q.PushTweet(ctx, ch); err != nil {
 				errFlg.Set(true)
@@ -58,11 +67,11 @@ func Crawl(ctx context.Context) error {
 func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	option := crawler.WithHTTPClient(urlfetch.Client(ctx))
 	return []*crawler.ChannelClient{
-		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, "", option)),
-		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, "", option)),
-		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, "", option)),
-		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, "", option)),
-		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, "", option)),
+		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, model.GetTamaiLatestBlogPostURL(ctx), option)),
+		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, model.GetMomotaLatestBlogPostURL(ctx), option)),
+		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, model.GetAriyasuLatestBlogPostURL(ctx), option)),
+		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, model.GetSasakiLatestBlogPostURL(ctx), option)),
+		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, model.GetTakagiLatestBlogPostURL(ctx), option)),
 		retrieveChannelClient(crawler.NewAeNewsChannelClient(option)),
 		retrieveChannelClient(crawler.NewYoutubeChannelClient(option)),
 	}

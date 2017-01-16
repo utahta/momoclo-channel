@@ -28,7 +28,7 @@ type LatestBlogPost struct {
 
 func NewLatestBlogPost(code string, url string) *LatestBlogPost {
 	return &LatestBlogPost{
-		ID:   fmt.Sprintf("%s-%s", code, url),
+		ID:   code,
 		Code: code,
 		URL:  url,
 	}

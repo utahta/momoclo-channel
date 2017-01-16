@@ -1,6 +1,7 @@
 package twitter
 
 import (
+	"os"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -13,6 +14,10 @@ import (
 
 // Tweet text message
 func TweetMessage(ctx context.Context, text string) error {
+	if tweetDisabled() {
+		return nil
+	}
+
 	tw, err := newMessageClient(ctx)
 	if err != nil {
 		return err
@@ -52,6 +57,10 @@ func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
 }
 
 func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelItem) error {
+	if tweetDisabled() {
+		return nil
+	}
+
 	tw, err := newChannelClient(ctx)
 	if err != nil {
 		return err
@@ -61,4 +70,13 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 		return err
 	}
 	return nil
+}
+
+// if true disable tweet
+func tweetDisabled() bool {
+	e := os.Getenv("DISABLE_TWEET")
+	if e != "" {
+		return true
+	}
+	return false
 }

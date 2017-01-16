@@ -58,11 +58,11 @@ func Crawl(ctx context.Context) error {
 func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	option := crawler.WithHTTPClient(urlfetch.Client(ctx))
 	return []*crawler.ChannelClient{
-		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, option)),
-		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, option)),
-		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, option)),
-		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, option)),
-		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, option)),
+		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, "", option)),
+		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, "", option)),
+		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, "", option)),
+		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, "", option)),
+		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, "", option)),
 		retrieveChannelClient(crawler.NewAeNewsChannelClient(option)),
 		retrieveChannelClient(crawler.NewYoutubeChannelClient(option)),
 	}

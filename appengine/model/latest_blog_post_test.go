@@ -1,12 +1,40 @@
 package model
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/aetest"
 )
+
+func TestPutLatestBlogPost(t *testing.T) {
+	ctx, done, err := aetest.NewContext()
+	if err != nil {
+		t.Error(err)
+	}
+	defer done()
+
+	tests := []struct {
+		url          string
+		expectExists bool
+	}{
+		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeTamai), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeMomota), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeAriyasu), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeSasaki), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeTakagi), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", "aaa"), false},
+	}
+	for _, test := range tests {
+		l, _ := PutLatestBlogPost(ctx, test.url)
+		exists := l != nil
+		if exists != test.expectExists {
+			t.Fatalf("Expected exists %v, got %v", exists, test.expectExists)
+		}
+	}
+}
 
 func TestGetLatestBlogPostURL(t *testing.T) {
 	ctx, done, err := aetest.NewContext()
@@ -26,7 +54,6 @@ func TestGetLatestBlogPostURL(t *testing.T) {
 		{BlogPostCodeSasaki, "http://example.com/4", GetSasakiLatestBlogPostURL},
 		{BlogPostCodeTakagi, "http://example.com/5", GetTakagiLatestBlogPostURL},
 	}
-
 	for _, test := range tests {
 		blog := NewLatestBlogPost(test.expectCode, test.expectURL)
 		if err := blog.Put(ctx); err != nil {

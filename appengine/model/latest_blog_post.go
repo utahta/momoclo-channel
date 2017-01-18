@@ -53,6 +53,11 @@ func (l *LatestBlogPost) Put(ctx context.Context) error {
 	}, nil)
 }
 
+func (l *LatestBlogPost) Get(ctx context.Context) error {
+	g := goon.FromContext(ctx)
+	return g.Get(l)
+}
+
 func PutLatestBlogPost(ctx context.Context, url string) (*LatestBlogPost, error) {
 	var code string
 	codes := []string{
@@ -74,7 +79,12 @@ func PutLatestBlogPost(ctx context.Context, url string) (*LatestBlogPost, error)
 		return nil, nil
 	}
 
-	l := NewLatestBlogPost(code, url)
+	l := NewLatestBlogPost(code, "")
+	if err := l.Get(ctx); err != nil && err != datastore.ErrNoSuchEntity {
+		return nil, err
+	}
+
+	l.URL = url
 	if err := l.Put(ctx); err != nil {
 		return nil, err
 	}

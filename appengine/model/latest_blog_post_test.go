@@ -28,7 +28,11 @@ func TestPutLatestBlogPost(t *testing.T) {
 		{fmt.Sprintf("http://ameblo.jp/%s", "aaa"), false},
 	}
 	for _, test := range tests {
-		l, _ := PutLatestBlogPost(ctx, test.url)
+		l, err := PutLatestBlogPost(ctx, test.url)
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		exists := l != nil
 		if exists != test.expectExists {
 			t.Fatalf("Expected exists %v, got %v", exists, test.expectExists)

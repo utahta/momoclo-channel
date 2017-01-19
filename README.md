@@ -6,7 +6,7 @@
 The momoclo-channel gives you information about Momoiro Clover Z with Twitter and LINE Notify.
 
 - Twitter [@botnofu](https://twitter.com/botnofu)
-- [LINE BOT for linking with LINE Notify](https://line.me/R/ti/p/%40zen8019l)
+- [LINE BOT](https://momoclo-channel.appspot.com/linebot/about)
 
 ## Contributing
 

@@ -41,6 +41,7 @@ func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
 			if err := model.NewTweetItem(item).Put(ctx); err != nil {
 				return
 			}
+
 			if err := tweetChannelItem(ctx, ch.Title, item); err != nil {
 				errFlg.Set(true)
 				log.GaeLog(ctx).Error(err)

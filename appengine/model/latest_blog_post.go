@@ -92,17 +92,11 @@ func PutLatestBlogPost(ctx context.Context, url string) (*LatestBlogPost, error)
 }
 
 func getLatestBlogPostURL(ctx context.Context, code string) string {
-	q := datastore.NewQuery("LatestBlogPost").Filter("Code =", code)
-
-	var posts []*LatestBlogPost
-	if _, err := q.GetAll(ctx, &posts); err != nil {
+	l := NewLatestBlogPost(code, "")
+	if err := l.Get(ctx); err != nil {
 		return ""
 	}
-
-	if len(posts) == 0 {
-		return ""
-	}
-	return posts[0].URL
+	return l.URL
 }
 
 func GetTamaiLatestBlogPostURL(ctx context.Context) string {

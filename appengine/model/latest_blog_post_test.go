@@ -77,4 +77,9 @@ func TestGetLatestBlogPostURL(t *testing.T) {
 			t.Fatalf("Expected URL %s, got %s", test.expectURL, url)
 		}
 	}
+
+	url := getLatestBlogPostURL(ctx, "unknown")
+	if url != "" {
+		t.Fatalf("Expected URL empty, got %s", url)
+	}
 }

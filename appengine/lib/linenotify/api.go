@@ -15,7 +15,7 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
-func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize string) error {
+func notifyMessage(ctx context.Context, message, imageFile string) error {
 	glog := log.NewGaeLogger(ctx)
 
 	query := model.NewLineNotificationQuery(ctx)
@@ -45,7 +45,7 @@ func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize s
 				atomic.AddInt32(&errCount, 1)
 				return
 			}
-			if err := req.Notify(token, message, imageThumbnail, imageFullsize); err != nil {
+			if err := req.Notify(token, message, "", "", imageFile); err != nil {
 				if err == linenotify.ErrorNotifyInvalidAccessToken {
 					item.Delete(ctx)
 					glog.Infof("Delete LINE Notify token. hash:%s", item.Id)
@@ -58,14 +58,14 @@ func notifyMessage(ctx context.Context, message, imageThumbnail, imageFullsize s
 	}
 	wg.Wait()
 
-	glog.Infof("LINE Notify. message:%s imageURL:%s len:%d errCount:%d", message, imageFullsize, len(items), errCount)
+	glog.Infof("LINE Notify. message:%s imageURL:%s len:%d errCount:%d", message, imageFile, len(items), errCount)
 	return nil
 }
 
 // Send message to LINE Notify
 func NotifyMessage(ctx context.Context, message string) error {
 	// [Notify Name] が付くので先頭に改行をいれて調整
-	return notifyMessage(ctx, fmt.Sprintf("\n%s", message), "", "")
+	return notifyMessage(ctx, fmt.Sprintf("\n%s", message), "")
 }
 
 // Send channel message and images to LINE Notify
@@ -99,17 +99,17 @@ func notifyChannelItem(ctx context.Context, title string, item *crawler.ChannelI
 
 	if len(item.Images) > 0 {
 		image := item.Images[0]
-		if err := notifyMessage(ctx, message, image.Url, image.Url); err != nil {
+		if err := notifyMessage(ctx, message, image.Url); err != nil {
 			return err
 		}
 
 		for _, image := range item.Images[1:] {
-			if err := notifyMessage(ctx, " ", image.Url, image.Url); err != nil {
+			if err := notifyMessage(ctx, " ", image.Url); err != nil {
 				return err
 			}
 		}
 	} else {
-		return notifyMessage(ctx, message, "", "")
+		return notifyMessage(ctx, message, "")
 	}
 	return nil
 }

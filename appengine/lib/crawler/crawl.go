@@ -2,6 +2,7 @@ package crawler
 
 import (
 	"sync"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-atomicbool"
@@ -11,6 +12,8 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
 )
+
+var timeNow = time.Now
 
 func Crawl(ctx context.Context) error {
 	var workQueue = make(chan bool, 20)
@@ -66,7 +69,7 @@ func Crawl(ctx context.Context) error {
 
 func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	option := crawler.WithHTTPClient(urlfetch.Client(ctx))
-	return []*crawler.ChannelClient{
+	clients := []*crawler.ChannelClient{
 		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, model.GetTamaiLatestBlogPostURL(ctx), option)),
 		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, model.GetMomotaLatestBlogPostURL(ctx), option)),
 		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, model.GetAriyasuLatestBlogPostURL(ctx), option)),
@@ -75,6 +78,16 @@ func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 		retrieveChannelClient(crawler.NewAeNewsChannelClient(option)),
 		retrieveChannelClient(crawler.NewYoutubeChannelClient(option)),
 	}
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	now := timeNow().In(jst)
+
+	// happyclo
+	// every week on Sunday, 16:55 <= now <= 19:00
+	if now.Weekday() == time.Sunday && ((now.Hour() == 16 && now.Minute() >= 55) || now.Hour() >= 17) && now.Hour() <= 19 {
+		clients = append(clients, retrieveChannelClient(crawler.NewHappycloChannelClient("", option)))
+	}
+
+	return clients
 }
 
 func retrieveChannelClient(c *crawler.ChannelClient, _ error) *crawler.ChannelClient {

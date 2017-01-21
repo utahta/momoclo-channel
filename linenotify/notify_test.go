@@ -74,4 +74,14 @@ func TestNewRequestNotify_requestBodyWithImageFile(t *testing.T) {
 			t.Errorf("Expected contentType[%d], got %s", test.idx, contentType)
 		}
 	}
+
+	// ファイル名を変えた場合、cache が無効になり GET すること
+	req.Client.Transport = &notifyRoundTripper{
+		resp: &http.Response{},
+		err:  errors.New("expect call"),
+	}
+	_, _, err := req.requestBodyWithImageFile("test", "dummy2.jpg")
+	if err.Error() != "Get dummy2.jpg: expect call" {
+		t.Fatalf("Expected error, got %v", err)
+	}
 }

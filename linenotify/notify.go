@@ -103,9 +103,8 @@ func (r *RequestNotify) requestBodyWithImageFile(message, imageFile string) (io.
 		return nil, "", err
 	}
 
-	rb, ok := r.imageBodyCache[imageFile]
-	if ok {
-		if _, err := io.Copy(fw, bytes.NewBuffer(rb)); err != nil {
+	if cache, ok := r.imageBodyCache[imageFile]; ok {
+		if _, err := io.Copy(fw, bytes.NewBuffer(cache)); err != nil {
 			return nil, "", err
 		}
 	} else {

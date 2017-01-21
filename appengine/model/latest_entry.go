@@ -79,7 +79,7 @@ func PutLatestEntry(ctx context.Context, url string) (*LatestEntry, error) {
 	}
 
 	if code == "" {
-		// maybe not blog post
+		// is not supported
 		return nil, nil
 	}
 

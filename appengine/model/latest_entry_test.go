@@ -9,7 +9,7 @@ import (
 	"google.golang.org/appengine/aetest"
 )
 
-func TestPutLatestBlogPost(t *testing.T) {
+func TestPutLatestEntry(t *testing.T) {
 	ctx, done, err := aetest.NewContext()
 	if err != nil {
 		t.Error(err)
@@ -20,15 +20,15 @@ func TestPutLatestBlogPost(t *testing.T) {
 		url          string
 		expectExists bool
 	}{
-		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeTamai), true},
-		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeMomota), true},
-		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeAriyasu), true},
-		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeSasaki), true},
-		{fmt.Sprintf("http://ameblo.jp/%s", BlogPostCodeTakagi), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", LatestEntryCodeTamai), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", LatestEntryCodeMomota), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", LatestEntryCodeAriyasu), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", LatestEntryCodeSasaki), true},
+		{fmt.Sprintf("http://ameblo.jp/%s", LatestEntryCodeTakagi), true},
 		{fmt.Sprintf("http://ameblo.jp/%s", "aaa"), false},
 	}
 	for _, test := range tests {
-		l, err := PutLatestBlogPost(ctx, test.url)
+		l, err := PutLatestEntry(ctx, test.url)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -40,7 +40,7 @@ func TestPutLatestBlogPost(t *testing.T) {
 	}
 }
 
-func TestGetLatestBlogPostURL(t *testing.T) {
+func TestGetLatestEntryURL(t *testing.T) {
 	ctx, done, err := aetest.NewContext()
 	if err != nil {
 		t.Error(err)
@@ -52,14 +52,14 @@ func TestGetLatestBlogPostURL(t *testing.T) {
 		expectURL  string
 		fn         func(context.Context) string
 	}{
-		{BlogPostCodeTamai, "http://example.com/1", GetTamaiLatestBlogPostURL},
-		{BlogPostCodeMomota, "http://example.com/2", GetMomotaLatestBlogPostURL},
-		{BlogPostCodeAriyasu, "http://example.com/3", GetAriyasuLatestBlogPostURL},
-		{BlogPostCodeSasaki, "http://example.com/4", GetSasakiLatestBlogPostURL},
-		{BlogPostCodeTakagi, "http://example.com/5", GetTakagiLatestBlogPostURL},
+		{LatestEntryCodeTamai, "http://example.com/1", GetTamaiLatestEntryURL},
+		{LatestEntryCodeMomota, "http://example.com/2", GetMomotaLatestEntryURL},
+		{LatestEntryCodeAriyasu, "http://example.com/3", GetAriyasuLatestEntryURL},
+		{LatestEntryCodeSasaki, "http://example.com/4", GetSasakiLatestEntryURL},
+		{LatestEntryCodeTakagi, "http://example.com/5", GetTakagiLatestEntryURL},
 	}
 	for _, test := range tests {
-		blog := NewLatestBlogPost(test.expectCode, test.expectURL)
+		blog := NewLatestEntry(test.expectCode, test.expectURL)
 		if err := blog.Put(ctx); err != nil {
 			t.Fatal(err)
 		}
@@ -67,7 +67,7 @@ func TestGetLatestBlogPostURL(t *testing.T) {
 	time.Sleep(time.Second) // Due to eventual consistency
 
 	for _, test := range tests {
-		url := getLatestBlogPostURL(ctx, test.expectCode)
+		url := getLatestEntryURL(ctx, test.expectCode)
 		if url != test.expectURL {
 			t.Fatalf("Expected URL %s, got %s", test.expectURL, url)
 		}
@@ -78,7 +78,7 @@ func TestGetLatestBlogPostURL(t *testing.T) {
 		}
 	}
 
-	url := getLatestBlogPostURL(ctx, "unknown")
+	url := getLatestEntryURL(ctx, "unknown")
 	if url != "" {
 		t.Fatalf("Expected URL empty, got %s", url)
 	}

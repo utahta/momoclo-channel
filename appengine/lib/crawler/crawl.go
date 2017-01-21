@@ -40,9 +40,9 @@ func Crawl(ctx context.Context) error {
 				return
 			}
 
-			// update latest blog post
+			// update latest entry
 			for _, item := range ch.Items {
-				if _, err := model.PutLatestBlogPost(ctx, item.Url); err != nil {
+				if _, err := model.PutLatestEntry(ctx, item.Url); err != nil {
 					glog.Error(err)
 					// go on
 				}
@@ -70,11 +70,11 @@ func Crawl(ctx context.Context) error {
 func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	option := crawler.WithHTTPClient(urlfetch.Client(ctx))
 	clients := []*crawler.ChannelClient{
-		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, model.GetTamaiLatestBlogPostURL(ctx), option)),
-		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, model.GetMomotaLatestBlogPostURL(ctx), option)),
-		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, model.GetAriyasuLatestBlogPostURL(ctx), option)),
-		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, model.GetSasakiLatestBlogPostURL(ctx), option)),
-		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, model.GetTakagiLatestBlogPostURL(ctx), option)),
+		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, model.GetTamaiLatestEntryURL(ctx), option)),
+		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, model.GetMomotaLatestEntryURL(ctx), option)),
+		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, model.GetAriyasuLatestEntryURL(ctx), option)),
+		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, model.GetSasakiLatestEntryURL(ctx), option)),
+		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, model.GetTakagiLatestEntryURL(ctx), option)),
 		retrieveChannelClient(crawler.NewAeNewsChannelClient(option)),
 		retrieveChannelClient(crawler.NewYoutubeChannelClient(option)),
 	}

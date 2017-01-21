@@ -81,7 +81,6 @@ func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 	now := timeNow().In(jst)
 
-	// happyclo
 	// every week on Sunday, 16:55 <= now <= 19:00
 	if now.Weekday() == time.Sunday && ((now.Hour() == 16 && now.Minute() >= 55) || now.Hour() >= 17) && now.Hour() <= 19 {
 		clients = append(clients, retrieveChannelClient(crawler.NewHappycloChannelClient(model.GetHappycloLatestEntryURL(ctx), option)))

@@ -104,7 +104,7 @@ func (r *RequestNotify) requestBodyWithImageFile(message, imageFile string) (io.
 	}
 
 	if cache, ok := r.imageBodyCache[imageFile]; ok {
-		if _, err := io.Copy(fw, bytes.NewBuffer(cache)); err != nil {
+		if _, err := io.Copy(fw, bytes.NewReader(cache)); err != nil {
 			return nil, "", err
 		}
 	} else {
@@ -113,10 +113,17 @@ func (r *RequestNotify) requestBodyWithImageFile(message, imageFile string) (io.
 			return nil, "", err
 		}
 		defer resp.Body.Close()
-		if _, err := io.Copy(fw, resp.Body); err != nil {
+
+		imgSrc, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
 			return nil, "", err
 		}
-		copy(r.imageBodyCache[imageFile], b.Bytes())
+		r.imageBodyCache[imageFile] = make([]byte, len(imgSrc))
+		copy(r.imageBodyCache[imageFile], imgSrc)
+
+		if _, err := io.Copy(fw, bytes.NewReader(imgSrc)); err != nil {
+			return nil, "", err
+		}
 	}
 
 	if err := w.Close(); err != nil {

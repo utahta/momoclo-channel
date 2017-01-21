@@ -18,8 +18,8 @@ func Test_crawlChannelClients(t *testing.T) {
 		date      string
 		expectNum int
 	}{
-		{"", 7},
 		{"2017-01-21 16:55:00 JST", 7},
+		{"2017-01-21 19:00:00 JST", 7},
 		{"2017-01-22 16:55:00 JST", 8},
 		{"2017-01-22 19:00:00 JST", 8},
 	}

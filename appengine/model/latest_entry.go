@@ -11,11 +11,12 @@ import (
 )
 
 const (
-	LatestEntryCodeTamai   = "tamai-sd"
-	LatestEntryCodeMomota  = "momota-sd"
-	LatestEntryCodeAriyasu = "ariyasu-sd"
-	LatestEntryCodeSasaki  = "sasaki-sd"
-	LatestEntryCodeTakagi  = "takagi-sd"
+	LatestEntryCodeTamai    = "tamai-sd"
+	LatestEntryCodeMomota   = "momota-sd"
+	LatestEntryCodeAriyasu  = "ariyasu-sd"
+	LatestEntryCodeSasaki   = "sasaki-sd"
+	LatestEntryCodeTakagi   = "takagi-sd"
+	LatestEntryCodeHappyclo = "happyclo"
 )
 
 type LatestEntry struct {
@@ -60,18 +61,21 @@ func (l *LatestEntry) Get(ctx context.Context) error {
 
 func PutLatestEntry(ctx context.Context, url string) (*LatestEntry, error) {
 	var code string
-	codes := []string{
+	blogCodes := []string{
 		LatestEntryCodeTamai,
 		LatestEntryCodeMomota,
 		LatestEntryCodeAriyasu,
 		LatestEntryCodeSasaki,
 		LatestEntryCodeTakagi,
 	}
-	for _, c := range codes {
+	for _, c := range blogCodes {
 		if strings.HasPrefix(url, fmt.Sprintf("http://ameblo.jp/%s", c)) {
 			code = c
 			break
 		}
+	}
+	if strings.HasPrefix(url, "http://www.tfm.co.jp/clover/") {
+		code = LatestEntryCodeHappyclo
 	}
 
 	if code == "" {
@@ -117,4 +121,8 @@ func GetSasakiLatestEntryURL(ctx context.Context) string {
 
 func GetTakagiLatestEntryURL(ctx context.Context) string {
 	return getLatestEntryURL(ctx, LatestEntryCodeTakagi)
+}
+
+func GetHappycloLatestEntryURL(ctx context.Context) string {
+	return getLatestEntryURL(ctx, LatestEntryCodeHappyclo)
 }

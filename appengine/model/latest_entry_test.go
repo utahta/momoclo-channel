@@ -26,6 +26,7 @@ func TestPutLatestEntry(t *testing.T) {
 		{fmt.Sprintf("http://ameblo.jp/%s", LatestEntryCodeSasaki), true},
 		{fmt.Sprintf("http://ameblo.jp/%s", LatestEntryCodeTakagi), true},
 		{fmt.Sprintf("http://ameblo.jp/%s", "aaa"), false},
+		{"http://www.tfm.co.jp/clover/", true},
 	}
 	for _, test := range tests {
 		l, err := PutLatestEntry(ctx, test.url)
@@ -57,6 +58,7 @@ func TestGetLatestEntryURL(t *testing.T) {
 		{LatestEntryCodeAriyasu, "http://example.com/3", GetAriyasuLatestEntryURL},
 		{LatestEntryCodeSasaki, "http://example.com/4", GetSasakiLatestEntryURL},
 		{LatestEntryCodeTakagi, "http://example.com/5", GetTakagiLatestEntryURL},
+		{LatestEntryCodeHappyclo, "http://example.com/6", GetHappycloLatestEntryURL},
 	}
 	for _, test := range tests {
 		blog := NewLatestEntry(test.expectCode, test.expectURL)

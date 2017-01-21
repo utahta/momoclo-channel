@@ -18,18 +18,16 @@ func Test_crawlChannelClients(t *testing.T) {
 		date      string
 		expectNum int
 	}{
-		{"2017-01-21 16:55:00 JST", 7},
-		{"2017-01-21 19:00:00 JST", 7},
-		{"2017-01-22 16:55:00 JST", 8},
-		{"2017-01-22 19:00:00 JST", 8},
+		{"2017-01-21 16:55:00 +0900", 7},
+		{"2017-01-21 19:00:00 +0900", 7},
+		{"2017-01-22 16:55:00 +0900", 8},
+		{"2017-01-22 19:00:00 +0900", 8},
 	}
 
 	for _, test := range tests {
-		if test.date != "" {
-			timeNow = func() time.Time {
-				t, _ := time.Parse("2006-01-02 15:04:05 MST", test.date)
-				return t
-			}
+		timeNow = func() time.Time {
+			t, _ := time.Parse("2006-01-02 15:04:05 -0700", test.date)
+			return t
 		}
 		clients := crawlChannelClients(ctx)
 		if len(clients) != test.expectNum {

@@ -1,5 +1,5 @@
-hash: 7f61e1392082547e67d3061a6eda5546cba3fb60284f28183c10eb77e04d747d
-updated: 2017-01-19T22:31:15.319505487+09:00
+hash: 637612e3d8eb1d3d14894cc0f3ced452b5a0e6ad3a4cc4b3055fc37c1f2e203c
+updated: 2017-01-21T10:16:40.58490241+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 65919c611220063037b1db8eb334acaf17a6d8ea
@@ -32,7 +32,7 @@ imports:
 - name: github.com/jteeuwen/go-pkg-xmlx
   version: 76f54ee73233b171ca9ee82ef837a1fc4d3809c0
 - name: github.com/kennygrant/sanitize
-  version: 7fdd72ab580907c39c5f0b8b98b8d89e5476f424
+  version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
 - name: github.com/line/line-bot-sdk-go
   version: cf2ef03b526492fbd832df3e1ace2936fcbdedcb
   subpackages:
@@ -50,7 +50,7 @@ imports:
 - name: github.com/utahta/go-atomicbool
   version: 8c6eeea43c52804cb9689cde24f07d0f0951b544
 - name: github.com/utahta/momoclo-crawler
-  version: 67d952ed4bd4fbc1171aaeb7e09357125d120404
+  version: 61d5e8d7265b99632a666dc88486ce632b8399da
 - name: github.com/utahta/ustream-live-status
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: github.com/utahta/uststat
@@ -62,6 +62,14 @@ imports:
   - context/ctxhttp
   - html
   - html/atom
+- name: golang.org/x/text
+  version: 11dbc599981ccdf4fb18802a28392a8bcf7a9395
+  subpackages:
+  - encoding
+  - encoding/internal
+  - encoding/internal/identifier
+  - encoding/japanese
+  - transform
 - name: google.golang.org/api
   version: 037d03010933c9fa8e57559c1b7faeec971688d1
   subpackages:

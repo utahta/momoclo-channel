@@ -9,6 +9,7 @@ fmt:
 
 test:
 	@go test -v -race ./appengine/model/...
+	@go test -v -race ./appengine/lib/crawler/...
 
 serve-app:
 	@cd appengine/app && make serve

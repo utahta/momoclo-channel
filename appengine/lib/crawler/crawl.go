@@ -2,6 +2,7 @@ package crawler
 
 import (
 	"sync"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-atomicbool"
@@ -11,6 +12,8 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
 )
+
+var timeNow = time.Now
 
 func Crawl(ctx context.Context) error {
 	var workQueue = make(chan bool, 20)
@@ -37,9 +40,9 @@ func Crawl(ctx context.Context) error {
 				return
 			}
 
-			// update latest blog post
+			// update latest entry
 			for _, item := range ch.Items {
-				if _, err := model.PutLatestBlogPost(ctx, item.Url); err != nil {
+				if _, err := model.PutLatestEntry(ctx, item.Url); err != nil {
 					glog.Error(err)
 					// go on
 				}
@@ -66,15 +69,24 @@ func Crawl(ctx context.Context) error {
 
 func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	option := crawler.WithHTTPClient(urlfetch.Client(ctx))
-	return []*crawler.ChannelClient{
-		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, model.GetTamaiLatestBlogPostURL(ctx), option)),
-		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, model.GetMomotaLatestBlogPostURL(ctx), option)),
-		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, model.GetAriyasuLatestBlogPostURL(ctx), option)),
-		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, model.GetSasakiLatestBlogPostURL(ctx), option)),
-		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, model.GetTakagiLatestBlogPostURL(ctx), option)),
+	clients := []*crawler.ChannelClient{
+		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, model.GetTamaiLatestEntryURL(ctx), option)),
+		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, model.GetMomotaLatestEntryURL(ctx), option)),
+		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, model.GetAriyasuLatestEntryURL(ctx), option)),
+		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, model.GetSasakiLatestEntryURL(ctx), option)),
+		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, model.GetTakagiLatestEntryURL(ctx), option)),
 		retrieveChannelClient(crawler.NewAeNewsChannelClient(option)),
 		retrieveChannelClient(crawler.NewYoutubeChannelClient(option)),
 	}
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	now := timeNow().In(jst)
+
+	// every week on Sunday, 16:55 <= now <= 19:00
+	if now.Weekday() == time.Sunday && ((now.Hour() == 16 && now.Minute() >= 55) || now.Hour() >= 17) && now.Hour() <= 19 {
+		clients = append(clients, retrieveChannelClient(crawler.NewHappycloChannelClient(model.GetHappycloLatestEntryURL(ctx), option)))
+	}
+
+	return clients
 }
 
 func retrieveChannelClient(c *crawler.ChannelClient, _ error) *crawler.ChannelClient {

@@ -1,9 +1,11 @@
 package linenotify
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -52,10 +54,7 @@ func TestNewRequestNotify_requestBodyWithImageFile(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		req.Client.Transport = &notifyRoundTripper{
-			resp: test.resp,
-			err:  test.err,
-		}
+		req.Client.Transport = &notifyRoundTripper{resp: test.resp, err: test.err}
 
 		body, contentType, err := req.requestBodyWithImageFile("test", "http://localhost/dummy.jpg")
 		if err != nil {
@@ -84,4 +83,31 @@ func TestNewRequestNotify_requestBodyWithImageFile(t *testing.T) {
 	if err.Error() != "Get http://localhost/dummy2.jpg: expect call" {
 		t.Fatalf("Expected error, got %v", err)
 	}
+
+	// test for data race
+	var wg sync.WaitGroup
+	req.Client.Transport = &notifyRoundTripper{resp: &http.Response{Body: ioutil.NopCloser(strings.NewReader("image file"))}, err: nil}
+	for _, test := range tests {
+		wg.Add(1)
+		go func(idx int) {
+			defer wg.Done()
+			_, _, err := req.requestBodyWithImageFile("test", fmt.Sprintf("http://localhost/dummy_%d.jpg)", idx))
+			if err != nil {
+				t.Fatal(err)
+			}
+		}(test.idx)
+	}
+	wg.Wait()
+
+	for i := 0; i < 4; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			_, _, err := req.requestBodyWithImageFile("test", "http://localhost/dummy.jpg)")
+			if err != nil {
+				t.Fatal(err)
+			}
+		}()
+	}
+	wg.Wait()
 }

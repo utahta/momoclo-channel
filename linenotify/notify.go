@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"path"
 	"strings"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-openuri"
@@ -19,6 +20,7 @@ import (
 type RequestNotify struct {
 	Client         *http.Client
 	imageBodyCache map[string][]byte
+	mux            *sync.Mutex
 }
 
 var (
@@ -26,7 +28,7 @@ var (
 )
 
 func NewRequestNotify() *RequestNotify {
-	return &RequestNotify{Client: http.DefaultClient, imageBodyCache: map[string][]byte{}}
+	return &RequestNotify{Client: http.DefaultClient, imageBodyCache: map[string][]byte{}, mux: new(sync.Mutex)}
 }
 
 func (r *RequestNotify) Notify(token, message, imageThumbnail, imageFullsize, imageFile string) error {
@@ -104,27 +106,13 @@ func (r *RequestNotify) requestBodyWithImageFile(message, imageFile string) (io.
 		return nil, "", err
 	}
 
-	if cache, ok := r.imageBodyCache[imageFile]; ok {
-		if _, err := io.Copy(fw, bytes.NewReader(cache)); err != nil {
-			return nil, "", err
-		}
-	} else {
-		o, err := openuri.Open(imageFile, openuri.WithHTTPClient(r.Client))
-		if err != nil {
-			return nil, "", err
-		}
-		defer o.Close()
+	cache, err := r.CacheImageFile(imageFile)
+	if err != nil {
+		return nil, "", err
+	}
 
-		imgSrc, err := ioutil.ReadAll(o)
-		if err != nil {
-			return nil, "", err
-		}
-		r.imageBodyCache[imageFile] = make([]byte, len(imgSrc))
-		copy(r.imageBodyCache[imageFile], imgSrc)
-
-		if _, err := io.Copy(fw, bytes.NewReader(imgSrc)); err != nil {
-			return nil, "", err
-		}
+	if _, err := io.Copy(fw, bytes.NewReader(cache)); err != nil {
+		return nil, "", err
 	}
 
 	if err := w.Close(); err != nil {
@@ -132,4 +120,29 @@ func (r *RequestNotify) requestBodyWithImageFile(message, imageFile string) (io.
 	}
 
 	return &b, w.FormDataContentType(), nil
+}
+
+// Cache image file, returns bytes of image filet
+func (r *RequestNotify) CacheImageFile(imageFile string) ([]byte, error) {
+	r.mux.Lock()
+	defer r.mux.Unlock()
+
+	if cache, ok := r.imageBodyCache[imageFile]; ok {
+		return cache, nil
+	}
+
+	o, err := openuri.Open(imageFile, openuri.WithHTTPClient(r.Client))
+	if err != nil {
+		return nil, err
+	}
+	defer o.Close()
+
+	imgSrc, err := ioutil.ReadAll(o)
+	if err != nil {
+		return nil, err
+	}
+	r.imageBodyCache[imageFile] = make([]byte, len(imgSrc))
+	copy(r.imageBodyCache[imageFile], imgSrc)
+
+	return r.imageBodyCache[imageFile], nil
 }

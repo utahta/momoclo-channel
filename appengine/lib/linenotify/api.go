@@ -28,6 +28,14 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 	req := linenotify.NewRequestNotify()
 	req.Client = urlfetch.Client(ctx)
 
+	// 先にキャッシュしておく
+	if imageFile != "" {
+		_, err := req.CacheImageFile(imageFile)
+		if err != nil {
+			return err
+		}
+	}
+
 	var workQueue = make(chan bool, 10) // max goroutine
 	var wg sync.WaitGroup
 	for _, item := range items {

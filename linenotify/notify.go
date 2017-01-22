@@ -122,7 +122,7 @@ func (r *RequestNotify) requestBodyWithImageFile(message, imageFile string) (io.
 	return &b, w.FormDataContentType(), nil
 }
 
-// Cache image file, returns bytes of image filet
+// Cache image file, returns bytes of image file
 func (r *RequestNotify) CacheImageFile(imageFile string) ([]byte, error) {
 	r.mux.Lock()
 	defer r.mux.Unlock()

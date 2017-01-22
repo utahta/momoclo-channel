@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/go-openuri"
 )
 
 type RequestNotify struct {
@@ -108,13 +109,13 @@ func (r *RequestNotify) requestBodyWithImageFile(message, imageFile string) (io.
 			return nil, "", err
 		}
 	} else {
-		resp, err := r.Client.Get(imageFile)
+		o, err := openuri.Open(imageFile, openuri.WithHTTPClient(r.Client))
 		if err != nil {
 			return nil, "", err
 		}
-		defer resp.Body.Close()
+		defer o.Close()
 
-		imgSrc, err := ioutil.ReadAll(resp.Body)
+		imgSrc, err := ioutil.ReadAll(o)
 		if err != nil {
 			return nil, "", err
 		}

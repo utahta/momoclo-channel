@@ -57,7 +57,7 @@ func TestNewRequestNotify_requestBodyWithImageFile(t *testing.T) {
 			err:  test.err,
 		}
 
-		body, contentType, err := req.requestBodyWithImageFile("test", "dummy.jpg")
+		body, contentType, err := req.requestBodyWithImageFile("test", "http://example.com/dummy.jpg")
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -80,8 +80,8 @@ func TestNewRequestNotify_requestBodyWithImageFile(t *testing.T) {
 		resp: &http.Response{},
 		err:  errors.New("expect call"),
 	}
-	_, _, err := req.requestBodyWithImageFile("test", "dummy2.jpg")
-	if err.Error() != "Get dummy2.jpg: expect call" {
+	_, _, err := req.requestBodyWithImageFile("test", "http://example.com/dummy2.jpg")
+	if err.Error() != "Get http://example.com/dummy2.jpg: expect call" {
 		t.Fatalf("Expected error, got %v", err)
 	}
 }

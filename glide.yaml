@@ -37,3 +37,4 @@ import:
   version: ^0.2.0
 - package: github.com/utahta/momoclo-crawler
   version: 61d5e8d7265b99632a666dc88486ce632b8399da
+- package: github.com/utahta/go-openuri

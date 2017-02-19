@@ -36,7 +36,7 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 		}
 	}
 
-	var workQueue = make(chan bool, 10) // max goroutine
+	var workQueue = make(chan bool, 1000) // max goroutine
 	var wg sync.WaitGroup
 	for _, item := range items {
 		workQueue <- true

@@ -1,12 +1,12 @@
-hash: 3640c54a134966bb3e2788e8146f52da0d3afbf423b88ff17c0b78d4f55fe456
-updated: 2017-01-22T17:43:08.367748411+09:00
+hash: 643fad28807b5b8a1387809c2bc03657ba04e8e3ead196413b09cd220aa376ce
+updated: 2017-03-31T21:56:42.411568686+09:00
 imports:
 - name: github.com/andybalholm/cascadia
-  version: 65919c611220063037b1db8eb334acaf17a6d8ea
+  version: 349dd0209470eabd9514242c688c403c0926d266
 - name: github.com/azr/backoff
   version: 53511d3c733003985b0b76f733df1f4d0095ee6a
 - name: github.com/ChimeraCoder/anaconda
-  version: 00ecb7b4510497dc28cd46a598007ab8fe01f889
+  version: ca6967b39b05508c667155d9177130ba988b5590
 - name: github.com/ChimeraCoder/tokenbucket
   version: c5a927568de7aad8a58127d80bcd36ca4e71e454
 - name: github.com/dustin/go-jsonpointer
@@ -14,11 +14,11 @@ imports:
 - name: github.com/dustin/gojson
   version: 2e71ec9dd5adce3b168cd0dbde03b5cc04951c30
 - name: github.com/garyburd/go-oauth
-  version: 1dd5f05ec64cbda548d22836ceb6cc7ae749c2ee
+  version: 4f191fd0442e75c0c73bd00e4f5f27d4c08312ee
   subpackages:
   - oauth
 - name: github.com/golang/protobuf
-  version: 98fa357170587e470c5f27d3c3ea0947b71eb455
+  version: 2bba0603135d7d7f5cb73b2125beeda19c09f4ef
   subpackages:
   - proto
 - name: github.com/gorilla/context
@@ -26,7 +26,7 @@ imports:
 - name: github.com/gorilla/mux
   version: 392c28fe23e1c45ddba891b0320b3b5df220beea
 - name: github.com/joho/godotenv
-  version: a01a834e1654b4c9ca5b3ad05159445cc9c7ad08
+  version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
 - name: github.com/jteeuwen/go-pkg-rss
   version: 72391e6fd7384785fa3c46a405214a616d6c4a1d
 - name: github.com/jteeuwen/go-pkg-xmlx
@@ -34,38 +34,38 @@ imports:
 - name: github.com/kennygrant/sanitize
   version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
 - name: github.com/line/line-bot-sdk-go
-  version: cf2ef03b526492fbd832df3e1ace2936fcbdedcb
+  version: b52b3bb5f30e629d59bf099e46f0cef2714c643f
   subpackages:
   - linebot
 - name: github.com/mattn/go-scan
   version: c32d62d79bafeac8906774425844a0e03470316f
 - name: github.com/mjibson/goon
-  version: cd609af4b72b42722419414a522f235038d5ec0b
+  version: ce6c18b635bb36342c10a151f79983efd70f96d6
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/goquery
-  version: 3cb3b8656883c2cc3deb9c643d93ea6e5157e425
+  version: e1271ee34c6a305e38566ecd27ae374944907ee9
 - name: github.com/urfave/negroni
   version: fde5e16d32adc7ad637e9cd9ad21d4ebc6192535
 - name: github.com/utahta/go-atomicbool
   version: 8c6eeea43c52804cb9689cde24f07d0f0951b544
 - name: github.com/utahta/go-openuri
-  version: 9afde06f46fec52fefba24a158443157b8d487a7
+  version: 2e02285e49a489aab86e7080f5db56c7af1758b8
 - name: github.com/utahta/momoclo-crawler
-  version: 61d5e8d7265b99632a666dc88486ce632b8399da
+  version: da60af11dc0122503e6d133fec43aa435b803c76
 - name: github.com/utahta/ustream-live-status
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: github.com/utahta/uststat
-  version: da10706843d6d91fa5c6417b7238c872c97cb29c
+  version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: golang.org/x/net
-  version: dffc95cbb4ff9af8614b2741ec26371fffcc19b3
+  version: 10c134ea0df15f7e34d789338c7a2d76cc7a3ab9
   subpackages:
   - context
   - context/ctxhttp
   - html
   - html/atom
 - name: golang.org/x/text
-  version: 11dbc599981ccdf4fb18802a28392a8bcf7a9395
+  version: c3b0cbb40eb9a862fdc91f79bed8c7ac8e7a36e8
   subpackages:
   - encoding
   - encoding/internal
@@ -73,7 +73,7 @@ imports:
   - encoding/japanese
   - transform
 - name: google.golang.org/api
-  version: 037d03010933c9fa8e57559c1b7faeec971688d1
+  version: 48e49d1645e228d1c50c3d54fb476b2224477303
   subpackages:
   - customsearch/v1
   - gensupport

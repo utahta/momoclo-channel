@@ -13,13 +13,9 @@ const appengineContextKey string = "appengine-context"
 
 // Appengine middleware
 func Appengine(rw http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
-	//ctx, cancel := context.WithTimeout(appengine.NewContext(req), 60*time.Second)
-	//defer cancel()
 	ctx := appengine.NewContext(req)
-
 	gcontext.Set(req, appengineContextKey, ctx)
+	defer gcontext.Delete(req, appengineContextKey)
 
 	next(rw, req)
-
-	gcontext.Delete(req, appengineContextKey)
 }

@@ -1,5 +1,5 @@
-hash: 643fad28807b5b8a1387809c2bc03657ba04e8e3ead196413b09cd220aa376ce
-updated: 2017-03-31T21:56:42.411568686+09:00
+hash: fb7b23099439dcd98cc9857d292373acd996824450d50e3ce21b9d9e53ec2937
+updated: 2017-04-02T21:53:16.450059644+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
@@ -52,7 +52,7 @@ imports:
 - name: github.com/utahta/go-openuri
   version: 2e02285e49a489aab86e7080f5db56c7af1758b8
 - name: github.com/utahta/momoclo-crawler
-  version: da60af11dc0122503e6d133fec43aa435b803c76
+  version: a4d8d9632c536680c5349f2028f3062555d0a80d
 - name: github.com/utahta/ustream-live-status
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: github.com/utahta/uststat
@@ -65,7 +65,7 @@ imports:
   - html
   - html/atom
 - name: golang.org/x/text
-  version: c3b0cbb40eb9a862fdc91f79bed8c7ac8e7a36e8
+  version: f4b4367115ec2de254587813edaa901bc1c723a8
   subpackages:
   - encoding
   - encoding/internal

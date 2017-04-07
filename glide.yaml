@@ -36,5 +36,5 @@ import:
 - package: github.com/urfave/negroni
   version: ^0.2.0
 - package: github.com/utahta/momoclo-crawler
-  version: a4d8d9632c536680c5349f2028f3062555d0a80d
+  version: 15d601b0b228b6cbc89371e6713ff26d8c0d3d80
 - package: github.com/utahta/go-openuri

@@ -1,5 +1,5 @@
-hash: fb7b23099439dcd98cc9857d292373acd996824450d50e3ce21b9d9e53ec2937
-updated: 2017-04-02T21:53:16.450059644+09:00
+hash: bf2a5fab2bc0d5b2caaeffcf67d21b050d7fef1bc28d56bcbbf2d0a1fe5043a6
+updated: 2017-04-07T23:41:52.647750324+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
@@ -52,7 +52,7 @@ imports:
 - name: github.com/utahta/go-openuri
   version: 2e02285e49a489aab86e7080f5db56c7af1758b8
 - name: github.com/utahta/momoclo-crawler
-  version: a4d8d9632c536680c5349f2028f3062555d0a80d
+  version: 15d601b0b228b6cbc89371e6713ff26d8c0d3d80
 - name: github.com/utahta/ustream-live-status
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: github.com/utahta/uststat

@@ -4,7 +4,6 @@ install:
 	@glide install
 
 fmt:
-	gofmt -w ./appengine ./linenotify ./log ./twitter
 	goimports -w ./appengine ./linenotify ./log ./twitter
 
 test:

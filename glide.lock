@@ -1,12 +1,12 @@
-hash: bf2a5fab2bc0d5b2caaeffcf67d21b050d7fef1bc28d56bcbbf2d0a1fe5043a6
-updated: 2017-04-07T23:41:52.647750324+09:00
+hash: 8b89bc33209930a7c7e7455934c01882a1664168e0f49ffb6cc2997a2d481e83
+updated: 2017-04-13T23:36:48.574313854+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
 - name: github.com/azr/backoff
   version: 53511d3c733003985b0b76f733df1f4d0095ee6a
 - name: github.com/ChimeraCoder/anaconda
-  version: ca6967b39b05508c667155d9177130ba988b5590
+  version: 51200854e890da0fcefd1e26524b8ddd175ae850
 - name: github.com/ChimeraCoder/tokenbucket
   version: c5a927568de7aad8a58127d80bcd36ca4e71e454
 - name: github.com/dustin/go-jsonpointer
@@ -52,7 +52,7 @@ imports:
 - name: github.com/utahta/go-openuri
   version: 2e02285e49a489aab86e7080f5db56c7af1758b8
 - name: github.com/utahta/momoclo-crawler
-  version: 15d601b0b228b6cbc89371e6713ff26d8c0d3d80
+  version: be451ab45382b6537d2a0dc4d3f0affb60bb3ada
 - name: github.com/utahta/ustream-live-status
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: github.com/utahta/uststat

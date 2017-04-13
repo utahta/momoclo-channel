@@ -106,7 +106,7 @@ func (r *RequestNotify) requestBodyWithImageFile(message, imageFile string) (io.
 		return nil, "", err
 	}
 
-	cache, err := r.CacheImageFile(imageFile)
+	cache, err := r.CacheImage(imageFile)
 	if err != nil {
 		return nil, "", err
 	}
@@ -122,8 +122,8 @@ func (r *RequestNotify) requestBodyWithImageFile(message, imageFile string) (io.
 	return &b, w.FormDataContentType(), nil
 }
 
-// Cache image file, returns bytes of image file
-func (r *RequestNotify) CacheImageFile(imageFile string) ([]byte, error) {
+// Cache image, returns bytes of image
+func (r *RequestNotify) CacheImage(imageFile string) ([]byte, error) {
 	r.mux.Lock()
 	defer r.mux.Unlock()
 
@@ -145,4 +145,8 @@ func (r *RequestNotify) CacheImageFile(imageFile string) ([]byte, error) {
 	copy(r.imageBodyCache[imageFile], imgSrc)
 
 	return r.imageBodyCache[imageFile], nil
+}
+
+func (r *RequestNotify) ClearImage(imageFile string) {
+	delete(r.imageBodyCache, imageFile)
 }

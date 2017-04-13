@@ -30,7 +30,7 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 
 	// 先にキャッシュしておく
 	if imageFile != "" {
-		_, err := req.CacheImageFile(imageFile)
+		_, err := req.CacheImage(imageFile)
 		if err != nil {
 			return err
 		}
@@ -65,6 +65,8 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 		}(item)
 	}
 	wg.Wait()
+
+	req.ClearImage(imageFile)
 
 	glog.Infof("LINE Notify. message:%s imageURL:%s len:%d errCount:%d", message, imageFile, len(items), errCount)
 	return nil

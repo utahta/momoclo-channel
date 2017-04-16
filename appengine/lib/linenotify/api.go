@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-atomicbool"
@@ -25,8 +26,10 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 	}
 
 	var errCount int32
+	reqCtx, reqCancel := context.WithTimeout(ctx, 15*time.Second) // 15秒間は許容
+	defer reqCancel()
 	req := linenotify.NewRequestNotify()
-	req.Client = urlfetch.Client(ctx)
+	req.Client = urlfetch.Client(reqCtx)
 
 	// 先にキャッシュしておく
 	if imageFile != "" {

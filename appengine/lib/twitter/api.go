@@ -3,6 +3,7 @@ package twitter
 import (
 	"os"
 	"sync"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-atomicbool"
@@ -62,7 +63,10 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 		return nil
 	}
 
-	tw, err := newChannelClient(ctx)
+	reqCtx, reqCancel := context.WithTimeout(ctx, 30*time.Second) // 30秒間は許容
+	defer reqCancel()
+
+	tw, err := newChannelClient(reqCtx)
 	if err != nil {
 		return err
 	}

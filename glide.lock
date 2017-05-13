@@ -1,12 +1,12 @@
-hash: 8b89bc33209930a7c7e7455934c01882a1664168e0f49ffb6cc2997a2d481e83
-updated: 2017-04-13T23:36:48.574313854+09:00
+hash: 05d7727dc3cd6bd8f2d0016b222670de65e9028e0de4c292b49af3efdfded2f2
+updated: 2017-05-14T02:20:07.903893465+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
 - name: github.com/azr/backoff
   version: 53511d3c733003985b0b76f733df1f4d0095ee6a
 - name: github.com/ChimeraCoder/anaconda
-  version: 51200854e890da0fcefd1e26524b8ddd175ae850
+  version: 6def80702964f0219b52da8e306b7fa6a41fb818
 - name: github.com/ChimeraCoder/tokenbucket
   version: c5a927568de7aad8a58127d80bcd36ca4e71e454
 - name: github.com/dustin/go-jsonpointer
@@ -18,7 +18,7 @@ imports:
   subpackages:
   - oauth
 - name: github.com/golang/protobuf
-  version: 2bba0603135d7d7f5cb73b2125beeda19c09f4ef
+  version: fec3b39b059c0f88fa6b20f5ed012b1aa203a8b4
   subpackages:
   - proto
 - name: github.com/gorilla/context
@@ -34,13 +34,13 @@ imports:
 - name: github.com/kennygrant/sanitize
   version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
 - name: github.com/line/line-bot-sdk-go
-  version: b52b3bb5f30e629d59bf099e46f0cef2714c643f
+  version: ec620b9af9b5ebdba700370820c0b6f657f37a3d
   subpackages:
   - linebot
 - name: github.com/mattn/go-scan
   version: c32d62d79bafeac8906774425844a0e03470316f
 - name: github.com/mjibson/goon
-  version: ce6c18b635bb36342c10a151f79983efd70f96d6
+  version: 4704d2914e39207b9ea1f29065975a803e96b8ae
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/PuerkitoBio/goquery
@@ -52,7 +52,7 @@ imports:
 - name: github.com/utahta/go-openuri
   version: 2e02285e49a489aab86e7080f5db56c7af1758b8
 - name: github.com/utahta/momoclo-crawler
-  version: be451ab45382b6537d2a0dc4d3f0affb60bb3ada
+  version: 5288ac86e1f3b949a64a2c08e05f10eba898b2ec
 - name: github.com/utahta/ustream-live-status
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: github.com/utahta/uststat
@@ -65,7 +65,7 @@ imports:
   - html
   - html/atom
 - name: golang.org/x/text
-  version: f4b4367115ec2de254587813edaa901bc1c723a8
+  version: 19e51611da83d6be54ddafce4a4af510cb3e9ea4
   subpackages:
   - encoding
   - encoding/internal
@@ -73,7 +73,7 @@ imports:
   - encoding/japanese
   - transform
 - name: google.golang.org/api
-  version: 48e49d1645e228d1c50c3d54fb476b2224477303
+  version: c858ef4400610cbfd097ffc5f5c6e4a1a51eac86
   subpackages:
   - customsearch/v1
   - gensupport

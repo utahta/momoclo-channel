@@ -63,7 +63,7 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 		return nil
 	}
 
-	reqCtx, reqCancel := context.WithTimeout(ctx, 30*time.Second) // 30秒間は許容
+	reqCtx, reqCancel := context.WithTimeout(ctx, 60*time.Second) // 60秒間は許容
 	defer reqCancel()
 
 	tw, err := newChannelClient(reqCtx)

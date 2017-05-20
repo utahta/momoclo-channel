@@ -180,6 +180,8 @@ func (t *ChannelClient) downloadImage(url string) (string, error) {
 	if err != nil {
 		return "", errors.Wrapf(err, "Failed to download image. url:%s", url)
 	}
+	defer response.Body.Close()
+
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return "", errors.Wrapf(err, "Failed to read response. url:%s", url)

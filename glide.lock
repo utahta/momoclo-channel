@@ -1,5 +1,5 @@
-hash: 9dbac9b1575293b8613ca102603f02e805d2a45d4741cfbdbee2691df10d1735
-updated: 2017-05-14T10:17:19.297376742+09:00
+hash: d6f88c7bcfc2f26dbbd9fb2d2edd54285f035e69eb623171fac6f5ae674d8a92
+updated: 2017-05-27T19:09:59.416969527+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
@@ -18,13 +18,13 @@ imports:
   subpackages:
   - oauth
 - name: github.com/golang/protobuf
-  version: fec3b39b059c0f88fa6b20f5ed012b1aa203a8b4
+  version: 9f174c986221c608fb5143bd623b6076a71feae3
   subpackages:
   - proto
 - name: github.com/gorilla/context
   version: 1ea25387ff6f684839d82767c1733ff4d4d15d0a
 - name: github.com/gorilla/mux
-  version: 392c28fe23e1c45ddba891b0320b3b5df220beea
+  version: bcd8bc72b08df0f70df986b97f95590779502d31
 - name: github.com/joho/godotenv
   version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
 - name: github.com/jteeuwen/go-pkg-rss
@@ -51,6 +51,10 @@ imports:
   version: 8c6eeea43c52804cb9689cde24f07d0f0951b544
 - name: github.com/utahta/go-openuri
   version: 2e02285e49a489aab86e7080f5db56c7af1758b8
+- name: github.com/utahta/go-twitter
+  version: 398633bae2ddfb993b0c3ca9d8e76310983e1a08
+  subpackages:
+  - types
 - name: github.com/utahta/momoclo-crawler
   version: edc6ce30f4db68062d3b762200c10972fdde05d8
 - name: github.com/utahta/ustream-live-status
@@ -58,12 +62,16 @@ imports:
 - name: github.com/utahta/uststat
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: golang.org/x/net
-  version: 10c134ea0df15f7e34d789338c7a2d76cc7a3ab9
+  version: 48359f4f600b3a2d5cf657458e3f940021631a56
   subpackages:
   - context
   - context/ctxhttp
   - html
   - html/atom
+- name: golang.org/x/sync
+  version: 57af736625aaa69dfa099432bb67e0808eef3bcc
+  subpackages:
+  - errgroup
 - name: golang.org/x/text
   version: 19e51611da83d6be54ddafce4a4af510cb3e9ea4
   subpackages:
@@ -73,7 +81,7 @@ imports:
   - encoding/japanese
   - transform
 - name: google.golang.org/api
-  version: c858ef4400610cbfd097ffc5f5c6e4a1a51eac86
+  version: 0209b31435ad4749b84ce122e669fb098f556642
   subpackages:
   - customsearch/v1
   - gensupport

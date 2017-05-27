@@ -2,6 +2,7 @@ package linenotify
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -16,6 +17,46 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
+// Send message to LINE Notify
+func NotifyMessage(ctx context.Context, message string) error {
+	if disabled() {
+		return nil
+	}
+
+	// [Notify Name] が付くので先頭に改行をいれて調整
+	return notifyMessage(ctx, fmt.Sprintf("\n%s", message), "")
+}
+
+// Send channel message and images to LINE Notify
+func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
+	if disabled() {
+		return nil
+	}
+
+	errFlg := atomicbool.New(false)
+	var wg sync.WaitGroup
+	wg.Add(len(ch.Items))
+	for _, item := range ch.Items {
+		go func(ctx context.Context, item *crawler.ChannelItem) {
+			defer wg.Done()
+
+			if err := model.NewLineItem(item).Put(ctx); err != nil {
+				return
+			}
+			if err := notifyChannelItem(ctx, ch.Title, item); err != nil {
+				errFlg.Set(true)
+				log.GaeLog(ctx).Error(err)
+			}
+		}(ctx, item)
+	}
+	wg.Wait()
+
+	if errFlg.Enabled() {
+		return errors.New("Errors occured in linenotify.NotifyChannel")
+	}
+	return nil
+}
+
 func notifyMessage(ctx context.Context, message, imageFile string) error {
 	glog := log.NewGaeLogger(ctx)
 
@@ -26,8 +67,8 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 	}
 
 	var errCount int32
-	reqCtx, reqCancel := context.WithTimeout(ctx, 15*time.Second) // 15秒間は許容
-	defer reqCancel()
+	reqCtx, cancel := context.WithTimeout(ctx, 540*time.Second)
+	defer cancel()
 	req := linenotify.NewRequestNotify()
 	req.Client = urlfetch.Client(reqCtx)
 
@@ -75,38 +116,6 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 	return nil
 }
 
-// Send message to LINE Notify
-func NotifyMessage(ctx context.Context, message string) error {
-	// [Notify Name] が付くので先頭に改行をいれて調整
-	return notifyMessage(ctx, fmt.Sprintf("\n%s", message), "")
-}
-
-// Send channel message and images to LINE Notify
-func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
-	errFlg := atomicbool.New(false)
-	var wg sync.WaitGroup
-	wg.Add(len(ch.Items))
-	for _, item := range ch.Items {
-		go func(ctx context.Context, item *crawler.ChannelItem) {
-			defer wg.Done()
-
-			if err := model.NewLineItem(item).Put(ctx); err != nil {
-				return
-			}
-			if err := notifyChannelItem(ctx, ch.Title, item); err != nil {
-				errFlg.Set(true)
-				log.GaeLog(ctx).Error(err)
-			}
-		}(ctx, item)
-	}
-	wg.Wait()
-
-	if errFlg.Enabled() {
-		return errors.New("Errors occured in linenotify.NotifyChannel")
-	}
-	return nil
-}
-
 func notifyChannelItem(ctx context.Context, title string, item *crawler.ChannelItem) error {
 	message := fmt.Sprintf("\n%s\n%s\n%s", title, item.Title, item.Url)
 
@@ -125,4 +134,13 @@ func notifyChannelItem(ctx context.Context, title string, item *crawler.ChannelI
 		return notifyMessage(ctx, message, "")
 	}
 	return nil
+}
+
+// if true disable linenotify
+func disabled() bool {
+	e := os.Getenv("LINENOTIFY_DISABLE")
+	if e != "" {
+		return true
+	}
+	return false
 }

@@ -1,30 +1,32 @@
 package twitter
 
 import (
+	"fmt"
+	"net/url"
 	"os"
-	"sync"
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/go-atomicbool"
+	"github.com/utahta/go-twitter/types"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
+	"golang.org/x/sync/errgroup"
 )
 
 // Tweet text message
 func TweetMessage(ctx context.Context, text string) error {
-	if tweetDisabled() {
+	if disabled() {
 		return nil
 	}
 
-	tw, err := newMessageClient(ctx)
+	c, err := newClient(ctx)
 	if err != nil {
 		return err
 	}
 
-	if err := tw.Tweet(text); err != nil {
+	if _, err := c.Tweet(text, nil); err != nil {
 		return err
 	}
 	return nil
@@ -32,54 +34,112 @@ func TweetMessage(ctx context.Context, text string) error {
 
 // Tweet channel
 func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
-	errFlg := atomicbool.New(false)
-	var wg sync.WaitGroup
-	wg.Add(len(ch.Items))
-	for _, item := range ch.Items {
-		go func(ctx context.Context, item *crawler.ChannelItem) {
-			defer wg.Done()
-
-			if err := model.NewTweetItem(item).Put(ctx); err != nil {
-				return
-			}
-
-			if err := tweetChannelItem(ctx, ch.Title, item); err != nil {
-				errFlg.Set(true)
-				log.GaeLog(ctx).Error(err)
-				return
-			}
-		}(ctx, item)
+	if disabled() {
+		return nil
 	}
-	wg.Wait()
 
-	if errFlg.Enabled() {
-		return errors.New("Errors occured in twitter.TweetChannel.")
+	reqCtx, cancel := context.WithTimeout(ctx, 540*time.Second)
+	defer cancel()
+	glog := log.GaeLog(ctx)
+	eg := new(errgroup.Group)
+	for _, item := range ch.Items {
+		item := item
+		eg.Go(func() error {
+			if err := model.NewTweetItem(item).Put(ctx); err != nil {
+				return nil
+			}
+
+			if err := tweetChannelItem(reqCtx, ch.Title, item); err != nil {
+				glog.Error(err)
+				return err
+			}
+			return nil
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return errors.Wrap(err, "errors occurred in TweetChannel.")
 	}
 	return nil
 }
 
 func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelItem) error {
-	if tweetDisabled() {
-		return nil
-	}
-
-	reqCtx, reqCancel := context.WithTimeout(ctx, 60*time.Second) // 60秒間は許容
-	defer reqCancel()
-
-	tw, err := newChannelClient(reqCtx)
+	glog := log.GaeLog(ctx)
+	c, err := newClient(ctx)
 	if err != nil {
 		return err
 	}
 
-	if err := tw.TweetItem(title, item); err != nil {
+	const maxUploadMediaLen = 4
+	var images [][]string
+	var tmp []string
+	for _, image := range item.Images {
+		tmp = append(tmp, image.Url)
+		if len(tmp) == maxUploadMediaLen {
+			images = append(images, tmp)
+			tmp = nil
+		}
+	}
+	if len(tmp) > 0 {
+		images = append(images, tmp)
+	}
+	videos := item.Videos
+	text := truncateText(title, item)
+
+	var tweets *types.Tweets
+	if len(images) > 0 {
+		tweets, err = c.TweetImageURLs(text, images[0], nil)
+		images = images[1:]
+	} else if len(videos) > 0 {
+		tweets, err = c.TweetVideoURL(text, videos[0].Url, "video/mp4", nil)
+		videos = videos[1:]
+	} else {
+		tweets, err = c.Tweet(text, nil)
+	}
+
+	if err != nil {
+		glog.Errorf("failed to post tweet. text:%s err:%v", text, err)
 		return err
+	}
+	glog.Infof("Post tweet. text:%s images:%v videos:%v", text, len(item.Images), len(item.Videos))
+
+	if len(images) > 0 {
+		for _, urlsStr := range images {
+			v := url.Values{}
+			v.Set("in_reply_to_status_id", tweets.IDStr)
+			tweets, err = c.TweetImageURLs("", urlsStr, v)
+			if err != nil {
+				glog.Errorf("failed to post images. urls:%v err:%v", urlsStr, err)
+			}
+		}
+	}
+
+	if len(videos) > 0 {
+		for _, video := range videos {
+			v := url.Values{}
+			v.Set("in_reply_to_status_id", tweets.IDStr)
+			tweets, err = c.TweetVideoURL("", video.Url, "video/mp4", v)
+			if err != nil {
+				glog.Errorf("failed to post video. url:%v err:%v", video.Url, err)
+			}
+		}
 	}
 	return nil
 }
 
+func truncateText(channelTitle string, item *crawler.ChannelItem) string {
+	const maxTweetTextLen = 77 // ハッシュタグや URL や画像を除いて投稿可能な文字数
+
+	title := []rune(fmt.Sprintf("%s %s", channelTitle, item.Title))
+	if len(title) >= maxTweetTextLen {
+		title = append(title[0:maxTweetTextLen-3], []rune("...")...)
+	}
+	return fmt.Sprintf("%s %s #momoclo #ももクロ", string(title), item.Url)
+}
+
 // if true disable tweet
-func tweetDisabled() bool {
-	e := os.Getenv("DISABLE_TWEET")
+func disabled() bool {
+	e := os.Getenv("TWEET_DISABLE")
 	if e != "" {
 		return true
 	}

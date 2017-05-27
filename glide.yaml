@@ -1,6 +1,5 @@
 package: github.com/utahta/momoclo-channel
 import:
-- package: github.com/ChimeraCoder/anaconda
 - package: github.com/PuerkitoBio/goquery
   version: ^1.0.1
 - package: github.com/joho/godotenv
@@ -38,3 +37,5 @@ import:
 - package: github.com/utahta/momoclo-crawler
   version: edc6ce30f4db68062d3b762200c10972fdde05d8
 - package: github.com/utahta/go-openuri
+- package: github.com/utahta/go-twitter
+  version: ^0.1.0

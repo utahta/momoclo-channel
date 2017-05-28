@@ -78,6 +78,7 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 		if err != nil {
 			return err
 		}
+		defer req.ClearImage(imageFile)
 	}
 
 	var workQueue = make(chan bool, 1000) // max goroutine
@@ -109,8 +110,6 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 		}(item)
 	}
 	wg.Wait()
-
-	req.ClearImage(imageFile)
 
 	glog.Infof("LINE Notify. message:%s imageURL:%s len:%d errCount:%d", message, imageFile, len(items), errCount)
 	return nil

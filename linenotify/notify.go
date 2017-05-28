@@ -59,6 +59,7 @@ func (r *RequestNotify) Notify(token, message, imageThumbnail, imageFullsize, im
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusUnauthorized {
 		return ErrorNotifyInvalidAccessToken

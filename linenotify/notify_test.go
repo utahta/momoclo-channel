@@ -27,8 +27,8 @@ func TestRequestNotify_Notify(t *testing.T) {
 		resp        *http.Response
 		expectedErr error
 	}{
-		{&http.Response{StatusCode: http.StatusOK}, nil},
-		{&http.Response{StatusCode: http.StatusUnauthorized}, ErrorNotifyInvalidAccessToken},
+		{&http.Response{StatusCode: http.StatusOK, Body: ioutil.NopCloser(strings.NewReader(""))}, nil},
+		{&http.Response{StatusCode: http.StatusUnauthorized, Body: ioutil.NopCloser(strings.NewReader(""))}, ErrorNotifyInvalidAccessToken},
 	}
 
 	for _, test := range tests {
@@ -50,7 +50,7 @@ func TestNewRequestNotify_requestBodyWithImageFile(t *testing.T) {
 		err  error
 	}{
 		{1, &http.Response{StatusCode: http.StatusOK, Body: ioutil.NopCloser(strings.NewReader("image file"))}, nil},
-		{2, &http.Response{}, errors.New("Not cached!!")},
+		{2, &http.Response{Body: ioutil.NopCloser(strings.NewReader(""))}, errors.New("Not cached!!")},
 	}
 
 	for _, test := range tests {

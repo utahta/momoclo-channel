@@ -1,16 +1,15 @@
 package reminder
 
 import (
-	"sync"
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"golang.org/x/net/context"
+	"golang.org/x/sync/errgroup"
 )
 
 func Notify(ctx context.Context) error {
@@ -31,35 +30,31 @@ func Notify(ctx context.Context) error {
 		}
 
 		// Tweet, Line の出し分けが今のところ出来ないので要検討
-		const maxGoroutineNum = 2
-		errFlg := atomicbool.New(false)
-		var wg sync.WaitGroup
-		wg.Add(maxGoroutineNum)
+		eg := new(errgroup.Group)
 
-		go func(text string) {
-			defer wg.Done()
-			if err := twitter.TweetMessage(ctx, text); err != nil {
-				errFlg.Set(true)
+		eg.Go(func() error {
+			if err := twitter.TweetMessage(ctx, row.Text); err != nil {
 				log.GaeLog(ctx).Error(err)
+				return err
 			}
-		}(row.Text)
-
-		go func(text string) {
-			defer wg.Done()
-			if err := linenotify.NotifyMessage(ctx, text); err != nil {
-				errFlg.Set(true)
+			return nil
+		})
+		eg.Go(func() error {
+			if err := linenotify.NotifyMessage(ctx, row.Text); err != nil {
 				log.GaeLog(ctx).Error(err)
+				return err
 			}
-		}(row.Text)
+			return nil
+		})
 
-		wg.Wait()
+		err := eg.Wait()
 
 		if row.IsOnce() {
 			row.Disable(ctx)
 		}
 
-		if errFlg.Enabled() {
-			return errors.Errorf("Errors occured in reminder.Notify. text:%s", row.Text)
+		if err != nil {
+			return errors.Errorf("Errors occurred in reminder.Notify. text:%s", row.Text)
 		}
 	}
 	return nil

@@ -1,18 +1,8 @@
 hash: d6f88c7bcfc2f26dbbd9fb2d2edd54285f035e69eb623171fac6f5ae674d8a92
-updated: 2017-05-27T19:09:59.416969527+09:00
+updated: 2017-05-30T00:18:46.599172136+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
-- name: github.com/azr/backoff
-  version: 53511d3c733003985b0b76f733df1f4d0095ee6a
-- name: github.com/ChimeraCoder/anaconda
-  version: 6def80702964f0219b52da8e306b7fa6a41fb818
-- name: github.com/ChimeraCoder/tokenbucket
-  version: c5a927568de7aad8a58127d80bcd36ca4e71e454
-- name: github.com/dustin/go-jsonpointer
-  version: ba0abeacc3dcca5b9b20f31509c46794edbc9965
-- name: github.com/dustin/gojson
-  version: 2e71ec9dd5adce3b168cd0dbde03b5cc04951c30
 - name: github.com/garyburd/go-oauth
   version: 4f191fd0442e75c0c73bd00e4f5f27d4c08312ee
   subpackages:
@@ -52,7 +42,7 @@ imports:
 - name: github.com/utahta/go-openuri
   version: 2e02285e49a489aab86e7080f5db56c7af1758b8
 - name: github.com/utahta/go-twitter
-  version: 398633bae2ddfb993b0c3ca9d8e76310983e1a08
+  version: bb88baea0c5486221e59e35e436433ff07137662
   subpackages:
   - types
 - name: github.com/utahta/momoclo-crawler

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -66,13 +65,8 @@ func (r *RequestNotify) Notify(token, message, imageThumbnail, imageFullsize, im
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		content, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return err
-		}
-
 		var data interface{}
-		err = json.Unmarshal(content, &data)
+		err = json.NewDecoder(resp.Body).Decode(&data)
 		if err != nil {
 			return err
 		}
@@ -138,12 +132,11 @@ func (r *RequestNotify) CacheImage(imageFile string) ([]byte, error) {
 	}
 	defer o.Close()
 
-	imgSrc, err := ioutil.ReadAll(o)
-	if err != nil {
+	buf := &bytes.Buffer{}
+	if _, err := io.Copy(buf, o); err != nil {
 		return nil, err
 	}
-	r.imageBodyCache[imageFile] = make([]byte, len(imgSrc))
-	copy(r.imageBodyCache[imageFile], imgSrc)
+	r.imageBodyCache[imageFile] = buf.Bytes()
 
 	return r.imageBodyCache[imageFile], nil
 }

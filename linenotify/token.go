@@ -2,7 +2,6 @@ package linenotify
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -48,13 +47,8 @@ func (r *RequestToken) Get() (string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
-		content, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return "", err
-		}
-
 		var data interface{}
-		err = json.Unmarshal(content, &data)
+		err = json.NewDecoder(resp.Body).Decode(&data)
 		if err != nil {
 			return "", err
 		}

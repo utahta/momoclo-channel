@@ -34,12 +34,9 @@ func TweetMessage(ctx context.Context, text string) error {
 
 // Tweet channel
 func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
-	if disabled() {
-		return nil
-	}
-
 	reqCtx, cancel := context.WithTimeout(ctx, 540*time.Second)
 	defer cancel()
+
 	glog := log.GaeLog(ctx)
 	eg := new(errgroup.Group)
 	for _, item := range ch.Items {
@@ -64,6 +61,10 @@ func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
 }
 
 func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelItem) error {
+	if disabled() {
+		return nil
+	}
+
 	glog := log.GaeLog(ctx)
 	c, err := newClient(ctx)
 	if err != nil {

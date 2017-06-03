@@ -19,20 +19,12 @@ import (
 
 // Send message to LINE Notify
 func NotifyMessage(ctx context.Context, message string) error {
-	if disabled() {
-		return nil
-	}
-
 	// [Notify Name] が付くので先頭に改行をいれて調整
 	return notifyMessage(ctx, fmt.Sprintf("\n%s", message), "")
 }
 
 // Send channel message and images to LINE Notify
 func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
-	if disabled() {
-		return nil
-	}
-
 	errFlg := atomicbool.New(false)
 	var wg sync.WaitGroup
 	wg.Add(len(ch.Items))
@@ -58,6 +50,10 @@ func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
 }
 
 func notifyMessage(ctx context.Context, message, imageFile string) error {
+	if disabled() {
+		return nil
+	}
+
 	glog := log.NewGaeLogger(ctx)
 
 	query := model.NewLineNotificationQuery(ctx)

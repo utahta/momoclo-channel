@@ -1,5 +1,5 @@
-hash: d6f88c7bcfc2f26dbbd9fb2d2edd54285f035e69eb623171fac6f5ae674d8a92
-updated: 2017-05-30T00:18:46.599172136+09:00
+hash: 4f8c314859b3b48042b36580cc3306db361f16029fec95848b3dd93f6369bd4a
+updated: 2017-06-04T01:22:45.38277036+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
@@ -8,7 +8,7 @@ imports:
   subpackages:
   - oauth
 - name: github.com/golang/protobuf
-  version: 9f174c986221c608fb5143bd623b6076a71feae3
+  version: 5a0f697c9ed9d68fef0116532c6e05cfeae00e55
   subpackages:
   - proto
 - name: github.com/gorilla/context
@@ -39,6 +39,8 @@ imports:
   version: fde5e16d32adc7ad637e9cd9ad21d4ebc6192535
 - name: github.com/utahta/go-atomicbool
   version: 8c6eeea43c52804cb9689cde24f07d0f0951b544
+- name: github.com/utahta/go-linenotify
+  version: b8ba6c0ca3a8e80dfad8f6740a865bcc9b7678cc
 - name: github.com/utahta/go-openuri
   version: 2e02285e49a489aab86e7080f5db56c7af1758b8
 - name: github.com/utahta/go-twitter
@@ -52,7 +54,7 @@ imports:
 - name: github.com/utahta/uststat
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: golang.org/x/net
-  version: 48359f4f600b3a2d5cf657458e3f940021631a56
+  version: e4fa1c5465ad6111f206fc92186b8c83d64adbe1
   subpackages:
   - context
   - context/ctxhttp
@@ -63,7 +65,7 @@ imports:
   subpackages:
   - errgroup
 - name: golang.org/x/text
-  version: 19e51611da83d6be54ddafce4a4af510cb3e9ea4
+  version: ccbd3f7822129ff389f8ca4858a9b9d4d910531c
   subpackages:
   - encoding
   - encoding/internal
@@ -71,7 +73,7 @@ imports:
   - encoding/japanese
   - transform
 - name: google.golang.org/api
-  version: 0209b31435ad4749b84ce122e669fb098f556642
+  version: 8e09a3d939255ba9bfb76049b7cc413740986c03
   subpackages:
   - customsearch/v1
   - gensupport

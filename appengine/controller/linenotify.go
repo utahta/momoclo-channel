@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/go-linenotify"
 	"github.com/utahta/momoclo-channel/appengine/model"
-	"github.com/utahta/momoclo-channel/linenotify"
 	"google.golang.org/appengine/urlfetch"
 )
 
@@ -16,14 +16,14 @@ import (
 func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
 	ctx := getContext(req)
 
-	reqAuth, err := linenotify.NewRequestAuthorization(os.Getenv("LINENOTIFY_CLIENT_ID"), buildURL(req.URL, "/linenotify/callback"))
+	c, err := linenotify.NewAuthorization(os.Getenv("LINENOTIFY_CLIENT_ID"), buildURL(req.URL, "/linenotify/callback"))
 	if err != nil {
 		newError(err, http.StatusInternalServerError).Handle(ctx, w)
 		return
 	}
-	http.SetCookie(w, &http.Cookie{Name: "state", Value: reqAuth.State, Expires: time.Now().Add(60 * time.Second), Secure: true})
+	http.SetCookie(w, &http.Cookie{Name: "state", Value: c.State, Expires: time.Now().Add(60 * time.Second), Secure: true})
 
-	err = reqAuth.Redirect(w, req)
+	err = c.Redirect(w, req)
 	if err != nil {
 		newError(err, http.StatusInternalServerError).Handle(ctx, w)
 		return
@@ -39,7 +39,7 @@ func LinenotifyOff(w http.ResponseWriter, req *http.Request) {
 func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 	ctx := getContext(req)
 
-	params, err := linenotify.ParseCallbackParameters(req)
+	params, err := linenotify.ParseAuthorization(req)
 	if err != nil {
 		newError(err, http.StatusInternalServerError).Handle(ctx, w)
 		return
@@ -56,15 +56,15 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	reqToken := linenotify.NewRequestToken(
+	c := linenotify.NewToken(
 		params.Code,
 		buildURL(req.URL, "/linenotify/callback"),
 		os.Getenv("LINENOTIFY_CLIENT_ID"),
 		os.Getenv("LINENOTIFY_CLIENT_SECRET"),
 	)
-	reqToken.Client = urlfetch.Client(ctx)
+	c.HTTPClient = urlfetch.Client(ctx)
 
-	token, err := reqToken.Get()
+	token, err := c.Get()
 	if err != nil {
 		newError(err, http.StatusInternalServerError).Handle(ctx, w)
 		return

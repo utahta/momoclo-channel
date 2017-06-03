@@ -39,3 +39,5 @@ import:
 - package: github.com/utahta/go-openuri
 - package: github.com/utahta/go-twitter
   version: ^0.1.0
+- package: github.com/utahta/go-linenotify
+  version: ^0.1.0

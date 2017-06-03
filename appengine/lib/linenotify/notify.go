@@ -1,7 +1,9 @@
 package linenotify
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"sync"
 	"sync/atomic"
@@ -9,9 +11,9 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-atomicbool"
+	"github.com/utahta/go-linenotify"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
-	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
@@ -49,7 +51,7 @@ func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
 	return nil
 }
 
-func notifyMessage(ctx context.Context, message, imageFile string) error {
+func notifyMessage(ctx context.Context, message, imageURL string) error {
 	if disabled() {
 		return nil
 	}
@@ -65,19 +67,19 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 	var errCount int32
 	reqCtx, cancel := context.WithTimeout(ctx, 540*time.Second)
 	defer cancel()
-	req := linenotify.NewRequestNotify()
-	req.Client = urlfetch.Client(reqCtx)
+	c := linenotify.New()
+	c.HTTPClient = urlfetch.Client(reqCtx)
 
-	// 先にキャッシュしておく
-	if imageFile != "" {
-		_, err := req.CacheImage(imageFile)
+	// prepare cached image
+	if imageURL != "" {
+		_, err := fetchImage(c.HTTPClient, imageURL)
 		if err != nil {
 			return err
 		}
-		defer req.ClearImage(imageFile)
+		defer clearImage(imageURL)
 	}
 
-	var workQueue = make(chan bool, 1000) // max goroutine
+	var workQueue = make(chan bool, 100) // max goroutine
 	var wg sync.WaitGroup
 	for _, item := range items {
 		workQueue <- true
@@ -94,8 +96,14 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 				atomic.AddInt32(&errCount, 1)
 				return
 			}
-			if err := req.Notify(token, message, "", "", imageFile); err != nil {
-				if err == linenotify.ErrorNotifyInvalidAccessToken {
+
+			var image io.Reader
+			if b := cacheImage(imageURL); b != nil {
+				image = bytes.NewReader(b)
+			}
+
+			if err := c.Notify(token, message, "", "", image); err != nil {
+				if err == linenotify.ErrNotifyInvalidAccessToken {
 					item.Delete(ctx)
 					glog.Infof("Delete LINE Notify token. hash:%s", item.Id)
 				} else {
@@ -107,7 +115,7 @@ func notifyMessage(ctx context.Context, message, imageFile string) error {
 	}
 	wg.Wait()
 
-	glog.Infof("LINE Notify. message:%s imageURL:%s len:%d errCount:%d", message, imageFile, len(items), errCount)
+	glog.Infof("LINE Notify. message:%s imageURL:%s len:%d errCount:%d", message, imageURL, len(items), errCount)
 	return nil
 }
 

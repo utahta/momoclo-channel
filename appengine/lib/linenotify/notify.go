@@ -150,7 +150,7 @@ func (c *client) notifyMessage(message, imageURL string) error {
 				user.Delete(c.context)
 				c.log.Infof("Delete LINE Notify token. hash:%s", user.Id)
 			} else if err != nil {
-				c.log.Error("Failed to notify. hash:%v err:%v", user.Id, err)
+				c.log.Errorf("Failed to notify. hash:%v err:%v", user.Id, err)
 				return err
 			}
 			return nil

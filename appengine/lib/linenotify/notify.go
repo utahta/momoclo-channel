@@ -21,10 +21,10 @@ const timeout = 540 * time.Second
 
 // Send message to LINE Notify
 func NotifyMessage(ctx context.Context, message string) error {
-	ctx, cancel := context.WithTimeout(ctx, timeout)
+	reqCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	c, err := newClient(ctx)
+	c, err := newClient(reqCtx)
 	if err != nil {
 		return err
 	}
@@ -35,30 +35,31 @@ func NotifyMessage(ctx context.Context, message string) error {
 
 // Send channel message and images to LINE Notify
 func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
-	ctx, cancel := context.WithTimeout(ctx, timeout)
+	reqCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	c, err := newClient(ctx)
-	if err != nil {
-		return err
-	}
-
-	eg := &errgroup.Group{}
+	var (
+		hasErr bool
+		glog   = log.GaeLog(ctx)
+	)
 	for _, item := range ch.Items {
-		item := item
-		eg.Go(func() error {
-			if err := model.NewLineItem(item).Put(ctx); err != nil {
-				return nil
-			}
-			if err := c.notifyChannelItem(ch.Title, item); err != nil {
-				log.GaeLog(ctx).Error(err)
-				return err
-			}
-			return nil
-		})
+		if err := model.NewLineItem(item).Put(ctx); err != nil {
+			continue
+		}
+
+		c, err := newClient(reqCtx)
+		if err != nil {
+			glog.Errorf("Failed to get client. err:%v", err)
+			continue
+		}
+
+		if err := c.notifyChannelItem(ch.Title, item); err != nil {
+			hasErr = true
+			continue
+		}
 	}
 
-	if err := eg.Wait(); err != nil {
+	if hasErr {
 		return errors.New("Errors occurred in NotifyChannel")
 	}
 	return nil
@@ -123,7 +124,10 @@ func (c *client) notifyMessage(message, imageURL string) error {
 		defer clearImage(imageURL)
 	}
 
-	var workQueue = make(chan bool, 100) // max goroutine
+	var (
+		workQueue = make(chan bool, 10) // max goroutine
+		count     = 0
+	)
 	eg := &errgroup.Group{}
 	for _, user := range c.users {
 		user := user
@@ -149,18 +153,18 @@ func (c *client) notifyMessage(message, imageURL string) error {
 			if err == linenotify.ErrNotifyInvalidAccessToken {
 				user.Delete(c.context)
 				c.log.Infof("Delete LINE Notify token. hash:%s", user.Id)
+				return nil
 			} else if err != nil {
 				c.log.Errorf("Failed to notify. hash:%v err:%v", user.Id, err)
 				return err
 			}
+			count++
 			return nil
 		})
 	}
+	eg.Wait()
 
-	if err := eg.Wait(); err != nil {
-		c.log.Warningf("Errors occurred in notifyMessage.")
-	}
-	c.log.Infof("LINE Notify. message:%s imageURL:%s len:%d", message, imageURL, len(c.users))
+	c.log.Infof("LINE Notify. message:%s imageURL:%s len:%d/%d", message, imageURL, count, len(c.users))
 	return nil
 }
 

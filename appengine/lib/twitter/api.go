@@ -6,13 +6,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/utahta/go-twitter/types"
 	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
-	"golang.org/x/sync/errgroup"
 )
 
 // Tweet text message
@@ -38,24 +36,15 @@ func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
 	defer cancel()
 
 	glog := log.GaeLog(ctx)
-	eg := new(errgroup.Group)
 	for _, item := range ch.Items {
-		item := item
-		eg.Go(func() error {
-			if err := model.NewTweetItem(item).Put(ctx); err != nil {
-				return nil
-			}
+		if err := model.NewTweetItem(item).Put(ctx); err != nil {
+			continue
+		}
 
-			if err := tweetChannelItem(reqCtx, ch.Title, item); err != nil {
-				glog.Error(err)
-				return err
-			}
-			return nil
-		})
-	}
-
-	if err := eg.Wait(); err != nil {
-		return errors.Wrap(err, "errors occurred in TweetChannel.")
+		if err := tweetChannelItem(reqCtx, ch.Title, item); err != nil {
+			glog.Errorf("Filed to tweet channel item. item:%#v err:%v", item, err)
+			continue
+		}
 	}
 	return nil
 }
@@ -99,7 +88,7 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 	}
 
 	if err != nil {
-		glog.Errorf("failed to post tweet. text:%s err:%v", text, err)
+		glog.Errorf("Failed to post tweet. text:%s err:%v", text, err)
 		return err
 	}
 	glog.Infof("Post tweet. text:%s images:%v videos:%v", text, len(item.Images), len(item.Videos))
@@ -110,7 +99,7 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 			v.Set("in_reply_to_status_id", tweets.IDStr)
 			tweets, err = c.TweetImageURLs("", urlsStr, v)
 			if err != nil {
-				glog.Errorf("failed to post images. urls:%v err:%v", urlsStr, err)
+				glog.Errorf("Failed to post images. urls:%v err:%v", urlsStr, err)
 			}
 		}
 	}
@@ -121,7 +110,7 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 			v.Set("in_reply_to_status_id", tweets.IDStr)
 			tweets, err = c.TweetVideoURL("", video.Url, "video/mp4", v)
 			if err != nil {
-				glog.Errorf("failed to post video. url:%v err:%v", video.Url, err)
+				glog.Errorf("Failed to post video. url:%v err:%v", video.Url, err)
 			}
 		}
 	}

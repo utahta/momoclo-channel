@@ -1,10 +1,10 @@
 hash: 4f8c314859b3b48042b36580cc3306db361f16029fec95848b3dd93f6369bd4a
-updated: 2017-06-04T01:22:45.38277036+09:00
+updated: 2017-06-07T01:14:17.504341308+09:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
 - name: github.com/garyburd/go-oauth
-  version: 4f191fd0442e75c0c73bd00e4f5f27d4c08312ee
+  version: d9dbc37b1a7acf4923050e614fc7861e3fbf42f9
   subpackages:
   - oauth
 - name: github.com/golang/protobuf
@@ -44,7 +44,7 @@ imports:
 - name: github.com/utahta/go-openuri
   version: 2e02285e49a489aab86e7080f5db56c7af1758b8
 - name: github.com/utahta/go-twitter
-  version: bb88baea0c5486221e59e35e436433ff07137662
+  version: 2b8638ad451027bf83c9e18775338b052fac8c23
   subpackages:
   - types
 - name: github.com/utahta/momoclo-crawler
@@ -54,14 +54,14 @@ imports:
 - name: github.com/utahta/uststat
   version: 0b788f8cd554ace1f8e9bbf51453b02796d4889c
 - name: golang.org/x/net
-  version: e4fa1c5465ad6111f206fc92186b8c83d64adbe1
+  version: 59a0b19b5533c7977ddeb86b017bf507ed407b12
   subpackages:
   - context
   - context/ctxhttp
   - html
   - html/atom
 - name: golang.org/x/sync
-  version: 57af736625aaa69dfa099432bb67e0808eef3bcc
+  version: f52d1811a62927559de87708c8913c1650ce4f26
   subpackages:
   - errgroup
 - name: golang.org/x/text
@@ -73,7 +73,7 @@ imports:
   - encoding/japanese
   - transform
 - name: google.golang.org/api
-  version: 8e09a3d939255ba9bfb76049b7cc413740986c03
+  version: 1faa39f42f12a54fa82ca5902a7ab642d5b09ad1
   subpackages:
   - customsearch/v1
   - gensupport

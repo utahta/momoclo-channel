@@ -3,9 +3,9 @@ package controller
 import (
 	"net/http"
 
-	"github.com/utahta/momoclo-channel/appengine/lib/crawler"
-	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
-	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
+	"github.com/utahta/momoclo-channel/lib/crawler"
+	"github.com/utahta/momoclo-channel/lib/linenotify"
+	"github.com/utahta/momoclo-channel/lib/twitter"
 )
 
 func QueueTweet(w http.ResponseWriter, req *http.Request) {

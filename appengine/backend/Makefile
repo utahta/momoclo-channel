@@ -1,5 +1,3 @@
-.PHONY: serve deploy-dev deploy-prod
-
 serve:
 	@cp .env.local env
 	@goapp serve .

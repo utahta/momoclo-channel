@@ -6,8 +6,8 @@ import (
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/appengine/lib/googleapi/customsearch"
-	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/lib/googleapi/customsearch"
+	"github.com/utahta/momoclo-channel/lib/log"
 	"golang.org/x/net/context"
 )
 

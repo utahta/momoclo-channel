@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/utahta/momoclo-channel/appengine/lib/crawler"
-	"github.com/utahta/momoclo-channel/appengine/lib/reminder"
-	"github.com/utahta/momoclo-channel/appengine/lib/ustream"
+	"github.com/utahta/momoclo-channel/lib/crawler"
+	"github.com/utahta/momoclo-channel/lib/reminder"
+	"github.com/utahta/momoclo-channel/lib/ustream"
 	"golang.org/x/net/context"
 )
 

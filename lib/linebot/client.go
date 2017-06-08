@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/line/line-bot-sdk-go/linebot"
-	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/lib/log"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
 )

@@ -9,8 +9,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
-	"github.com/utahta/momoclo-channel/appengine/lib/log"
-	"github.com/utahta/momoclo-channel/appengine/model"
+	"github.com/utahta/momoclo-channel/lib/log"
+	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"

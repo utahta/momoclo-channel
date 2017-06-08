@@ -2,10 +2,8 @@ package middleware
 
 import (
 	"net/http"
-	//"time"
 
 	gcontext "github.com/gorilla/context"
-	//"golang.org/x/net/context"
 	"google.golang.org/appengine"
 )
 

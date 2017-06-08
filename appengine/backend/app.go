@@ -7,8 +7,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/urfave/negroni"
-	"github.com/utahta/momoclo-channel/appengine/controller"
-	"github.com/utahta/momoclo-channel/appengine/middleware"
+	"github.com/utahta/momoclo-channel/controller"
+	"github.com/utahta/momoclo-channel/middleware"
 )
 
 func init() {

@@ -8,6 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
+	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/model"
 	"google.golang.org/appengine/urlfetch"
 )
@@ -32,7 +33,10 @@ func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
 
 // LINE Notify の連携を解除する
 func LinenotifyOff(w http.ResponseWriter, req *http.Request) {
-	// Using feature that provided in official.
+	ctx := getContext(req)
+	log.GaeLog(ctx).Info("Redirect to LINE Notification revoke page")
+
+	// official url
 	http.Redirect(w, req, "https://notify-bot.line.me/my/", http.StatusFound)
 }
 
@@ -87,4 +91,6 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 		newError(err, http.StatusInternalServerError).Handle(ctx, w)
 		return
 	}
+
+	log.GaeLog(ctx).Infof("LINE Notification accepted! id:%v", ln.Id)
 }

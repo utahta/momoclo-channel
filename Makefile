@@ -4,12 +4,11 @@ install:
 	@glide install
 
 fmt:
-	goimports -w ./appengine ./linenotify ./log ./twitter
+	goimports -w ./appengine ./log
 
 test:
 	@goapp test -v -race ./appengine/model/...
 	@goapp test -v -race ./appengine/lib/crawler/...
-	@goapp test -v -race ./linenotify/...
 
 serve-app:
 	@cd appengine/app && make serve

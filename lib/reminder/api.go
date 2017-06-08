@@ -4,10 +4,10 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
-	"github.com/utahta/momoclo-channel/appengine/lib/log"
-	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
-	"github.com/utahta/momoclo-channel/appengine/model"
+	"github.com/utahta/momoclo-channel/lib/linenotify"
+	"github.com/utahta/momoclo-channel/lib/log"
+	"github.com/utahta/momoclo-channel/lib/twitter"
+	"github.com/utahta/momoclo-channel/model"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 )

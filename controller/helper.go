@@ -7,7 +7,7 @@ import (
 	"net/url"
 
 	gcontext "github.com/gorilla/context"
-	"github.com/utahta/momoclo-channel/appengine/lib/log"
+	"github.com/utahta/momoclo-channel/lib/log"
 	"golang.org/x/net/context"
 )
 

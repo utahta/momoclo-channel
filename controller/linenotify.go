@@ -8,8 +8,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
-	"github.com/utahta/momoclo-channel/appengine/lib/log"
-	"github.com/utahta/momoclo-channel/appengine/model"
+	"github.com/utahta/momoclo-channel/lib/log"
+	"github.com/utahta/momoclo-channel/model"
 	"google.golang.org/appengine/urlfetch"
 )
 

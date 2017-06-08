@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/line/line-bot-sdk-go/linebot"
-	mbot "github.com/utahta/momoclo-channel/appengine/lib/linebot"
+	mbot "github.com/utahta/momoclo-channel/lib/linebot"
 	"golang.org/x/net/context"
 )
 

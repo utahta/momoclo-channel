@@ -4,18 +4,18 @@ install:
 	@glide install
 
 fmt:
-	goimports -w ./appengine ./log
+	goimports -w ./appengine
 
 test:
 	@goapp test -v -race ./appengine/model/...
 	@goapp test -v -race ./appengine/lib/crawler/...
 
 serve-app:
-	@cd appengine/app && make serve
+	@make -C appengine/app serve
 
 deploy-app-prod:
-	@cd appengine/app && make deploy-prod
+	@make -C appengine/app deploy-prod
 
 deploy-app-dev:
-	@cd appengine/app && make deploy-dev
+	@make -C appengine/app deploy-dev
 

@@ -12,7 +12,6 @@ import (
 type Client struct {
 	context       context.Context
 	LineBotClient *linebot.Client
-	Log           log.Logger
 }
 
 func New(ctx context.Context) (*Client, error) {
@@ -24,7 +23,7 @@ func New(ctx context.Context) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{context: ctx, LineBotClient: bot, Log: log.NewGaeLogger(ctx)}, nil
+	return &Client{context: ctx, LineBotClient: bot}, nil
 }
 
 func (c *Client) ReplyText(replyToken, text string) error {
@@ -34,7 +33,7 @@ func (c *Client) ReplyText(replyToken, text string) error {
 	).Do(); err != nil {
 		return err
 	}
-	c.Log.Infof("Reply text. text:%s", text)
+	log.Infof(c.context, "Reply text. text:%s", text)
 	return nil
 }
 
@@ -45,6 +44,6 @@ func (c *Client) ReplyImage(replyToken, originalContentURL, previewImageURL stri
 	).Do(); err != nil {
 		return err
 	}
-	c.Log.Infof("Reply image.")
+	log.Info(c.context, "Reply image.")
 	return nil
 }

@@ -19,7 +19,6 @@ func Crawl(ctx context.Context) error {
 	var workQueue = make(chan bool, 20)
 	defer close(workQueue)
 
-	glog := log.NewGaeLogger(ctx)
 	clients := crawlChannelClients(ctx)
 
 	errFlg := atomicbool.New(false)
@@ -36,26 +35,26 @@ func Crawl(ctx context.Context) error {
 			ch, err := cli.Fetch()
 			if err != nil {
 				errFlg.Set(true)
-				glog.Error(err)
+				log.Error(ctx, err)
 				return
 			}
 
 			// update latest entry
 			for _, item := range ch.Items {
 				if _, err := model.PutLatestEntry(ctx, item.Url); err != nil {
-					glog.Error(err)
+					log.Error(ctx, err)
 					// go on
 				}
 			}
 
-			q := NewQueueTask(glog)
+			q := NewQueueTask()
 			if err := q.PushTweet(ctx, ch); err != nil {
 				errFlg.Set(true)
-				glog.Error(err)
+				log.Error(ctx, err)
 			}
 			if err := q.PushLine(ctx, ch); err != nil {
 				errFlg.Set(true)
-				glog.Error(err)
+				log.Error(ctx, err)
 			}
 		}(ctx, cli)
 	}

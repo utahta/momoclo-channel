@@ -1,6 +1,7 @@
 package app
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -8,12 +9,11 @@ import (
 	"github.com/urfave/negroni"
 	"github.com/utahta/momoclo-channel/appengine/controller"
 	"github.com/utahta/momoclo-channel/appengine/middleware"
-	"github.com/utahta/momoclo-channel/log"
 )
 
 func init() {
 	if err := godotenv.Load("env"); err != nil {
-		log.Basic().Fatalf("Failed to load dotenv. error:%v", err)
+		log.Fatalf("Failed to load dotenv. error:%v", err)
 	}
 
 	n := negroni.New()
@@ -38,5 +38,5 @@ func init() {
 	n.UseHandler(router)
 	http.Handle("/", n)
 
-	log.Basic().Infof("init app")
+	log.Println("init app")
 }

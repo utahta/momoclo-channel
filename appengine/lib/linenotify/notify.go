@@ -38,10 +38,7 @@ func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
 	reqCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
-	var (
-		hasErr bool
-		glog   = log.GaeLog(ctx)
-	)
+	var hasErr bool
 	for _, item := range ch.Items {
 		if err := model.NewLineItem(item).Put(ctx); err != nil {
 			continue
@@ -49,7 +46,7 @@ func NotifyChannel(ctx context.Context, ch *crawler.Channel) error {
 
 		c, err := newClient(reqCtx)
 		if err != nil {
-			glog.Errorf("Failed to get client. err:%v", err)
+			log.Errorf(ctx, "Failed to get client. err:%v", err)
 			continue
 		}
 
@@ -69,14 +66,12 @@ type client struct {
 	*linenotify.Client
 	users   []*model.LineNotification
 	context context.Context
-	log     log.Logger
 }
 
 func newClient(ctx context.Context) (*client, error) {
 	c := &client{
 		Client:  linenotify.New(),
 		context: ctx,
-		log:     log.NewGaeLogger(ctx),
 	}
 	c.HTTPClient.Transport = &urlfetch.Transport{Context: ctx}
 
@@ -125,6 +120,7 @@ func (c *client) notifyMessage(message, imageURL string) error {
 	}
 
 	var (
+		ctx       = c.context
 		workQueue = make(chan bool, 10) // max goroutine
 		count     = 0
 	)
@@ -140,7 +136,7 @@ func (c *client) notifyMessage(message, imageURL string) error {
 
 			token, err := user.Token()
 			if err != nil {
-				c.log.Errorf("Failed to get token. hash:%v err:%v", user.Id, err)
+				log.Errorf(ctx, "Failed to get token. hash:%v err:%v", user.Id, err)
 				return err
 			}
 
@@ -152,10 +148,10 @@ func (c *client) notifyMessage(message, imageURL string) error {
 			err = c.Notify(token, message, "", "", image)
 			if err == linenotify.ErrNotifyInvalidAccessToken {
 				user.Delete(c.context)
-				c.log.Infof("Delete LINE Notify token. hash:%s", user.Id)
+				log.Infof(ctx, "Delete LINE Notify token. hash:%s", user.Id)
 				return nil
 			} else if err != nil {
-				c.log.Errorf("Failed to notify. hash:%v err:%v", user.Id, err)
+				log.Errorf(ctx, "Failed to notify. hash:%v err:%v", user.Id, err)
 				return err
 			}
 			count++
@@ -164,7 +160,7 @@ func (c *client) notifyMessage(message, imageURL string) error {
 	}
 	eg.Wait()
 
-	c.log.Infof("LINE Notify. message:%s imageURL:%s len:%d/%d", message, imageURL, count, len(c.users))
+	log.Infof(ctx, "LINE Notify. message:%s imageURL:%s len:%d/%d", message, imageURL, count, len(c.users))
 	return nil
 }
 

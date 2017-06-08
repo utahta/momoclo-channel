@@ -34,7 +34,7 @@ func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
 // LINE Notify の連携を解除する
 func LinenotifyOff(w http.ResponseWriter, req *http.Request) {
 	ctx := getContext(req)
-	log.GaeLog(ctx).Info("Redirect to LINE Notification revoke page")
+	log.Info(ctx, "Redirect to LINE Notification revoke page")
 
 	// official url
 	http.Redirect(w, req, "https://notify-bot.line.me/my/", http.StatusFound)
@@ -92,5 +92,5 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.GaeLog(ctx).Infof("LINE Notification accepted! id:%v", ln.Id)
+	log.Infof(ctx, "LINE Notification accepted! id:%v", ln.Id)
 }

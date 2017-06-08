@@ -35,14 +35,13 @@ func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
 	reqCtx, cancel := context.WithTimeout(ctx, 540*time.Second)
 	defer cancel()
 
-	glog := log.GaeLog(ctx)
 	for _, item := range ch.Items {
 		if err := model.NewTweetItem(item).Put(ctx); err != nil {
 			continue
 		}
 
 		if err := tweetChannelItem(reqCtx, ch.Title, item); err != nil {
-			glog.Errorf("Filed to tweet channel item. item:%#v err:%v", item, err)
+			log.Errorf(ctx, "Filed to tweet channel item. item:%#v err:%v", item, err)
 			continue
 		}
 	}
@@ -54,7 +53,6 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 		return nil
 	}
 
-	glog := log.GaeLog(ctx)
 	c, err := newClient(ctx)
 	if err != nil {
 		return err
@@ -88,10 +86,10 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 	}
 
 	if err != nil {
-		glog.Errorf("Failed to post tweet. text:%s err:%v", text, err)
+		log.Errorf(ctx, "Failed to post tweet. text:%s err:%v", text, err)
 		return err
 	}
-	glog.Infof("Post tweet. text:%s images:%v videos:%v", text, len(item.Images), len(item.Videos))
+	log.Infof(ctx, "Post tweet. text:%s images:%v videos:%v", text, len(item.Images), len(item.Videos))
 
 	if len(images) > 0 {
 		for _, urlsStr := range images {
@@ -99,7 +97,7 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 			v.Set("in_reply_to_status_id", tweets.IDStr)
 			tweets, err = c.TweetImageURLs("", urlsStr, v)
 			if err != nil {
-				glog.Errorf("Failed to post images. urls:%v err:%v", urlsStr, err)
+				log.Errorf(ctx, "Failed to post images. urls:%v err:%v", urlsStr, err)
 			}
 		}
 	}
@@ -110,7 +108,7 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 			v.Set("in_reply_to_status_id", tweets.IDStr)
 			tweets, err = c.TweetVideoURL("", video.Url, "video/mp4", v)
 			if err != nil {
-				glog.Errorf("Failed to post video. url:%v err:%v", video.Url, err)
+				log.Errorf(ctx, "Failed to post video. url:%v err:%v", video.Url, err)
 			}
 		}
 	}

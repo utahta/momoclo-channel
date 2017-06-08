@@ -4,21 +4,16 @@ import (
 	"encoding/json"
 	"net/url"
 
-	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/taskqueue"
 )
 
-type QueueTask struct {
-	Log log.Logger
-}
+type QueueTask struct{}
 
 // New queue task
-func NewQueueTask(log log.Logger) *QueueTask {
-	return &QueueTask{
-		Log: log,
-	}
+func NewQueueTask() *QueueTask {
+	return &QueueTask{}
 }
 
 // Push task to tweet queue

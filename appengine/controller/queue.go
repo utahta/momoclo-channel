@@ -5,7 +5,6 @@ import (
 
 	"github.com/utahta/momoclo-channel/appengine/lib/crawler"
 	"github.com/utahta/momoclo-channel/appengine/lib/linenotify"
-	"github.com/utahta/momoclo-channel/appengine/lib/log"
 	"github.com/utahta/momoclo-channel/appengine/lib/twitter"
 )
 
@@ -17,7 +16,7 @@ func QueueTweet(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	q := crawler.NewQueueTask(log.NewGaeLogger(ctx))
+	q := crawler.NewQueueTask()
 	ch, err := q.ParseURLValues(req.Form)
 	if err != nil {
 		newError(err, http.StatusInternalServerError).Handle(ctx, w)
@@ -38,7 +37,7 @@ func QueueLine(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	q := crawler.NewQueueTask(log.NewGaeLogger(ctx))
+	q := crawler.NewQueueTask()
 	ch, err := q.ParseURLValues(req.Form)
 	if err != nil {
 		newError(err, http.StatusInternalServerError).Handle(ctx, w)

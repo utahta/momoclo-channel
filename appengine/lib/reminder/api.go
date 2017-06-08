@@ -34,14 +34,14 @@ func Notify(ctx context.Context) error {
 
 		eg.Go(func() error {
 			if err := twitter.TweetMessage(ctx, row.Text); err != nil {
-				log.GaeLog(ctx).Error(err)
+				log.Error(ctx, err)
 				return err
 			}
 			return nil
 		})
 		eg.Go(func() error {
 			if err := linenotify.NotifyMessage(ctx, row.Text); err != nil {
-				log.GaeLog(ctx).Error(err)
+				log.Error(ctx, err)
 				return err
 			}
 			return nil

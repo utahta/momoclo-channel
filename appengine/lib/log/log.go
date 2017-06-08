@@ -2,74 +2,47 @@ package log
 
 import (
 	"fmt"
-	"log"
 
-	mlog "github.com/utahta/momoclo-channel/log"
 	"golang.org/x/net/context"
-	glog "google.golang.org/appengine/log"
+	"google.golang.org/appengine/log"
 )
 
-type Logger mlog.Logger
-
-type gaeLogger struct {
-	context context.Context
+func Debug(ctx context.Context, args ...interface{}) {
+	Debugf(ctx, "%v", fmt.Sprint(args...))
 }
 
-// New logger for Google App Engine
-func NewGaeLogger(ctx context.Context) mlog.Logger {
-	return &gaeLogger{context: ctx}
+func Debugf(ctx context.Context, format string, args ...interface{}) {
+	log.Debugf(ctx, format, args...)
 }
 
-// alias NewGaeLogger
-func GaeLog(ctx context.Context) mlog.Logger {
-	return NewGaeLogger(ctx)
+func Info(ctx context.Context, args ...interface{}) {
+	Infof(ctx, "%v", fmt.Sprint(args...))
 }
 
-func (l gaeLogger) Fatal(args ...interface{}) {
-	log.Fatal(fmt.Sprintf("FATAL: %+v", args...))
+func Infof(ctx context.Context, format string, args ...interface{}) {
+	log.Infof(ctx, format, args...)
 }
-func (l gaeLogger) Fatalf(format string, args ...interface{}) {
-	log.Fatalf("FATAL: %s", fmt.Sprintf(format, args...))
+
+func Warning(ctx context.Context, args ...interface{}) {
+	Warningf(ctx, "%v", fmt.Sprint(args...))
 }
-func (l gaeLogger) Panic(args ...interface{}) {
-	log.Panic(fmt.Sprintf("PANIC: %+v", args...))
+
+func Warningf(ctx context.Context, format string, args ...interface{}) {
+	log.Warningf(ctx, format, args...)
 }
-func (l gaeLogger) Panicf(format string, args ...interface{}) {
-	log.Panicf("PANIC: %s", fmt.Sprintf(format, args...))
+
+func Error(ctx context.Context, args ...interface{}) {
+	Errorf(ctx, "%v", fmt.Sprint(args...))
 }
-func (l gaeLogger) Critical(args ...interface{}) {
-	glog.Criticalf(l.context, "%+v", fmt.Sprint(args...))
+
+func Errorf(ctx context.Context, format string, args ...interface{}) {
+	log.Errorf(ctx, format, args...)
 }
-func (l gaeLogger) Criticalf(format string, args ...interface{}) {
-	glog.Criticalf(l.context, format, args...)
+
+func Critical(ctx context.Context, args ...interface{}) {
+	Criticalf(ctx, "%v", fmt.Sprint(args...))
 }
-func (l gaeLogger) Error(args ...interface{}) {
-	glog.Errorf(l.context, "%+v", fmt.Sprint(args...))
-}
-func (l gaeLogger) Errorf(format string, args ...interface{}) {
-	glog.Errorf(l.context, format, args...)
-}
-func (l gaeLogger) Warning(args ...interface{}) {
-	glog.Warningf(l.context, "%s", fmt.Sprint(args...))
-}
-func (l gaeLogger) Warningf(format string, args ...interface{}) {
-	glog.Warningf(l.context, format, args...)
-}
-func (l gaeLogger) Notice(args ...interface{}) {
-	glog.Warningf(l.context, "%s", fmt.Sprint(args...)) // instead of warning
-}
-func (l gaeLogger) Noticef(format string, args ...interface{}) {
-	glog.Warningf(l.context, format, args...) // instead of warning
-}
-func (l gaeLogger) Info(args ...interface{}) {
-	glog.Infof(l.context, "%s", fmt.Sprint(args...))
-}
-func (l gaeLogger) Infof(format string, args ...interface{}) {
-	glog.Infof(l.context, format, args...)
-}
-func (l gaeLogger) Debug(args ...interface{}) {
-	glog.Debugf(l.context, "%s", fmt.Sprint(args...))
-}
-func (l gaeLogger) Debugf(format string, args ...interface{}) {
-	glog.Debugf(l.context, format, args...)
+
+func Criticalf(ctx context.Context, format string, args ...interface{}) {
+	log.Criticalf(ctx, format, args...)
 }

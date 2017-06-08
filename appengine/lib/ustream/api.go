@@ -51,7 +51,7 @@ func Notify(ctx context.Context) error {
 			t := time.Now().In(jst)
 			if err := twitter.TweetMessage(ctx, fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))); err != nil {
 				errFlg.Set(true)
-				log.GaeLog(ctx).Error(err)
+				log.Error(ctx, err)
 			}
 		}()
 
@@ -59,7 +59,7 @@ func Notify(ctx context.Context) error {
 			defer wg.Done()
 			if err := linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"); err != nil {
 				errFlg.Set(true)
-				log.GaeLog(ctx).Error(err)
+				log.Error(ctx, err)
 			}
 		}()
 

@@ -24,7 +24,7 @@ func HandleEvents(ctx context.Context, events []*linebot.Event) error {
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
 				if err := textMessageEvent(ctx, message, event); err != nil {
-					log.GaeLog(ctx).Error(err)
+					log.Error(ctx, err)
 					continue
 				}
 			}
@@ -54,7 +54,7 @@ func helpMessage(ctx context.Context) string {
 }
 
 func followEvent(ctx context.Context, event *linebot.Event) error {
-	log.GaeLog(ctx).Infof("follow user. event:%v", event)
+	log.Infof(ctx, "follow user. event:%v", event)
 
 	message := fmt.Sprintf(`友だち追加ありがとうございます。
 こちらは、ももクロちゃんのブログやAE NEWS等を通知する機能との連携を補助したり、画像を返したりするBOTです。
@@ -67,12 +67,12 @@ func followEvent(ctx context.Context, event *linebot.Event) error {
 }
 
 func unfollowEvent(ctx context.Context, event *linebot.Event) error {
-	log.GaeLog(ctx).Infof("unfollow user. event:%v", event)
+	log.Infof(ctx, "unfollow user. event:%v", event)
 	return nil
 }
 
 func textMessageEvent(ctx context.Context, message *linebot.TextMessage, event *linebot.Event) error {
-	log.GaeLog(ctx).Infof("handle text content. message:%s", message.Text)
+	log.Infof(ctx, "handle text content. message:%s", message.Text)
 
 	if err := handleOnOff(ctx, message, event); err != ErrorHandleOnOffNotMatch {
 		return err
@@ -159,7 +159,7 @@ func handleMemberImage(ctx context.Context, message *linebot.TextMessage, event 
 
 	res, err := customsearch.SearchImage(ctx, word)
 	if err != nil {
-		log.GaeLog(ctx).Error(err)
+		log.Error(ctx, err)
 		return ReplyText(ctx, event.ReplyToken, "画像がみつかりませんでした（・Θ・）")
 	}
 	return ReplyImage(ctx, event.ReplyToken, res.Url, res.ThumbnailUrl)

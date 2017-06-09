@@ -1,5 +1,5 @@
 install:
-	@glide install
+	@dep ensure
 
 fmt:
 	goimports -w ./appengine

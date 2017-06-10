@@ -2,17 +2,17 @@ install:
 	@dep ensure
 
 fmt:
-	goimports -w ./appengine
+	goimports -w $$(goapp list ./... | grep -v "vendor")
 
 test:
 	@goapp test -v -race $$(goapp list ./... | grep -v "vendor")
 
 serve-app:
-	@make -C appengine/backend serve
+	@make -C app/backend serve
 
 deploy-app-prod:
-	@make -C appengine/backend deploy-prod
+	@make -C app/backend deploy-prod
 
 deploy-app-dev:
-	@make -C appengine/backend deploy-dev
+	@make -C app/backend deploy-dev
 

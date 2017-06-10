@@ -8,6 +8,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
+	"github.com/utahta/momoclo-channel/app"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model"
 	"google.golang.org/appengine/urlfetch"
@@ -15,7 +16,7 @@ import (
 
 // LINE Notify と連携する
 func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
-	ctx := getContext(req)
+	ctx := app.GetContext(req)
 
 	c, err := linenotify.NewAuthorization(os.Getenv("LINENOTIFY_CLIENT_ID"), buildURL(req.URL, "/linenotify/callback"))
 	if err != nil {
@@ -33,7 +34,7 @@ func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
 
 // LINE Notify の連携を解除する
 func LinenotifyOff(w http.ResponseWriter, req *http.Request) {
-	ctx := getContext(req)
+	ctx := app.GetContext(req)
 	log.Info(ctx, "Redirect to LINE Notification revoke page")
 
 	// official url
@@ -41,7 +42,7 @@ func LinenotifyOff(w http.ResponseWriter, req *http.Request) {
 }
 
 func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
-	ctx := getContext(req)
+	ctx := app.GetContext(req)
 
 	params, err := linenotify.ParseAuthorization(req)
 	if err != nil {

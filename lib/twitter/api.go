@@ -3,10 +3,10 @@ package twitter
 import (
 	"fmt"
 	"net/url"
-	"os"
 	"time"
 
 	"github.com/utahta/go-twitter/types"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-crawler"
@@ -15,7 +15,7 @@ import (
 
 // Tweet text message
 func TweetMessage(ctx context.Context, text string) error {
-	if disabled() {
+	if config.C.Twitter.Disabled {
 		return nil
 	}
 
@@ -49,7 +49,7 @@ func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
 }
 
 func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelItem) error {
-	if disabled() {
+	if config.C.Twitter.Disabled {
 		return nil
 	}
 
@@ -123,13 +123,4 @@ func truncateText(channelTitle string, item *crawler.ChannelItem) string {
 		title = append(title[0:maxTweetTextLen-3], []rune("...")...)
 	}
 	return fmt.Sprintf("%s %s #momoclo #ももクロ", string(title), item.Url)
-}
-
-// if true disable tweet
-func disabled() bool {
-	e := os.Getenv("TWEET_DISABLE")
-	if e != "" {
-		return true
-	}
-	return false
 }

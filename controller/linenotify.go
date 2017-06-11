@@ -3,12 +3,12 @@ package controller
 import (
 	"html/template"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
 	"github.com/utahta/momoclo-channel/app"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model"
 	"google.golang.org/appengine/urlfetch"
@@ -18,7 +18,7 @@ import (
 func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
 	ctx := app.GetContext(req)
 
-	c, err := linenotify.NewAuthorization(os.Getenv("LINENOTIFY_CLIENT_ID"), buildURL(req.URL, "/linenotify/callback"))
+	c, err := linenotify.NewAuthorization(config.C.Linenotify.ClientID, config.C.App.BaseURL+"/linenotify/callback")
 	if err != nil {
 		ctx.Fail(err)
 		return
@@ -63,9 +63,9 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 
 	c := linenotify.NewToken(
 		params.Code,
-		buildURL(req.URL, "/linenotify/callback"),
-		os.Getenv("LINENOTIFY_CLIENT_ID"),
-		os.Getenv("LINENOTIFY_CLIENT_SECRET"),
+		config.C.App.BaseURL+"/linenotify/callback",
+		config.C.Linenotify.ClientID,
+		config.C.Linenotify.ClientSecret,
 	)
 	c.HTTPClient = urlfetch.Client(ctx)
 

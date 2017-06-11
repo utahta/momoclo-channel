@@ -27,9 +27,4 @@ _testmain.go
 
 .idea
 *.iml
-.env
-env
-.env.local
-.env.dev
-.env.prod
 vendor

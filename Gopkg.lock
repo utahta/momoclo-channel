@@ -38,12 +38,6 @@
   version = "v1.4.0"
 
 [[projects]]
-  name = "github.com/joho/godotenv"
-  packages = ["."]
-  revision = "726cc8b906e3d31c70a9671c90a13716a8d3f50d"
-  version = "v1.1"
-
-[[projects]]
   branch = "master"
   name = "github.com/jteeuwen/go-pkg-rss"
   packages = ["."]
@@ -78,6 +72,18 @@
   name = "github.com/mjibson/goon"
   packages = ["."]
   revision = "4704d2914e39207b9ea1f29065975a803e96b8ae"
+
+[[projects]]
+  name = "github.com/pelletier/go-buffruneio"
+  packages = ["."]
+  revision = "c37440a7cf42ac63b919c752ca73a85067e05992"
+  version = "v0.2.0"
+
+[[projects]]
+  name = "github.com/pelletier/go-toml"
+  packages = ["."]
+  revision = "5ccdfb18c776b740aecaf085c4d9a2779199c279"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -116,6 +122,7 @@
   version = "v0.1.2"
 
 [[projects]]
+  branch = "master"
   name = "github.com/utahta/momoclo-crawler"
   packages = ["."]
   revision = "edc6ce30f4db68062d3b762200c10972fdde05d8"
@@ -130,7 +137,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context","context/ctxhttp","html","html/atom"]
-  revision = "59a0b19b5533c7977ddeb86b017bf507ed407b12"
+  revision = "1a68b1313cf4ad7778376e82641197b60c02f65c"
 
 [[projects]]
   branch = "master"
@@ -139,14 +146,16 @@
   revision = "f52d1811a62927559de87708c8913c1650ce4f26"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/text"
   packages = ["encoding","encoding/internal","encoding/internal/identifier","encoding/japanese","internal/gen","transform","unicode/cldr"]
-  revision = "ccbd3f7822129ff389f8ca4858a9b9d4d910531c"
+  revision = "210eee5cf7323015d097341bcf7166130d001cd8"
 
 [[projects]]
+  branch = "master"
   name = "google.golang.org/api"
   packages = ["customsearch/v1","gensupport","googleapi","googleapi/internal/uritemplates"]
-  revision = "1faa39f42f12a54fa82ca5902a7ab642d5b09ad1"
+  revision = "324744a33f1f37e63dd1695cfb3ec9a3e4a1cb05"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -157,6 +166,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9f8e0ed2aaf7a1d479eef634138d4c7402564775745e5652028d10d5f1fdaf3c"
+  inputs-digest = "c2e916c8c0edc521bbaaec0176bb71bca65117b0d6f33ce2076191190863215c"
   solver-name = "gps-cdcl"
   solver-version = 1

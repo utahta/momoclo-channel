@@ -6,11 +6,11 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"os"
 	"time"
 
 	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
@@ -34,7 +34,7 @@ func NewLineNotification(token string) (*LineNotification, error) {
 		return nil, err
 	}
 
-	key := []byte(os.Getenv("LINENOTIFY_TOKEN_KEY"))
+	key := []byte(config.C.Linenotify.TokenKey)
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (l *LineNotification) Token() (string, error) {
 		return "", err
 	}
 
-	key := []byte(os.Getenv("LINENOTIFY_TOKEN_KEY"))
+	key := []byte(config.C.Linenotify.TokenKey)
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return "", err

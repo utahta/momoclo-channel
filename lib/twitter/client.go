@@ -1,21 +1,20 @@
 package twitter
 
 import (
-	"os"
-
 	"github.com/utahta/go-twitter"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
 )
 
 func newClient(ctx context.Context) (*twitter.Client, error) {
 	twitter.SetConsumerCredentials(
-		os.Getenv("TWITTER_CONSUMER_KEY"),
-		os.Getenv("TWITTER_CONSUMER_SECRET"),
+		config.C.Twitter.ConsumerKey,
+		config.C.Twitter.ConsumerSecret,
 	)
 	c, err := twitter.New(
-		os.Getenv("TWITTER_ACCESS_TOKEN"),
-		os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"),
+		config.C.Twitter.AccessToken,
+		config.C.Twitter.AccessTokenSecret,
 		twitter.WithHTTPClient(urlfetch.Client(ctx)),
 	)
 	if err != nil {

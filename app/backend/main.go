@@ -5,16 +5,14 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 	"github.com/urfave/negroni"
 	"github.com/utahta/momoclo-channel/controller"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/middleware"
 )
 
 func init() {
-	if err := godotenv.Load("env"); err != nil {
-		log.Fatalf("Failed to load dotenv. error:%v", err)
-	}
+	config.MustLoad("config/deploy.toml")
 
 	n := negroni.New()
 	n.Use(negroni.HandlerFunc(middleware.Appengine))

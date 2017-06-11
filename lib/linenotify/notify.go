@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"os"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-crawler"
@@ -106,7 +106,7 @@ func (c *client) notifyChannelItem(title string, item *crawler.ChannelItem) erro
 }
 
 func (c *client) notifyMessage(message, imageURL string) error {
-	if disabled() {
+	if config.C.Linenotify.Disabled {
 		return nil
 	}
 
@@ -162,13 +162,4 @@ func (c *client) notifyMessage(message, imageURL string) error {
 
 	log.Infof(ctx, "LINE Notify. message:%s imageURL:%s len:%d/%d", message, imageURL, count, len(c.users))
 	return nil
-}
-
-// if true disable linenotify
-func disabled() bool {
-	e := os.Getenv("LINENOTIFY_DISABLE")
-	if e != "" {
-		return true
-	}
-	return false
 }

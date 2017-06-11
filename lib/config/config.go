@@ -38,14 +38,14 @@ type Linenotify struct {
 
 var C Config
 
-func MustLoad() {
-	if err := Load(); err != nil {
+func MustLoad(path string) {
+	if err := Load(path); err != nil {
 		panic(err)
 	}
 }
 
-func Load() error {
-	t, err := toml.LoadFile("config/deploy.toml")
+func Load(path string) error {
+	t, err := toml.LoadFile(path)
 	if err != nil {
 		return err
 	}

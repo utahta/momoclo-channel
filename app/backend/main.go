@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	config.MustLoad()
+	config.MustLoad("config/deploy.toml")
 
 	n := negroni.New()
 	n.Use(negroni.HandlerFunc(middleware.Appengine))

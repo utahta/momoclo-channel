@@ -1,23 +1,23 @@
-[app]
-  baseURL = ""
+[App]
+  BaseURL = ""
 
-[twitter]
-  consumerKey = ""
-  consumerSecret = ""
-  accessToken = ""
-  accessTokenSecret = ""
-  disabled = true
+[Twitter]
+  ConsumerKey = ""
+  ConsumerSecret = ""
+  AccessToken = ""
+  AccessTokenSecret = ""
+  Disabled = true
 
-[linebot]
-  channelSecret = ""
-  channelToken = ""
+[Linebot]
+  ChannelSecret = ""
+  ChannelToken = ""
 
-[googleCustomSearch]
-  apiID = ""
-  apiKey = ""
+[GoogleCustomSearch]
+  ApiID = ""
+  ApiKey = ""
 
-[linenotify]
-  clientID = ""
-  clientSecret = ""
-  tokenKey = ""
-  disabled = true
+[Linenotify]
+  ClientID = ""
+  ClientSecret = ""
+  TokenKey = ""
+  Disabled = true

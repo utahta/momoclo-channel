@@ -2,41 +2,39 @@ package controller
 
 import (
 	"net/http"
-	"time"
 
+	"github.com/utahta/momoclo-channel/app"
 	"github.com/utahta/momoclo-channel/lib/crawler"
 	"github.com/utahta/momoclo-channel/lib/reminder"
 	"github.com/utahta/momoclo-channel/lib/ustream"
-	"golang.org/x/net/context"
 )
 
 // Notify reminder
 func CronReminder(w http.ResponseWriter, req *http.Request) {
-	ctx := getContext(req)
+	ctx := app.GetContext(req)
 
 	if err := reminder.Notify(ctx); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }
 
 // Notify ustream
 func CronUstream(w http.ResponseWriter, req *http.Request) {
-	ctx := getContext(req)
+	ctx := app.GetContext(req)
 
 	if err := ustream.Notify(ctx); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }
 
 // Crawling
 func CronCrawl(w http.ResponseWriter, req *http.Request) {
-	ctx, cancel := context.WithTimeout(getContext(req), 50*time.Second)
-	defer cancel()
+	ctx := app.GetContext(req)
 
 	if err := crawler.Crawl(ctx); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }

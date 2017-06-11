@@ -3,17 +3,19 @@ package middleware
 import (
 	"net/http"
 
-	gcontext "github.com/gorilla/context"
+	"github.com/utahta/momoclo-channel/app"
 	"google.golang.org/appengine"
 )
 
-const appengineContextKey string = "appengine-context"
-
 // Appengine middleware
 func Appengine(rw http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
-	ctx := appengine.NewContext(req)
-	gcontext.Set(req, appengineContextKey, ctx)
-	defer gcontext.Delete(req, appengineContextKey)
+	ctx := &app.Context{
+		Context: appengine.NewContext(req),
+		Writer:  rw,
+		Request: req,
+	}
+	app.SetContext(req, ctx)
+	defer app.DeleteContext(req)
 
 	next(rw, req)
 }

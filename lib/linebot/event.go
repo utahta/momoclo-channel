@@ -6,6 +6,7 @@ import (
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/googleapi/customsearch"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"golang.org/x/net/context"
@@ -44,12 +45,12 @@ func HandleEvents(ctx context.Context, events []*linebot.Event) error {
 }
 
 func onMessage(ctx context.Context) string {
-	onURL := fmt.Sprintf("%s%s", ctx.Value("baseURL").(string), "/linenotify/on")
+	onURL := fmt.Sprintf("%s%s", config.C.App.BaseURL, "/linenotify/on")
 	return fmt.Sprintf("通知機能を有効にする場合は、下記URLをクリックしてください（・Θ・）\n%s", onURL)
 }
 
 func helpMessage(ctx context.Context) string {
-	helpURL := fmt.Sprintf("%s%s", ctx.Value("baseURL").(string), "/linebot/help")
+	helpURL := fmt.Sprintf("%s%s", config.C.App.BaseURL, "/linebot/help")
 	return fmt.Sprintf("ヘルプ（・Θ・）\n%s", helpURL)
 }
 

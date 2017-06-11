@@ -2,11 +2,11 @@ package customsearch
 
 import (
 	"math/rand"
-	"os"
 	"strings"
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"golang.org/x/net/context"
 	"google.golang.org/api/customsearch/v1"
 	"google.golang.org/appengine/urlfetch"
@@ -34,8 +34,8 @@ func SearchImage(ctx context.Context, word string) (*ResultImage, error) {
 	}
 	rand.Seed(time.Now().UnixNano())
 
-	var key apiKey = apiKey(os.Getenv("GOOGLE_CUSTOM_SEARCH_API_KEY"))
-	search, err := service.Cse.List(word).Cx(os.Getenv("GOOGLE_CUSTOM_SEARCH_API_ID")).SearchType("image").Num(10).Start(rand.Int63n(30)).Do(key)
+	var key apiKey = apiKey(config.C.GoogleCustomSearch.ApiKey)
+	search, err := service.Cse.List(word).Cx(config.C.GoogleCustomSearch.ApiID).SearchType("image").Num(10).Start(rand.Int63n(30)).Do(key)
 	if err != nil {
 		return nil, err
 	}

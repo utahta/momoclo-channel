@@ -1,0 +1,23 @@
+[app]
+  baseURL = ""
+
+[twitter]
+  consumerKey = ""
+  consumerSecret = ""
+  accessToken = ""
+  accessTokenSecret = ""
+  disabled = true
+
+[linebot]
+  channelSecret = ""
+  channelToken = ""
+
+[googleCustomSearch]
+  apiID = ""
+  apiKey = ""
+
+[linenotify]
+  clientID = ""
+  clientSecret = ""
+  tokenKey = ""
+  disabled = true

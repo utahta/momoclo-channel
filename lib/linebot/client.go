@@ -1,9 +1,8 @@
 package linebot
 
 import (
-	"os"
-
 	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
@@ -16,8 +15,8 @@ type Client struct {
 
 func New(ctx context.Context) (*Client, error) {
 	var (
-		channelSecret = os.Getenv("LINEBOT_CHANNEL_SECRET")
-		channelToken  = os.Getenv("LINEBOT_CHANNEL_TOKEN")
+		channelSecret = config.C.Linebot.ChannelSecret
+		channelToken  = config.C.Linebot.ChannelToken
 	)
 	bot, err := linebot.New(channelSecret, channelToken, linebot.WithHTTPClient(urlfetch.Client(ctx)))
 	if err != nil {

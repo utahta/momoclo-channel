@@ -43,6 +43,6 @@ func (c *Context) Error(err error, code int) {
 		message = err.Error()
 	}
 
+	log.Errorf(c, "An error has occurred! code:%v err:%+v", code, err)
 	http.Error(c.Writer, message, code)
-	log.Errorf(c, "Internal server error! err:%+v", err)
 }

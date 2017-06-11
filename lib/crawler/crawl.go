@@ -16,6 +16,9 @@ import (
 var timeNow = time.Now
 
 func Crawl(ctx context.Context) error {
+	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
+	defer cancel()
+
 	var workQueue = make(chan bool, 20)
 	defer close(workQueue)
 

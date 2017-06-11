@@ -2,7 +2,7 @@ install:
 	@dep ensure
 
 fmt:
-	goimports -w $$(goapp list ./... | grep -v "vendor")
+	@goimports -w $$(goapp list -f '{{.Dir}}' ./... | grep -v "vendor")
 
 test:
 	@goapp test -v -race $$(goapp list ./... | grep -v "vendor")

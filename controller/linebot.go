@@ -16,16 +16,16 @@ func LineBotCallback(w http.ResponseWriter, req *http.Request) {
 	events, err := mbot.ParseRequest(ctx, req)
 	if err != nil {
 		if err == linebot.ErrInvalidSignature {
-			newError(err, http.StatusBadRequest).Handle(ctx, w)
+			ctx.Error(err, http.StatusBadRequest)
 			return
 		}
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 
 	withCtx := context.WithValue(ctx, "baseURL", buildURL(req.URL, ""))
 	if err := mbot.HandleEvents(withCtx, events); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }
@@ -35,7 +35,7 @@ func LineBotHelp(w http.ResponseWriter, req *http.Request) {
 
 	tpl := template.Must(template.ParseFiles("view/linebot/help.html"))
 	if err := tpl.Execute(w, nil); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }
@@ -45,7 +45,7 @@ func LineBotAbout(w http.ResponseWriter, req *http.Request) {
 
 	tpl := template.Must(template.ParseFiles("view/linebot/about.html"))
 	if err := tpl.Execute(w, nil); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }

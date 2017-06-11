@@ -9,7 +9,11 @@ import (
 
 // Appengine middleware
 func Appengine(rw http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
-	ctx := &app.Context{Context: appengine.NewContext(req)}
+	ctx := &app.Context{
+		Context: appengine.NewContext(req),
+		Writer:  rw,
+		Request: req,
+	}
 	app.SetContext(req, ctx)
 	defer app.DeleteContext(req)
 

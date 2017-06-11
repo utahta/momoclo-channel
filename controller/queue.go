@@ -13,19 +13,19 @@ func QueueTweet(w http.ResponseWriter, req *http.Request) {
 	ctx := app.GetContext(req)
 
 	if err := req.ParseForm(); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 
 	q := crawler.NewQueueTask()
 	ch, err := q.ParseURLValues(req.Form)
 	if err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 
 	if err := twitter.TweetChannel(ctx, ch); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }
@@ -34,19 +34,19 @@ func QueueLine(w http.ResponseWriter, req *http.Request) {
 	ctx := app.GetContext(req)
 
 	if err := req.ParseForm(); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 
 	q := crawler.NewQueueTask()
 	ch, err := q.ParseURLValues(req.Form)
 	if err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 
 	if err := linenotify.NotifyChannel(ctx, ch); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }

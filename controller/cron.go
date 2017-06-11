@@ -14,7 +14,7 @@ func CronReminder(w http.ResponseWriter, req *http.Request) {
 	ctx := app.GetContext(req)
 
 	if err := reminder.Notify(ctx); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }
@@ -24,7 +24,7 @@ func CronUstream(w http.ResponseWriter, req *http.Request) {
 	ctx := app.GetContext(req)
 
 	if err := ustream.Notify(ctx); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }
@@ -34,7 +34,7 @@ func CronCrawl(w http.ResponseWriter, req *http.Request) {
 	ctx := app.GetContext(req)
 
 	if err := crawler.Crawl(ctx); err != nil {
-		newError(err, http.StatusInternalServerError).Handle(ctx, w)
+		ctx.Fail(err)
 		return
 	}
 }

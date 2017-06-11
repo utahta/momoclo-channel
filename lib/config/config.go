@@ -5,10 +5,15 @@ import (
 )
 
 type Config struct {
+	App                App
 	Twitter            Twitter
 	Linebot            Linebot
 	GoogleCustomSearch GoogleCustomSearch
 	Linenotify         Linenotify
+}
+
+type App struct {
+	BaseURL string
 }
 
 type Twitter struct {

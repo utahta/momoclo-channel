@@ -7,7 +7,6 @@ import (
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/utahta/momoclo-channel/app"
 	mbot "github.com/utahta/momoclo-channel/lib/linebot"
-	"golang.org/x/net/context"
 )
 
 func LineBotCallback(w http.ResponseWriter, req *http.Request) {
@@ -23,8 +22,7 @@ func LineBotCallback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	withCtx := context.WithValue(ctx, "baseURL", buildURL(req.URL, ""))
-	if err := mbot.HandleEvents(withCtx, events); err != nil {
+	if err := mbot.HandleEvents(ctx, events); err != nil {
 		ctx.Fail(err)
 		return
 	}

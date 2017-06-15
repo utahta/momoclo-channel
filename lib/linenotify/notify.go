@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"sync/atomic"
 	"time"
 
 	"github.com/pkg/errors"
@@ -120,9 +121,9 @@ func (c *client) notifyMessage(message, imageURL string) error {
 	}
 
 	var (
-		ctx       = c.context
-		workQueue = make(chan bool, 10) // max goroutine
-		count     = 0
+		ctx             = c.context
+		workQueue       = make(chan bool, 10) // max goroutine
+		count     int32 = 0
 	)
 	eg := &errgroup.Group{}
 	for _, user := range c.users {
@@ -154,12 +155,12 @@ func (c *client) notifyMessage(message, imageURL string) error {
 				log.Errorf(ctx, "Failed to notify. hash:%v err:%v", user.Id, err)
 				return err
 			}
-			count++
+			atomic.AddInt32(&count, 1)
 			return nil
 		})
 	}
 	eg.Wait()
 
-	log.Infof(ctx, "LINE Notify. message:%s imageURL:%s len:%d/%d", message, imageURL, count, len(c.users))
+	log.Infof(ctx, "LINE Notify. message:%s imageURL:%s len:%v/%d", message, imageURL, count, len(c.users))
 	return nil
 }

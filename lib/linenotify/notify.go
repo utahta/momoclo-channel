@@ -96,9 +96,7 @@ func (c *client) notifyChannelItem(title string, item *crawler.ChannelItem) erro
 		}
 
 		for _, image := range item.Images[1:] {
-			if err := c.notifyMessage(" ", image.Url); err != nil {
-				return err
-			}
+			c.notifyMessage(" ", image.Url) // go on
 		}
 	} else {
 		return c.notifyMessage(message, "")
@@ -152,7 +150,7 @@ func (c *client) notifyMessage(message, imageURL string) error {
 				log.Infof(ctx, "Delete LINE Notify token. hash:%s", user.Id)
 				return nil
 			} else if err != nil {
-				log.Errorf(ctx, "Failed to notify. hash:%v err:%v", user.Id, err)
+				log.Errorf(ctx, "Failed to LINE Notify. hash:%v err:%v", user.Id, err)
 				return err
 			}
 			atomic.AddInt32(&count, 1)

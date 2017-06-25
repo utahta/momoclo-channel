@@ -1,15 +1,14 @@
 package crawler
 
 import (
-	"sync"
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/urlfetch"
 )
 
@@ -23,48 +22,42 @@ func Crawl(ctx context.Context) error {
 	defer close(workQueue)
 
 	clients := crawlChannelClients(ctx)
-
-	errFlg := atomicbool.New(false)
-	var wg sync.WaitGroup
-	wg.Add(len(clients))
+	eg := &errgroup.Group{}
 	for _, cli := range clients {
 		workQueue <- true
-		go func(ctx context.Context, cli *crawler.ChannelClient) {
+		cli := cli
+		eg.Go(func() error {
 			defer func() {
 				<-workQueue
-				wg.Done()
 			}()
 
 			ch, err := cli.Fetch()
 			if err != nil {
-				errFlg.Set(true)
 				log.Error(ctx, err)
-				return
+				return err
 			}
 
 			// update latest entry
 			for _, item := range ch.Items {
 				if _, err := model.PutLatestEntry(ctx, item.Url); err != nil {
-					log.Error(ctx, err)
+					log.Errorf(ctx, "Failed to put latest entry. err:%v", err)
 					// go on
 				}
 			}
 
 			q := NewQueueTask()
 			if err := q.PushTweet(ctx, ch); err != nil {
-				errFlg.Set(true)
-				log.Error(ctx, err)
+				log.Errorf(ctx, "Failed to push tweet queue. err:%v", err)
 			}
 			if err := q.PushLine(ctx, ch); err != nil {
-				errFlg.Set(true)
-				log.Error(ctx, err)
+				log.Errorf(ctx, "Failed to push line queue. err:%v", err)
 			}
-		}(ctx, cli)
+			return nil
+		})
 	}
-	wg.Wait()
 
-	if errFlg.Enabled() {
-		return errors.New("Errors occurred in crawler.Crawl.")
+	if err := eg.Wait(); err != nil {
+		return errors.Errorf("Errors occurred in crawler.Crawl. err:%v", err)
 	}
 	return nil
 }

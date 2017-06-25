@@ -74,7 +74,7 @@ func newClient(ctx context.Context) (*client, error) {
 		Client:  linenotify.New(),
 		context: ctx,
 	}
-	c.HTTPClient.Transport = &urlfetch.Transport{Context: ctx}
+	c.HTTPClient = urlfetch.Client(ctx)
 
 	query := model.NewLineNotificationQuery(ctx)
 	users, err := query.GetAll()
@@ -109,7 +109,7 @@ func (c *client) notifyMessage(message, imageURL string) error {
 		return nil
 	}
 
-	// prepare cached image
+	// prepare cache image
 	if imageURL != "" {
 		_, err := fetchImage(c.HTTPClient, imageURL)
 		if err != nil {
@@ -120,13 +120,15 @@ func (c *client) notifyMessage(message, imageURL string) error {
 
 	var (
 		ctx             = c.context
-		workQueue       = make(chan bool, 10) // max goroutine
 		count     int32 = 0
+		workQueue       = make(chan bool, 10) // max goroutine
 	)
+	defer close(workQueue)
+
 	eg := &errgroup.Group{}
 	for _, user := range c.users {
-		user := user
 		workQueue <- true
+		user := user
 
 		eg.Go(func() error {
 			defer func() {

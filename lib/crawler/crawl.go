@@ -26,6 +26,7 @@ func Crawl(ctx context.Context) error {
 	for _, cli := range clients {
 		workQueue <- true
 		cli := cli
+
 		eg.Go(func() error {
 			defer func() {
 				<-workQueue
@@ -57,7 +58,7 @@ func Crawl(ctx context.Context) error {
 	}
 
 	if err := eg.Wait(); err != nil {
-		return errors.Errorf("Errors occurred in crawler.Crawl. err:%v", err)
+		return errors.Wrap(err, "Errors occurred in crawler.Crawl")
 	}
 	return nil
 }

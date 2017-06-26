@@ -7,6 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-atomicbool"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/linenotify"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/lib/twitter"
@@ -47,8 +48,7 @@ func Notify(ctx context.Context) error {
 
 		go func() {
 			defer wg.Done()
-			jst := time.FixedZone("Asia/Tokyo", 9*60*60)
-			t := time.Now().In(jst)
+			t := time.Now().In(config.JST)
 			if err := twitter.TweetMessage(ctx, fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))); err != nil {
 				errFlg.Set(true)
 				log.Error(ctx, err)

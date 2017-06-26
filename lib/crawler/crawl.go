@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-crawler"
@@ -74,8 +75,7 @@ func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 		retrieveChannelClient(crawler.NewAeNewsChannelClient(option)),
 		retrieveChannelClient(crawler.NewYoutubeChannelClient(option)),
 	}
-	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
-	now := timeNow().In(jst)
+	now := timeNow().In(config.JST)
 
 	// every week on Sunday, 16:55 <= now <= 17:59 || 20:00 <= now <= 20:59
 	if now.Weekday() == time.Sunday && ((now.Hour() == 16 && now.Minute() >= 55) || now.Hour() == 17 || now.Hour() == 20) {

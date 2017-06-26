@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/linenotify"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/lib/twitter"
@@ -19,8 +20,7 @@ func Notify(ctx context.Context) error {
 		return err
 	}
 
-	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
-	now := time.Now().In(jst)
+	now := time.Now().In(config.JST)
 	for _, row := range rows {
 		if ok, err := row.Valid(now); !ok {
 			if err != nil {

@@ -1,6 +1,8 @@
 package config
 
 import (
+	"time"
+
 	"github.com/pelletier/go-toml"
 )
 
@@ -41,7 +43,10 @@ type Linenotify struct {
 	Disabled     bool
 }
 
-var C Config
+var (
+	C   Config
+	JST = time.FixedZone("Asia/Tokyo", 9*60*60)
+)
 
 func MustLoad(path string) {
 	if err := Load(path); err != nil {

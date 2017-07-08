@@ -24,7 +24,7 @@ func QueueTweet(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if err := twitter.TweetChannel(ctx, ch); err != nil {
+	if err := twitter.TweetChannel(ctx, ch.(*twitter.ChannelParam)); err != nil {
 		ctx.Fail(err)
 		return
 	}
@@ -45,7 +45,7 @@ func QueueLine(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if err := linenotify.NotifyChannel(ctx, ch); err != nil {
+	if err := linenotify.NotifyChannel(ctx, ch.(*linenotify.ChannelParam)); err != nil {
 		ctx.Fail(err)
 		return
 	}

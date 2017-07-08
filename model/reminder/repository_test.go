@@ -1,9 +1,10 @@
-package model
+package reminder
 
 import (
 	"testing"
 	"time"
 
+	"github.com/utahta/momoclo-channel/model"
 	"google.golang.org/appengine/aetest"
 	"google.golang.org/appengine/datastore"
 )
@@ -16,7 +17,7 @@ func TestReminderQuery_GetAll(t *testing.T) {
 	defer done()
 
 	now := time.Now()
-	res := []*Reminder{NewReminderOnce("test1", now), NewReminderOnce("test2", now)}
+	res := []*model.Reminder{model.NewReminderOnce("test1", now), model.NewReminderOnce("test2", now)}
 	res[1].Enabled = false
 	for _, re := range res {
 		if err := re.Put(ctx); err != nil {
@@ -33,8 +34,7 @@ func TestReminderQuery_GetAll(t *testing.T) {
 		t.Fatalf("Expected len 2, got %d", len(res))
 	}
 
-	q := NewReminderQuery(ctx)
-	res, err = q.GetAll()
+	res, err = Repository.GetAll(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}

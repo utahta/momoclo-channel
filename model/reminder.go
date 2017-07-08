@@ -6,20 +6,19 @@ import (
 	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
-	"google.golang.org/appengine/datastore"
 )
 
 const (
-	ReminderOnce Type = iota
+	ReminderOnce ReminderType = iota
 	ReminderWeekly
 )
 
-type Type int
+type ReminderType int
 
 type Reminder struct {
 	Id      int64 `datastore:"-" goon:"id"`
 	Text    string
-	Type    Type
+	Type    ReminderType
 	Enabled bool
 
 	// Once
@@ -84,31 +83,4 @@ func (r *Reminder) Valid(now time.Time) (bool, error) {
 		return false, errors.Errorf("Invalid reminder type. reminder:%#v", r)
 	}
 	return false, nil
-}
-
-type ReminderQuery struct {
-	context context.Context
-}
-
-func NewReminderQuery(ctx context.Context) *ReminderQuery {
-	return &ReminderQuery{context: ctx}
-}
-
-func (r *ReminderQuery) GetAll() ([]*Reminder, error) {
-	q := datastore.NewQuery("Reminder").Filter("Enabled =", true)
-
-	var dst []*Reminder
-	for t := q.Run(r.context); ; {
-		var rd Reminder
-		k, err := t.Next(&rd)
-		if err == datastore.Done {
-			break
-		}
-		if err != nil {
-			return nil, errors.Wrap(err, "Failed to get all Reminders.")
-		}
-		rd.Id = k.IntID()
-		dst = append(dst, &rd)
-	}
-	return dst, nil
 }

@@ -8,14 +8,13 @@ import (
 	"github.com/utahta/momoclo-channel/lib/linenotify"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/lib/twitter"
-	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/model/reminder"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 )
 
 func Notify(ctx context.Context) error {
-	q := model.NewReminderQuery(ctx)
-	rows, err := q.GetAll()
+	rows, err := reminder.Repository.GetAll(ctx)
 	if err != nil {
 		return err
 	}
@@ -39,6 +38,7 @@ func Notify(ctx context.Context) error {
 			}
 			return nil
 		})
+
 		eg.Go(func() error {
 			if err := linenotify.NotifyMessage(ctx, row.Text); err != nil {
 				log.Error(ctx, err)

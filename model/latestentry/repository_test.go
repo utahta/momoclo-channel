@@ -21,12 +21,13 @@ func TestPutLatestEntry(t *testing.T) {
 		url          string
 		expectExists bool
 	}{
-		{fmt.Sprintf("http://ameblo.jp/%s", model.LatestEntryCodeTamai), true},
-		{fmt.Sprintf("http://ameblo.jp/%s", model.LatestEntryCodeMomota), true},
-		{fmt.Sprintf("http://ameblo.jp/%s", model.LatestEntryCodeAriyasu), true},
-		{fmt.Sprintf("http://ameblo.jp/%s", model.LatestEntryCodeSasaki), true},
-		{fmt.Sprintf("http://ameblo.jp/%s", model.LatestEntryCodeTakagi), true},
-		{fmt.Sprintf("http://ameblo.jp/%s", "aaa"), false},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeTamai), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeMomota), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeAriyasu), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeSasaki), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeTakagi), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", "aaa"), false},
+		{fmt.Sprintf("http://ameblo.jp/%s", model.LatestEntryCodeMomota), false},
 		{"http://www.tfm.co.jp/clover/", true},
 	}
 	for _, test := range tests {

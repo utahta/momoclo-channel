@@ -26,7 +26,7 @@ func (q *QueueTask) PushTweet(ctx context.Context, ch *crawler.Channel) error {
 			continue
 		}
 
-		param := twitter.ChannelParam{Title: ch.Title, Item: item}
+		param := &twitter.ChannelParam{Title: ch.Title, Item: item}
 		v, err := q.buildURLValues(param)
 		if err != nil {
 			return err
@@ -47,7 +47,7 @@ func (q *QueueTask) PushLine(ctx context.Context, ch *crawler.Channel) error {
 			continue
 		}
 
-		param := linenotify.ChannelParam{Title: ch.Title, Item: item}
+		param := &linenotify.ChannelParam{Title: ch.Title, Item: item}
 		v, err := q.buildURLValues(param)
 		if err != nil {
 			return err
@@ -61,12 +61,11 @@ func (q *QueueTask) PushLine(ctx context.Context, ch *crawler.Channel) error {
 	return nil
 }
 
-func (q *QueueTask) ParseURLValues(v url.Values) (interface{}, error) {
-	var ch crawler.Channel
-	if err := json.Unmarshal([]byte(v.Get("channel")), &ch); err != nil {
-		return nil, err
+func (q *QueueTask) ParseURLValues(v url.Values, ch interface{}) error {
+	if err := json.Unmarshal([]byte(v.Get("channel")), ch); err != nil {
+		return err
 	}
-	return &ch, nil
+	return nil
 }
 
 func (q *QueueTask) buildURLValues(ch interface{}) (url.Values, error) {

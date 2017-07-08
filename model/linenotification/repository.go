@@ -9,9 +9,9 @@ import (
 
 type repository struct{}
 
-var Repository repository
+var Repository *repository = &repository{}
 
-func (repo repository) GetAll(ctx context.Context) ([]*model.LineNotification, error) {
+func (repo *repository) GetAll(ctx context.Context) ([]*model.LineNotification, error) {
 	g := goon.FromContext(ctx)
 
 	items := []*model.LineNotification{}
@@ -24,7 +24,7 @@ func (repo repository) GetAll(ctx context.Context) ([]*model.LineNotification, e
 	return items, nil
 }
 
-func (repo repository) PutToken(ctx context.Context, token string) (*model.LineNotification, error) {
+func (repo *repository) PutToken(ctx context.Context, token string) (*model.LineNotification, error) {
 	ln, err := model.NewLineNotification(token)
 	if err != nil {
 		return nil, err
@@ -33,5 +33,5 @@ func (repo repository) PutToken(ctx context.Context, token string) (*model.LineN
 	if err := ln.Put(ctx); err != nil {
 		return nil, err
 	}
-	return ln, nil // save to datastore
+	return ln, nil
 }

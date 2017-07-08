@@ -10,7 +10,7 @@ import (
 	"github.com/utahta/momoclo-channel/app"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/model/linenotification"
 	"google.golang.org/appengine/urlfetch"
 )
 
@@ -23,7 +23,7 @@ func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
 		ctx.Fail(err)
 		return
 	}
-	http.SetCookie(w, &http.Cookie{Name: "state", Value: c.State, Expires: time.Now().Add(60 * time.Second), Secure: true})
+	http.SetCookie(w, &http.Cookie{Name: "state", Value: c.State, Expires: time.Now().Add(300 * time.Second), Secure: true})
 
 	err = c.Redirect(w, req)
 	if err != nil {
@@ -75,12 +75,11 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	ln, err := model.NewLineNotification(token)
+	ln, err := linenotification.Repository.PutToken(ctx, token)
 	if err != nil {
 		ctx.Fail(err)
 		return
 	}
-	ln.Put(ctx) // save to datastore
 
 	t, err := template.New("callback").Parse("<html><body><h1>通知ノフ設定オンにしました（・Θ・）</h1></body></html>")
 	if err != nil {

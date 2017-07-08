@@ -12,6 +12,7 @@ import (
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/model/linenotification"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
@@ -76,8 +77,7 @@ func newClient(ctx context.Context) (*client, error) {
 	}
 	c.HTTPClient = urlfetch.Client(ctx)
 
-	query := model.NewLineNotificationQuery(ctx)
-	users, err := query.GetAll()
+	users, err := linenotification.Repository.GetAll(ctx)
 	if err != nil {
 		return nil, err
 	}

@@ -98,24 +98,3 @@ func (l *LineNotification) Delete(ctx context.Context) error {
 	g := goon.FromContext(ctx)
 	return g.Delete(g.Key(l))
 }
-
-type LineNotificationQuery struct {
-	context context.Context
-}
-
-func NewLineNotificationQuery(ctx context.Context) *LineNotificationQuery {
-	return &LineNotificationQuery{context: ctx}
-}
-
-func (l *LineNotificationQuery) GetAll() ([]*LineNotification, error) {
-	g := goon.FromContext(l.context)
-
-	items := []*LineNotification{}
-	q := datastore.NewQuery("LineNotification")
-
-	_, err := g.GetAll(q, &items)
-	if err != nil {
-		return nil, err
-	}
-	return items, nil
-}

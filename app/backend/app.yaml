@@ -32,14 +32,6 @@ handlers:
   script: _go_app
   login: admin
 
-- url: /queue/tweet
-  script: _go_app
-  login: admin
-
-- url: /queue/line
-  script: _go_app
-  login: admin
-
 - url: /linebot/callback
   script: _go_app
 - url: /linebot/help

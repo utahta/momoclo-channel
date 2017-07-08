@@ -22,9 +22,6 @@ func init() {
 	router.HandleFunc("/cron/ustream", controller.CronUstream).Methods("GET")
 	router.HandleFunc("/cron/reminder", controller.CronReminder).Methods("GET")
 
-	router.HandleFunc("/queue/tweet", controller.QueueTweet).Methods("POST")
-	router.HandleFunc("/queue/line", controller.QueueLine).Methods("POST")
-
 	router.HandleFunc("/linebot/callback", controller.LineBotCallback).Methods("POST")
 	router.HandleFunc("/linebot/help", controller.LineBotHelp).Methods("GET")
 	router.HandleFunc("/linebot/about", controller.LineBotAbout).Methods("GET")
@@ -36,5 +33,5 @@ func init() {
 	n.UseHandler(router)
 	http.Handle("/", n)
 
-	log.Println("init app")
+	log.Println("init backend app")
 }

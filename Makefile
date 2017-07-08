@@ -7,12 +7,14 @@ fmt:
 test:
 	@goapp test -v -race $$(goapp list ./... | grep -v "vendor")
 
-serve-app:
-	@make -C app/backend serve
+serve:
+	@make -C app/backend prepare-serve
+	@goapp serve ./app/backend/app.yaml ./app/queue/app.yaml
 
-deploy-app-prod:
+deploy-prod:
+	@make -C app/queue deploy-prod
 	@make -C app/backend deploy-prod
 
-deploy-app-dev:
+deploy-dev:
+	@make -C app/queue deploy-dev
 	@make -C app/backend deploy-dev
-

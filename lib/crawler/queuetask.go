@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"net/url"
 
+	"github.com/utahta/momoclo-channel/lib/linenotify"
+	"github.com/utahta/momoclo-channel/lib/twitter"
+	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/taskqueue"
@@ -18,41 +21,54 @@ func NewQueueTask() *QueueTask {
 
 // Push task to tweet queue
 func (q *QueueTask) PushTweet(ctx context.Context, ch *crawler.Channel) error {
-	v, err := q.buildURLValues(ch)
-	if err != nil {
-		return err
-	}
+	for _, item := range ch.Items {
+		if err := model.NewTweetItem(item).Put(ctx); err != nil {
+			continue
+		}
 
-	task := taskqueue.NewPOSTTask("/queue/tweet", v)
-	if _, err := taskqueue.Add(ctx, task, "queue-tweet"); err != nil {
-		return err
+		param := &twitter.ChannelParam{Title: ch.Title, Item: item}
+		v, err := q.buildURLValues(param)
+		if err != nil {
+			return err
+		}
+
+		task := taskqueue.NewPOSTTask("/queue/tweet", v)
+		if _, err := taskqueue.Add(ctx, task, "queue-tweet"); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 // Push task to LINE queue
 func (q *QueueTask) PushLine(ctx context.Context, ch *crawler.Channel) error {
-	v, err := q.buildURLValues(ch)
-	if err != nil {
-		return err
-	}
+	for _, item := range ch.Items {
+		if err := model.NewLineItem(item).Put(ctx); err != nil {
+			continue
+		}
 
-	task := taskqueue.NewPOSTTask("/queue/line", v)
-	if _, err := taskqueue.Add(ctx, task, "queue-line"); err != nil {
+		param := &linenotify.ChannelParam{Title: ch.Title, Item: item}
+		v, err := q.buildURLValues(param)
+		if err != nil {
+			return err
+		}
+
+		task := taskqueue.NewPOSTTask("/queue/line", v)
+		if _, err := taskqueue.Add(ctx, task, "queue-line"); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (q *QueueTask) ParseURLValues(v url.Values, ch interface{}) error {
+	if err := json.Unmarshal([]byte(v.Get("channel")), ch); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (q *QueueTask) ParseURLValues(v url.Values) (*crawler.Channel, error) {
-	var ch crawler.Channel
-	if err := json.Unmarshal([]byte(v.Get("channel")), &ch); err != nil {
-		return nil, err
-	}
-	return &ch, nil
-}
-
-func (q *QueueTask) buildURLValues(ch *crawler.Channel) (url.Values, error) {
+func (q *QueueTask) buildURLValues(ch interface{}) (url.Values, error) {
 	bin, err := json.Marshal(ch)
 	if err != nil {
 		return nil, err

@@ -17,14 +17,14 @@ func QueueTweet(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	param := &twitter.ChannelParam{}
 	q := crawler.NewQueueTask()
-	ch, err := q.ParseURLValues(req.Form)
-	if err != nil {
+	if err := q.ParseURLValues(req.Form, param); err != nil {
 		ctx.Fail(err)
 		return
 	}
 
-	if err := twitter.TweetChannel(ctx, ch); err != nil {
+	if err := twitter.TweetChannel(ctx, param); err != nil {
 		ctx.Fail(err)
 		return
 	}
@@ -38,14 +38,14 @@ func QueueLine(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	param := &linenotify.ChannelParam{}
 	q := crawler.NewQueueTask()
-	ch, err := q.ParseURLValues(req.Form)
-	if err != nil {
+	if err := q.ParseURLValues(req.Form, param); err != nil {
 		ctx.Fail(err)
 		return
 	}
 
-	if err := linenotify.NotifyChannel(ctx, ch); err != nil {
+	if err := linenotify.NotifyChannel(ctx, param); err != nil {
 		ctx.Fail(err)
 		return
 	}

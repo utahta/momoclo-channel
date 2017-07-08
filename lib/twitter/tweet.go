@@ -8,10 +8,14 @@ import (
 	"github.com/utahta/go-twitter/types"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/net/context"
 )
+
+type ChannelParam struct {
+	Title string
+	Item  *crawler.ChannelItem
+}
 
 // Tweet text message
 func TweetMessage(ctx context.Context, text string) error {
@@ -31,27 +35,13 @@ func TweetMessage(ctx context.Context, text string) error {
 }
 
 // Tweet channel
-func TweetChannel(ctx context.Context, ch *crawler.Channel) error {
-	reqCtx, cancel := context.WithTimeout(ctx, 540*time.Second)
-	defer cancel()
-
-	for _, item := range ch.Items {
-		if err := model.NewTweetItem(item).Put(ctx); err != nil {
-			continue
-		}
-
-		if err := tweetChannelItem(reqCtx, ch.Title, item); err != nil {
-			log.Errorf(ctx, "Filed to tweet channel item. item:%#v err:%v", item, err)
-			continue
-		}
-	}
-	return nil
-}
-
-func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelItem) error {
+func TweetChannel(ctx context.Context, param *ChannelParam) error {
 	if config.C.Twitter.Disabled {
 		return nil
 	}
+
+	ctx, cancel := context.WithTimeout(ctx, 540*time.Second)
+	defer cancel()
 
 	c, err := newClient(ctx)
 	if err != nil {
@@ -61,7 +51,7 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 	const maxUploadMediaLen = 4
 	var images [][]string
 	var tmp []string
-	for _, image := range item.Images {
+	for _, image := range param.Item.Images {
 		tmp = append(tmp, image.Url)
 		if len(tmp) == maxUploadMediaLen {
 			images = append(images, tmp)
@@ -71,8 +61,8 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 	if len(tmp) > 0 {
 		images = append(images, tmp)
 	}
-	videos := item.Videos
-	text := truncateText(title, item)
+	videos := param.Item.Videos
+	text := truncateText(param.Title, param.Item)
 
 	var tweets *types.Tweets
 	if len(images) > 0 {
@@ -89,13 +79,13 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 		log.Errorf(ctx, "Failed to post tweet. text:%s err:%v", text, err)
 		return err
 	}
-	log.Infof(ctx, "Post tweet. text:%s images:%v videos:%v", text, len(item.Images), len(item.Videos))
+	log.Infof(ctx, "Post tweet. text:%s images:%v videos:%v", text, len(param.Item.Images), len(param.Item.Videos))
 
 	if len(images) > 0 {
 		for _, urlsStr := range images {
 			v := url.Values{}
 			v.Set("in_reply_to_status_id", tweets.IDStr)
-			tweets, err = c.TweetImageURLs("", urlsStr, v)
+			tweets, err = c.TweetImageURLs("#momoclo #ももクロ", urlsStr, v)
 			if err != nil {
 				log.Errorf(ctx, "Failed to post images. urls:%v err:%v", urlsStr, err)
 			}
@@ -106,7 +96,7 @@ func tweetChannelItem(ctx context.Context, title string, item *crawler.ChannelIt
 		for _, video := range videos {
 			v := url.Values{}
 			v.Set("in_reply_to_status_id", tweets.IDStr)
-			tweets, err = c.TweetVideoURL("", video.Url, "video/mp4", v)
+			tweets, err = c.TweetVideoURL("#momoclo #ももクロ", video.Url, "video/mp4", v)
 			if err != nil {
 				log.Errorf(ctx, "Failed to post video. url:%v err:%v", video.Url, err)
 			}

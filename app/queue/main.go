@@ -18,6 +18,7 @@ func init() {
 	n.Use(negroni.HandlerFunc(middleware.Appengine))
 
 	router := mux.NewRouter()
+	router.HandleFunc("/queue/line", controller.QueueLine).Methods("POST")
 	router.HandleFunc("/queue/tweet", controller.QueueTweet).Methods("POST")
 
 	n.UseHandler(router)

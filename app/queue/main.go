@@ -1,4 +1,4 @@
-package backend
+package queue
 
 import (
 	"log"
@@ -18,6 +18,7 @@ func init() {
 	n.Use(negroni.HandlerFunc(middleware.Appengine))
 
 	router := mux.NewRouter()
+	router.HandleFunc("/_ah/start", func(w http.ResponseWriter, req *http.Request) {})
 	router.HandleFunc("/queue/line", controller.QueueLine).Methods("POST")
 	router.HandleFunc("/queue/tweet", controller.QueueTweet).Methods("POST")
 

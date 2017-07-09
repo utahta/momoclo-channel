@@ -85,7 +85,7 @@ func TweetChannel(ctx context.Context, param *ChannelParam) error {
 		for _, urlsStr := range images {
 			v := url.Values{}
 			v.Set("in_reply_to_status_id", tweets.IDStr)
-			tweets, err = c.TweetImageURLs("#momoclo #ももクロ", urlsStr, v)
+			tweets, err = c.TweetImageURLs("", urlsStr, v)
 			if err != nil {
 				log.Errorf(ctx, "Failed to post images. urls:%v err:%v", urlsStr, err)
 			}
@@ -96,7 +96,7 @@ func TweetChannel(ctx context.Context, param *ChannelParam) error {
 		for _, video := range videos {
 			v := url.Values{}
 			v.Set("in_reply_to_status_id", tweets.IDStr)
-			tweets, err = c.TweetVideoURL("#momoclo #ももクロ", video.Url, "video/mp4", v)
+			tweets, err = c.TweetVideoURL("", video.Url, "video/mp4", v)
 			if err != nil {
 				log.Errorf(ctx, "Failed to post video. url:%v err:%v", video.Url, err)
 			}

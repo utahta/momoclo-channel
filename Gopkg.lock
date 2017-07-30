@@ -98,12 +98,6 @@
   version = "v0.2.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/utahta/go-atomicbool"
-  packages = ["."]
-  revision = "8c6eeea43c52804cb9689cde24f07d0f0951b544"
-
-[[projects]]
   name = "github.com/utahta/go-linenotify"
   packages = ["."]
   revision = "b8ba6c0ca3a8e80dfad8f6740a865bcc9b7678cc"
@@ -166,6 +160,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c2e916c8c0edc521bbaaec0176bb71bca65117b0d6f33ce2076191190863215c"
+  inputs-digest = "31a72581846e74421538a5763b5ce90546eb6614b35e724dcf26770551ee0faa"
   solver-name = "gps-cdcl"
   solver-version = 1

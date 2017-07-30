@@ -2,18 +2,16 @@ package ustream
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/go-atomicbool"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/linenotify"
-	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/lib/twitter"
 	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/uststat"
 	"golang.org/x/net/context"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/urlfetch"
 )
@@ -41,32 +39,25 @@ func Notify(ctx context.Context) error {
 	status.Put(ctx)
 
 	if isLive {
-		const maxGoroutineNum = 2
-		errFlg := atomicbool.New(false)
-		var wg sync.WaitGroup
-		wg.Add(maxGoroutineNum)
+		eg := &errgroup.Group{}
 
-		go func() {
-			defer wg.Done()
+		eg.Go(func() error {
 			t := time.Now().In(config.JST)
 			if err := twitter.TweetMessage(ctx, fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))); err != nil {
-				errFlg.Set(true)
-				log.Error(ctx, err)
+				return err
 			}
-		}()
+			return nil
+		})
 
-		go func() {
-			defer wg.Done()
+		eg.Go(func() error {
 			if err := linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"); err != nil {
-				errFlg.Set(true)
-				log.Error(ctx, err)
+				return err
 			}
-		}()
+			return nil
+		})
 
-		wg.Wait()
-
-		if errFlg.Enabled() {
-			return errors.New("Errors occurred in ustream.Notify")
+		if err := eg.Wait(); err != nil {
+			return errors.Wrap(err, "Errors occurred in ustream.Notify")
 		}
 	}
 	return nil

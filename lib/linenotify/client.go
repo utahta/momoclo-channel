@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 
 	"github.com/utahta/go-linenotify"
+	"github.com/utahta/momoclo-channel/lib/backoff"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model"
@@ -98,12 +99,16 @@ func (c *client) notifyMessage(message, imageURL string) error {
 				image = bytes.NewReader(b)
 			}
 
-			err = c.Notify(token, message, "", "", image)
-			if err == linenotify.ErrNotifyInvalidAccessToken {
-				user.Delete(c.context)
-				log.Infof(ctx, "Delete LINE Notify token. hash:%s", user.Id)
-				return nil
-			} else if err != nil {
+			err = backoff.Retry(3, func() error {
+				err := c.Notify(token, message, "", "", image)
+				if err == linenotify.ErrNotifyInvalidAccessToken {
+					err = nil
+					user.Delete(c.context)
+					log.Infof(ctx, "Delete LINE Notify token. hash:%s", user.Id)
+				}
+				return err
+			})
+			if err != nil {
 				log.Errorf(ctx, "Failed to LINE Notify. hash:%v err:%v", user.Id, err)
 				return err
 			}

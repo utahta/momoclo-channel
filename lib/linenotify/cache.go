@@ -4,9 +4,12 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"strings"
 	"sync"
 
+	"github.com/pkg/errors"
 	"github.com/utahta/go-openuri"
+	"github.com/utahta/momoclo-channel/lib/backoff"
 )
 
 var (
@@ -22,17 +25,28 @@ func fetchImage(c *http.Client, filename string) ([]byte, error) {
 		return image, nil
 	}
 
-	o, err := openuri.Open(filename, openuri.WithHTTPClient(c))
+	err := backoff.Retry(3, func() error {
+		o, err := openuri.Open(filename, openuri.WithHTTPClient(c))
+		if err != nil {
+			return err
+		}
+		defer o.Close()
+
+		buf := &bytes.Buffer{}
+		if _, err := io.Copy(buf, o); err != nil {
+			return err
+		}
+
+		if ct := http.DetectContentType(buf.Bytes()); !strings.Contains(ct, "image") {
+			return errors.Errorf("Detected invalid content type. ct:%v", ct)
+		}
+		images[filename] = buf.Bytes()
+
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
-	defer o.Close()
-
-	buf := &bytes.Buffer{}
-	if _, err := io.Copy(buf, o); err != nil {
-		return nil, err
-	}
-	images[filename] = buf.Bytes()
 
 	return images[filename], nil
 }

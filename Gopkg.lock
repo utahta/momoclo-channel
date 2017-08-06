@@ -14,10 +14,10 @@
   revision = "349dd0209470eabd9514242c688c403c0926d266"
 
 [[projects]]
+  branch = "master"
   name = "github.com/cenkalti/backoff"
   packages = ["."]
-  revision = "32cd0c5b3aef12c76ed64aaf678f6c79736be7dc"
-  version = "v1.0.0"
+  revision = "61153c768f31ee5f130071d08fc82b85208528de"
 
 [[projects]]
   branch = "master"
@@ -166,6 +166,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d6f1d3cb85608d1bf4048182a1ac2bed432f4c687e308f9626d16b7bfd7128fc"
+  inputs-digest = "eb91ec400995d5ccb1e55b596409c01e5390d63427ca467854a1c795f45fbe37"
   solver-name = "gps-cdcl"
   solver-version = 1

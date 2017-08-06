@@ -14,6 +14,12 @@
   revision = "349dd0209470eabd9514242c688c403c0926d266"
 
 [[projects]]
+  name = "github.com/cenkalti/backoff"
+  packages = ["."]
+  revision = "32cd0c5b3aef12c76ed64aaf678f6c79736be7dc"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/garyburd/go-oauth"
   packages = ["oauth"]
@@ -160,6 +166,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "31a72581846e74421538a5763b5ce90546eb6614b35e724dcf26770551ee0faa"
+  inputs-digest = "d6f1d3cb85608d1bf4048182a1ac2bed432f4c687e308f9626d16b7bfd7128fc"
   solver-name = "gps-cdcl"
   solver-version = 1

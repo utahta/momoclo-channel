@@ -74,7 +74,7 @@ func (c *client) notifyMessage(message, imageURL string) error {
 	var (
 		ctx             = c.context
 		count     int32 = 0
-		workQueue       = make(chan bool, 10) // max goroutine
+		workQueue       = make(chan bool, 100) // max goroutine
 	)
 	defer close(workQueue)
 

@@ -104,7 +104,7 @@ func (c *client) notifyMessage(message, imageURL string) error {
 				if err == linenotify.ErrNotifyInvalidAccessToken {
 					err = nil
 					user.Delete(c.context)
-					log.Infof(ctx, "Delete LINE Notify token. hash:%s", user.Id)
+					log.Infof(ctx, "Delete LINE Notify token. user:%#v", user)
 				}
 				return err
 			})

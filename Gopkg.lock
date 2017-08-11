@@ -118,8 +118,8 @@
 [[projects]]
   name = "github.com/utahta/go-twitter"
   packages = [".","types"]
-  revision = "bb88baea0c5486221e59e35e436433ff07137662"
-  version = "v0.1.2"
+  revision = "76b6e9de46bc03d708c8f256a7e3319f61ab859e"
+  version = "v0.2.2"
 
 [[projects]]
   branch = "master"
@@ -166,6 +166,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "eb91ec400995d5ccb1e55b596409c01e5390d63427ca467854a1c795f45fbe37"
+  inputs-digest = "3dbdfa33ba5b62529bf6f1699e93b2f0e690171c5ed4bcef1bba9027ceba9843"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -125,7 +125,7 @@
   branch = "master"
   name = "github.com/utahta/momoclo-crawler"
   packages = ["."]
-  revision = "65d531e342f42b9b97f4a36c942aae9918b8784d"
+  revision = "978fcbc3bc43002ce90c1230cf35f60c61556f69"
 
 [[projects]]
   branch = "master"

@@ -75,10 +75,10 @@ func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 		retrieveChannelClient(crawler.NewAeNewsChannelClient(option)),
 		retrieveChannelClient(crawler.NewYoutubeChannelClient(option)),
 	}
-	now := timeNow().In(config.JST)
 
-	// every week on Sunday, 16:55 <= now <= 17:59 || 20:00 <= now <= 20:59
-	if now.Weekday() == time.Sunday && ((now.Hour() == 16 && now.Minute() >= 55) || now.Hour() == 17 || now.Hour() == 20) {
+	now := timeNow().In(config.JST)
+	if (now.Weekday() == time.Sunday && now.Hour() == 16 && (now.Minute() >= 55 && now.Minute() <= 59)) ||
+		(now.Hour() >= 8 && now.Hour() <= 23 && (now.Minute() == 0 || now.Minute() == 30)) {
 		clients = append(clients, retrieveChannelClient(crawler.NewHappycloChannelClient(latestentry.Repository.GetHappycloURL(ctx), option)))
 	}
 

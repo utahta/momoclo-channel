@@ -135,3 +135,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/cenkalti/backoff"
+
+[[constraint]]
+  name = "github.com/go-chi/chi"
+  version = "^3.2.1"

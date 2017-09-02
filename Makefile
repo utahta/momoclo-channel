@@ -5,7 +5,7 @@ fmt:
 	@goimports -w $$(goapp list -f '{{.Dir}}' ./... | grep -v "vendor")
 
 test:
-	@goapp test -v -race $$(goapp list ./... | grep -v "vendor")
+	@go test -v -race $$(goapp list ./... | grep -v "vendor")
 
 serve:
 	@make -C app/backend prepare-serve

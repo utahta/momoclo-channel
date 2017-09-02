@@ -57,7 +57,7 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if params.State != state.Value {
-		fail(ctx, w, errors.New("Invalid csrf token."), http.StatusBadRequest)
+		fail(ctx, w, errors.New("invalid csrf token"), http.StatusBadRequest)
 		return
 	}
 

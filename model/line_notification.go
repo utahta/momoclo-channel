@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
@@ -11,7 +12,6 @@ import (
 	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/lib/config"
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
 

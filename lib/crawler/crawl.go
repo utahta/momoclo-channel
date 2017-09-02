@@ -1,6 +1,7 @@
 package crawler
 
 import (
+	"context"
 	"time"
 
 	"github.com/pkg/errors"
@@ -8,7 +9,6 @@ import (
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model/latestentry"
 	"github.com/utahta/momoclo-crawler"
-	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/urlfetch"
 )

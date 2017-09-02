@@ -1,9 +1,10 @@
 package twitter
 
 import (
+	"context"
+
 	"github.com/utahta/go-twitter"
 	"github.com/utahta/momoclo-channel/lib/config"
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
 )
 

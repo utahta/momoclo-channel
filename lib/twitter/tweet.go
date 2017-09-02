@@ -1,6 +1,7 @@
 package twitter
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"time"
@@ -9,7 +10,6 @@ import (
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-crawler"
-	"golang.org/x/net/context"
 )
 
 type ChannelParam struct {

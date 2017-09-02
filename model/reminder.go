@@ -1,11 +1,11 @@
 package model
 
 import (
+	"context"
 	"time"
 
 	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
-	"golang.org/x/net/context"
 )
 
 const (

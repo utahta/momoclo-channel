@@ -1,11 +1,11 @@
 package latestentry
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	"github.com/utahta/momoclo-channel/model"
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
 

@@ -1,8 +1,9 @@
 package model
 
 import (
+	"context"
+
 	"github.com/mjibson/goon"
-	"golang.org/x/net/context"
 )
 
 type UstreamStatus struct {

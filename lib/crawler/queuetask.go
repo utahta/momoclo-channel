@@ -1,6 +1,7 @@
 package crawler
 
 import (
+	"context"
 	"encoding/json"
 	"net/url"
 
@@ -8,7 +9,6 @@ import (
 	"github.com/utahta/momoclo-channel/lib/twitter"
 	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-crawler"
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/taskqueue"
 )
 

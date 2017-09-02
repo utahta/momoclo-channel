@@ -1,6 +1,7 @@
 package reminder
 
 import (
+	"context"
 	"time"
 
 	"github.com/pkg/errors"
@@ -9,7 +10,6 @@ import (
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/lib/twitter"
 	"github.com/utahta/momoclo-channel/model/reminder"
-	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 )
 

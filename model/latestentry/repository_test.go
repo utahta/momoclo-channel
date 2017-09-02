@@ -1,12 +1,12 @@
 package latestentry
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"time"
 
 	"github.com/utahta/momoclo-channel/model"
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/aetest"
 )
 

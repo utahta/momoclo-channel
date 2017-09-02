@@ -1,11 +1,11 @@
 package linenotify
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/utahta/momoclo-crawler"
-	"golang.org/x/net/context"
 )
 
 const timeout = 540 * time.Second

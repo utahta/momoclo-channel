@@ -12,7 +12,7 @@ import (
 func TestReminderQuery_GetAll(t *testing.T) {
 	ctx, done, err := aetest.NewContext()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	defer done()
 

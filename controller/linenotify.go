@@ -7,7 +7,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
-	"github.com/utahta/momoclo-channel/app"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model/linenotification"
@@ -16,25 +15,26 @@ import (
 
 // LINE Notify と連携する
 func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
-	ctx := app.GetContext(req)
+	ctx := req.Context()
 
 	c, err := linenotify.NewAuthorization(config.C.Linenotify.ClientID, config.C.App.BaseURL+"/linenotify/callback")
 	if err != nil {
-		ctx.Fail(err)
+		fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{Name: "state", Value: c.State, Expires: time.Now().Add(300 * time.Second), Secure: true})
 
 	err = c.Redirect(w, req)
 	if err != nil {
-		ctx.Fail(err)
+		fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }
 
 // LINE Notify の連携を解除する
 func LinenotifyOff(w http.ResponseWriter, req *http.Request) {
-	ctx := app.GetContext(req)
+	ctx := req.Context()
+
 	log.Info(ctx, "Redirect to LINE Notification revoke page")
 
 	// official url
@@ -42,22 +42,22 @@ func LinenotifyOff(w http.ResponseWriter, req *http.Request) {
 }
 
 func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
-	ctx := app.GetContext(req)
+	ctx := req.Context()
 
 	params, err := linenotify.ParseAuthorization(req)
 	if err != nil {
-		ctx.Fail(err)
+		fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	state, err := req.Cookie("state")
 	if err != nil {
-		ctx.Fail(err)
+		fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	if params.State != state.Value {
-		ctx.Error(errors.New("Invalid csrf token."), http.StatusBadRequest)
+		fail(ctx, w, errors.New("invalid csrf token"), http.StatusBadRequest)
 		return
 	}
 
@@ -71,24 +71,24 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 
 	token, err := c.Get()
 	if err != nil {
-		ctx.Fail(err)
+		fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	ln, err := linenotification.Repository.PutToken(ctx, token)
 	if err != nil {
-		ctx.Fail(err)
+		fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	t, err := template.New("callback").Parse("<html><body><h1>通知ノフ設定オンにしました（・Θ・）</h1></body></html>")
 	if err != nil {
-		ctx.Fail(err)
+		fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 	err = t.Execute(w, nil)
 	if err != nil {
-		ctx.Fail(err)
+		fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 

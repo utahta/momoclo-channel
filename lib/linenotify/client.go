@@ -2,6 +2,7 @@ package linenotify
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"sync/atomic"
@@ -12,7 +13,6 @@ import (
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/momoclo-channel/model/linenotification"
-	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/urlfetch"
 )

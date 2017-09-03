@@ -1,6 +1,7 @@
 package ustream
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/utahta/momoclo-channel/lib/twitter"
 	"github.com/utahta/momoclo-channel/model"
 	"github.com/utahta/uststat"
-	"golang.org/x/net/context"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/datastore"
 	"google.golang.org/appengine/urlfetch"

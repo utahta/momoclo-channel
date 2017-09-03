@@ -1,10 +1,10 @@
 package linebot
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/line/line-bot-sdk-go/linebot"
-	"golang.org/x/net/context"
 )
 
 func ParseRequest(ctx context.Context, req *http.Request) ([]*linebot.Event, error) {

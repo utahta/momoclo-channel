@@ -1,9 +1,10 @@
 package linenotification
 
 import (
+	"context"
+
 	"github.com/mjibson/goon"
 	"github.com/utahta/momoclo-channel/model"
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
 

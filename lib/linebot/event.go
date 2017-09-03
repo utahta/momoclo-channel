@@ -1,6 +1,7 @@
 package linebot
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 
@@ -9,7 +10,6 @@ import (
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/googleapi/customsearch"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"golang.org/x/net/context"
 )
 
 var (

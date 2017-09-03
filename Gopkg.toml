@@ -126,7 +126,7 @@
 
 [[constraint]]
   name = "google.golang.org/appengine"
-  version = "1.0.0"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/pelletier/go-toml"
@@ -135,3 +135,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/cenkalti/backoff"
+
+[[constraint]]
+  name = "github.com/go-chi/chi"
+  version = "^3.2.1"

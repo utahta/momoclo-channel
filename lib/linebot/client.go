@@ -1,10 +1,11 @@
 package linebot
 
 import (
+	"context"
+
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/urlfetch"
 )
 

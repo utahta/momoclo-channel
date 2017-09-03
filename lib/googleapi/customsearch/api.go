@@ -1,13 +1,13 @@
 package customsearch
 
 import (
+	"context"
 	"math/rand"
 	"strings"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/lib/config"
-	"golang.org/x/net/context"
 	"google.golang.org/api/customsearch/v1"
 	"google.golang.org/appengine/urlfetch"
 )

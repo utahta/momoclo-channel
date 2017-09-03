@@ -1,9 +1,10 @@
 package reminder
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/model"
-	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
 )
 

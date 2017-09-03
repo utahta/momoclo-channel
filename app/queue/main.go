@@ -4,8 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
-	"github.com/urfave/negroni"
+	"github.com/go-chi/chi"
 	"github.com/utahta/momoclo-channel/controller"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/middleware"
@@ -14,16 +13,14 @@ import (
 func init() {
 	config.MustLoad("config/deploy.toml")
 
-	n := negroni.New()
-	n.Use(negroni.HandlerFunc(middleware.Appengine))
+	router := chi.NewRouter()
+	router.Use(middleware.Appengine)
 
-	router := mux.NewRouter()
-	router.HandleFunc("/_ah/start", func(w http.ResponseWriter, req *http.Request) {})
-	router.HandleFunc("/queue/line", controller.QueueLine).Methods("POST")
-	router.HandleFunc("/queue/tweet", controller.QueueTweet).Methods("POST")
+	router.Get("/_ah/start", func(w http.ResponseWriter, req *http.Request) {})
+	router.Post("/queue/line", controller.QueueLine)
+	router.Post("/queue/tweet", controller.QueueTweet)
 
-	n.UseHandler(router)
-	http.Handle("/", n)
+	http.Handle("/", router)
 
 	log.Println("init queue app")
 }

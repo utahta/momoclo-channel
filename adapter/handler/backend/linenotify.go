@@ -1,4 +1,4 @@
-package controller
+package backend
 
 import (
 	"html/template"
@@ -7,9 +7,10 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
+	"github.com/utahta/momoclo-channel/adapter/handler"
+	"github.com/utahta/momoclo-channel/domain/linenotification"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"github.com/utahta/momoclo-channel/domain/linenotification"
 	"google.golang.org/appengine/urlfetch"
 )
 
@@ -19,14 +20,14 @@ func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
 
 	c, err := linenotify.NewAuthorization(config.C.Linenotify.ClientID, config.C.App.BaseURL+"/linenotify/callback")
 	if err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{Name: "state", Value: c.State, Expires: time.Now().Add(300 * time.Second), Secure: true})
 
 	err = c.Redirect(w, req)
 	if err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -46,18 +47,18 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 
 	params, err := linenotify.ParseAuthorization(req)
 	if err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	state, err := req.Cookie("state")
 	if err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	if params.State != state.Value {
-		fail(ctx, w, errors.New("invalid csrf token"), http.StatusBadRequest)
+		handler.Fail(ctx, w, errors.New("invalid csrf token"), http.StatusBadRequest)
 		return
 	}
 
@@ -71,24 +72,24 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 
 	token, err := c.Get()
 	if err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	ln, err := linenotification.Repository.PutToken(ctx, token)
 	if err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	t, err := template.New("callback").Parse("<html><body><h1>通知ノフ設定オンにしました（・Θ・）</h1></body></html>")
 	if err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 	err = t.Execute(w, nil)
 	if err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 

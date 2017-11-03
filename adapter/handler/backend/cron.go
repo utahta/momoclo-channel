@@ -1,8 +1,9 @@
-package controller
+package backend
 
 import (
 	"net/http"
 
+	"github.com/utahta/momoclo-channel/adapter/handler"
 	"github.com/utahta/momoclo-channel/lib/crawler"
 	"github.com/utahta/momoclo-channel/lib/reminder"
 	"github.com/utahta/momoclo-channel/lib/ustream"
@@ -13,7 +14,7 @@ func CronReminder(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	if err := reminder.Notify(ctx); err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -23,7 +24,7 @@ func CronUstream(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	if err := ustream.Notify(ctx); err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -33,7 +34,7 @@ func CronCrawl(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	if err := crawler.Crawl(ctx); err != nil {
-		fail(ctx, w, err, http.StatusInternalServerError)
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }

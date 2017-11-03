@@ -1,4 +1,4 @@
-package controller
+package handler
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"google.golang.org/appengine/log"
 )
 
-func fail(ctx context.Context, w http.ResponseWriter, err error, code int) {
+func Fail(ctx context.Context, w http.ResponseWriter, err error, code int) {
 	var message string
 	if err != nil {
 		message = err.Error()

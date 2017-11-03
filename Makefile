@@ -8,13 +8,13 @@ test:
 	@go test -v -race $$(goapp list ./... | grep -v "vendor")
 
 serve:
-	@make -C app/backend prepare-serve
-	@goapp serve ./app/backend/app.yaml ./app/queue/app.yaml
+	@make -C appengine/backend prepare-serve
+	@goapp serve ./appengine/backend/app.yaml ./appengine/queue/app.yaml
 
 deploy-prod:
-	@make -C app/queue deploy-prod
-	@make -C app/backend deploy-prod
+	@make -C appengine/queue deploy-prod
+	@make -C appengine/backend deploy-prod
 
 deploy-dev:
-	@make -C app/queue deploy-dev
-	@make -C app/backend deploy-dev
+	@make -C appengine/queue deploy-dev
+	@make -C appengine/backend deploy-dev

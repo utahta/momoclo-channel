@@ -9,7 +9,7 @@ import (
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/linenotify"
 	"github.com/utahta/momoclo-channel/lib/twitter"
-	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/uststat"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/datastore"
@@ -27,7 +27,7 @@ func Notify(ctx context.Context) error {
 		return errors.Wrap(err, "Failed to get ustream status")
 	}
 
-	status := model.NewUstreamStatus()
+	status := domain.NewUstreamStatus()
 	if err := status.Get(ctx); err != nil && err != datastore.ErrNoSuchEntity {
 		return errors.Wrap(err, "Failed to get ustream status from datastore")
 	}

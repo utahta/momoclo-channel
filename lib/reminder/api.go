@@ -9,7 +9,7 @@ import (
 	"github.com/utahta/momoclo-channel/lib/linenotify"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/lib/twitter"
-	"github.com/utahta/momoclo-channel/model/reminder"
+	"github.com/utahta/momoclo-channel/domain/reminder"
 	"golang.org/x/sync/errgroup"
 )
 

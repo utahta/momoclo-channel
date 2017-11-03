@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/domain"
 	"google.golang.org/appengine/datastore"
 )
 
@@ -13,14 +13,14 @@ type repository struct{}
 
 var Repository *repository = &repository{}
 
-func (repo *repository) PutURL(ctx context.Context, url string) (*model.LatestEntry, error) {
+func (repo *repository) PutURL(ctx context.Context, url string) (*domain.LatestEntry, error) {
 	var code string
 	blogCodes := []string{
-		model.LatestEntryCodeTamai,
-		model.LatestEntryCodeMomota,
-		model.LatestEntryCodeAriyasu,
-		model.LatestEntryCodeSasaki,
-		model.LatestEntryCodeTakagi,
+		domain.LatestEntryCodeTamai,
+		domain.LatestEntryCodeMomota,
+		domain.LatestEntryCodeAriyasu,
+		domain.LatestEntryCodeSasaki,
+		domain.LatestEntryCodeTakagi,
 	}
 	for _, c := range blogCodes {
 		if strings.HasPrefix(url, fmt.Sprintf("https://ameblo.jp/%s", c)) {
@@ -29,7 +29,7 @@ func (repo *repository) PutURL(ctx context.Context, url string) (*model.LatestEn
 		}
 	}
 	if strings.HasPrefix(url, "http://www.tfm.co.jp/clover/") {
-		code = model.LatestEntryCodeHappyclo
+		code = domain.LatestEntryCodeHappyclo
 	}
 
 	if code == "" {
@@ -37,7 +37,7 @@ func (repo *repository) PutURL(ctx context.Context, url string) (*model.LatestEn
 		return nil, nil
 	}
 
-	l := model.NewLatestEntry(code, "")
+	l := domain.NewLatestEntry(code, "")
 	if err := l.Get(ctx); err != nil && err != datastore.ErrNoSuchEntity {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (repo *repository) PutURL(ctx context.Context, url string) (*model.LatestEn
 }
 
 func (repo *repository) getURL(ctx context.Context, code string) string {
-	l := model.NewLatestEntry(code, "")
+	l := domain.NewLatestEntry(code, "")
 	if err := l.Get(ctx); err != nil {
 		return ""
 	}
@@ -58,25 +58,25 @@ func (repo *repository) getURL(ctx context.Context, code string) string {
 }
 
 func (repo *repository) GetTamaiURL(ctx context.Context) string {
-	return repo.getURL(ctx, model.LatestEntryCodeTamai)
+	return repo.getURL(ctx, domain.LatestEntryCodeTamai)
 }
 
 func (repo *repository) GetMomotaURL(ctx context.Context) string {
-	return repo.getURL(ctx, model.LatestEntryCodeMomota)
+	return repo.getURL(ctx, domain.LatestEntryCodeMomota)
 }
 
 func (repo *repository) GetAriyasuURL(ctx context.Context) string {
-	return repo.getURL(ctx, model.LatestEntryCodeAriyasu)
+	return repo.getURL(ctx, domain.LatestEntryCodeAriyasu)
 }
 
 func (repo *repository) GetSasakiURL(ctx context.Context) string {
-	return repo.getURL(ctx, model.LatestEntryCodeSasaki)
+	return repo.getURL(ctx, domain.LatestEntryCodeSasaki)
 }
 
 func (repo *repository) GetTakagiURL(ctx context.Context) string {
-	return repo.getURL(ctx, model.LatestEntryCodeTakagi)
+	return repo.getURL(ctx, domain.LatestEntryCodeTakagi)
 }
 
 func (repo *repository) GetHappycloURL(ctx context.Context) string {
-	return repo.getURL(ctx, model.LatestEntryCodeHappyclo)
+	return repo.getURL(ctx, domain.LatestEntryCodeHappyclo)
 }

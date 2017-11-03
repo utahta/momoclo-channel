@@ -11,15 +11,15 @@ import (
 	"github.com/utahta/momoclo-channel/lib/backoff"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"github.com/utahta/momoclo-channel/model"
-	"github.com/utahta/momoclo-channel/model/linenotification"
+	"github.com/utahta/momoclo-channel/domain"
+	"github.com/utahta/momoclo-channel/domain/linenotification"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/urlfetch"
 )
 
 type client struct {
 	*linenotify.Client
-	users   []*model.LineNotification
+	users   []*domain.LineNotification
 	context context.Context
 }
 

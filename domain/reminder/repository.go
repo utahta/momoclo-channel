@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/domain"
 	"google.golang.org/appengine/datastore"
 )
 
@@ -12,12 +12,12 @@ type repository struct{}
 
 var Repository *repository = &repository{}
 
-func (repo *repository) GetAll(ctx context.Context) ([]*model.Reminder, error) {
+func (repo *repository) GetAll(ctx context.Context) ([]*domain.Reminder, error) {
 	q := datastore.NewQuery("Reminder").Filter("Enabled =", true)
 
-	var dst []*model.Reminder
+	var dst []*domain.Reminder
 	for t := q.Run(ctx); ; {
-		var rd model.Reminder
+		var rd domain.Reminder
 		k, err := t.Next(&rd)
 		if err == datastore.Done {
 			break

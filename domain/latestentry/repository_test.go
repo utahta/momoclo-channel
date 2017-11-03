@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/domain"
 	"google.golang.org/appengine/aetest"
 )
 
@@ -21,13 +21,13 @@ func TestPutLatestEntry(t *testing.T) {
 		url          string
 		expectExists bool
 	}{
-		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeTamai), true},
-		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeMomota), true},
-		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeAriyasu), true},
-		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeSasaki), true},
-		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeTakagi), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", domain.LatestEntryCodeTamai), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", domain.LatestEntryCodeMomota), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", domain.LatestEntryCodeAriyasu), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", domain.LatestEntryCodeSasaki), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", domain.LatestEntryCodeTakagi), true},
 		{fmt.Sprintf("https://ameblo.jp/%s", "aaa"), false},
-		{fmt.Sprintf("http://ameblo.jp/%s", model.LatestEntryCodeMomota), false},
+		{fmt.Sprintf("http://ameblo.jp/%s", domain.LatestEntryCodeMomota), false},
 		{"http://www.tfm.co.jp/clover/", true},
 	}
 	for _, test := range tests {
@@ -55,15 +55,15 @@ func TestGetLatestEntryURL(t *testing.T) {
 		expectURL  string
 		fn         func(context.Context) string
 	}{
-		{model.LatestEntryCodeTamai, "http://example.com/1", Repository.GetTamaiURL},
-		{model.LatestEntryCodeMomota, "http://example.com/2", Repository.GetMomotaURL},
-		{model.LatestEntryCodeAriyasu, "http://example.com/3", Repository.GetAriyasuURL},
-		{model.LatestEntryCodeSasaki, "http://example.com/4", Repository.GetSasakiURL},
-		{model.LatestEntryCodeTakagi, "http://example.com/5", Repository.GetTakagiURL},
-		{model.LatestEntryCodeHappyclo, "http://example.com/6", Repository.GetHappycloURL},
+		{domain.LatestEntryCodeTamai, "http://example.com/1", Repository.GetTamaiURL},
+		{domain.LatestEntryCodeMomota, "http://example.com/2", Repository.GetMomotaURL},
+		{domain.LatestEntryCodeAriyasu, "http://example.com/3", Repository.GetAriyasuURL},
+		{domain.LatestEntryCodeSasaki, "http://example.com/4", Repository.GetSasakiURL},
+		{domain.LatestEntryCodeTakagi, "http://example.com/5", Repository.GetTakagiURL},
+		{domain.LatestEntryCodeHappyclo, "http://example.com/6", Repository.GetHappycloURL},
 	}
 	for _, test := range tests {
-		blog := model.NewLatestEntry(test.expectCode, test.expectURL)
+		blog := domain.NewLatestEntry(test.expectCode, test.expectURL)
 		if err := blog.Put(ctx); err != nil {
 			t.Fatal(err)
 		}

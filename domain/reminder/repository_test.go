@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/domain"
 	"google.golang.org/appengine/aetest"
 	"google.golang.org/appengine/datastore"
 )
@@ -17,7 +17,7 @@ func TestReminderQuery_GetAll(t *testing.T) {
 	defer done()
 
 	now := time.Now()
-	res := []*model.Reminder{model.NewReminderOnce("test1", now), model.NewReminderOnce("test2", now)}
+	res := []*domain.Reminder{domain.NewReminderOnce("test1", now), domain.NewReminderOnce("test2", now)}
 	res[1].Enabled = false
 	for _, re := range res {
 		if err := re.Put(ctx); err != nil {

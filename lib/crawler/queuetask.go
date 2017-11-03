@@ -7,7 +7,7 @@ import (
 
 	"github.com/utahta/momoclo-channel/lib/linenotify"
 	"github.com/utahta/momoclo-channel/lib/twitter"
-	"github.com/utahta/momoclo-channel/model"
+	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-crawler"
 	"google.golang.org/appengine/taskqueue"
 )
@@ -22,7 +22,7 @@ func NewQueueTask() *QueueTask {
 // Push task to tweet queue
 func (q *QueueTask) PushTweet(ctx context.Context, ch *crawler.Channel) error {
 	for _, item := range ch.Items {
-		if err := model.NewTweetItem(item).Put(ctx); err != nil {
+		if err := domain.NewTweetItem(item).Put(ctx); err != nil {
 			continue
 		}
 
@@ -43,7 +43,7 @@ func (q *QueueTask) PushTweet(ctx context.Context, ch *crawler.Channel) error {
 // Push task to LINE queue
 func (q *QueueTask) PushLine(ctx context.Context, ch *crawler.Channel) error {
 	for _, item := range ch.Items {
-		if err := model.NewLineItem(item).Put(ctx); err != nil {
+		if err := domain.NewLineItem(item).Put(ctx); err != nil {
 			continue
 		}
 

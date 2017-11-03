@@ -9,7 +9,7 @@ import (
 	"github.com/utahta/go-linenotify"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"github.com/utahta/momoclo-channel/model/linenotification"
+	"github.com/utahta/momoclo-channel/domain/linenotification"
 	"google.golang.org/appengine/urlfetch"
 )
 

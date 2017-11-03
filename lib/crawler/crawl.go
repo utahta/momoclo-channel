@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"github.com/utahta/momoclo-channel/model/latestentry"
 	"github.com/utahta/momoclo-crawler"
+	"github.com/utahta/momoclo-channel/domain/latestentry"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/urlfetch"
 )

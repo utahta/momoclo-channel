@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -26,16 +25,6 @@ type (
 		URL       string
 		CreatedAt time.Time
 		UpdatedAt time.Time
-	}
-
-	LatestEntryRepository interface {
-		Save(context.Context, *LatestEntry) error
-		GetTamaiURL(context.Context) string
-		GetMomotaURL(context.Context) string
-		GetAriyasuURL(context.Context) string
-		GetSasakiURL(context.Context) string
-		GetTakagiURL(context.Context) string
-		GetHappycloURL(context.Context) string
 	}
 )
 

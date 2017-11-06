@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/adapter/persistence"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/entity"
 	"github.com/utahta/momoclo-channel/infrastructure/datastore"
@@ -43,9 +44,9 @@ func Crawl(ctx context.Context) error {
 			}
 
 			// update latest entry
-			repo := datastore.NewLatestEntryRepository()
+			repo := persistence.NewLatestEntryRepository(datastore.New(ctx))
 			for _, item := range ch.Items {
-				l, err := repo.FindByURL(ctx, item.Url)
+				l, err := repo.FindByURL(item.Url)
 				if err == domain.ErrNoSuchEntity {
 					l, err = entity.ParseLatestEntry(item.Url)
 					if err != nil {
@@ -53,7 +54,6 @@ func Crawl(ctx context.Context) error {
 						continue
 					}
 				} else if err != nil {
-					log.Infof(ctx, "%v: find by url. url:%v err:%v", errTag, item.Url, err)
 					continue
 				} else {
 					if l.URL == item.Url {
@@ -61,7 +61,7 @@ func Crawl(ctx context.Context) error {
 					}
 				}
 
-				if err := repo.Save(ctx, l); err != nil {
+				if err := repo.Save(l); err != nil {
 					log.Warningf(ctx, "%v: put latest entry. err:%v", errTag, err)
 					continue
 				}
@@ -86,13 +86,13 @@ func Crawl(ctx context.Context) error {
 
 func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	option := crawler.WithHTTPClient(urlfetch.Client(ctx))
-	repo := datastore.NewLatestEntryRepository()
+	repo := persistence.NewLatestEntryRepository(datastore.New(ctx))
 	clients := []*crawler.ChannelClient{
-		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, repo.GetTamaiURL(ctx), option)),
-		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, repo.GetMomotaURL(ctx), option)),
-		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, repo.GetAriyasuURL(ctx), option)),
-		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, repo.GetSasakiURL(ctx), option)),
-		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, repo.GetTakagiURL(ctx), option)),
+		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, repo.GetTamaiURL(), option)),
+		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, repo.GetMomotaURL(), option)),
+		retrieveChannelClient(crawler.NewAriyasuBlogChannelClient(1, repo.GetAriyasuURL(), option)),
+		retrieveChannelClient(crawler.NewSasakiBlogChannelClient(1, repo.GetSasakiURL(), option)),
+		retrieveChannelClient(crawler.NewTakagiBlogChannelClient(1, repo.GetTakagiURL(), option)),
 		retrieveChannelClient(crawler.NewAeNewsChannelClient(option)),
 		retrieveChannelClient(crawler.NewYoutubeChannelClient(option)),
 	}
@@ -100,7 +100,7 @@ func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	now := timeNow().In(config.JST)
 	if (now.Weekday() == time.Sunday && now.Hour() == 16 && (now.Minute() >= 55 && now.Minute() <= 59)) ||
 		(now.Hour() >= 8 && now.Hour() <= 23 && (now.Minute() == 0 || now.Minute() == 30)) {
-		clients = append(clients, retrieveChannelClient(crawler.NewHappycloChannelClient(repo.GetHappycloURL(ctx), option)))
+		clients = append(clients, retrieveChannelClient(crawler.NewHappycloChannelClient(repo.GetHappycloURL(), option)))
 	}
 
 	return clients

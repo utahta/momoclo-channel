@@ -1,13 +1,14 @@
-package datastore
+package persistence_test
 
 import (
-	"context"
 	"fmt"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/utahta/momoclo-channel/adapter/persistence"
 	"github.com/utahta/momoclo-channel/domain/entity"
+	"github.com/utahta/momoclo-channel/infrastructure/datastore"
 	"google.golang.org/appengine/aetest"
 )
 
@@ -32,7 +33,7 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 		{"http://www.tfm.co.jp/clover/", true},
 	}
 
-	repo := NewLatestEntryRepository()
+	repo := persistence.NewLatestEntryRepository(datastore.New(ctx))
 	for _, test := range tests {
 		l, err := entity.ParseLatestEntry(test.url)
 		if test.expectedSuccess {
@@ -46,7 +47,7 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 			continue
 		}
 
-		if err := repo.Save(ctx, l); err != nil {
+		if err := repo.Save(l); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -59,11 +60,11 @@ func TestLatestEntryRepository_GetURL(t *testing.T) {
 	}
 	defer done()
 
-	repo := NewLatestEntryRepository()
+	repo := persistence.NewLatestEntryRepository(datastore.New(ctx))
 	tests := []struct {
 		expectCode string
 		expectURL  string
-		fn         func(context.Context) string
+		fn         func() string
 	}{
 		{entity.LatestEntryCodeTamai, "http://example.com/1", repo.GetTamaiURL},
 		{entity.LatestEntryCodeMomota, "http://example.com/2", repo.GetMomotaURL},
@@ -74,26 +75,16 @@ func TestLatestEntryRepository_GetURL(t *testing.T) {
 	}
 	for _, test := range tests {
 		blog := &entity.LatestEntry{ID: test.expectCode, Code: test.expectCode, URL: test.expectURL}
-		if err := repo.Save(ctx, blog); err != nil {
+		if err := repo.Save(blog); err != nil {
 			t.Fatal(err)
 		}
 	}
 	time.Sleep(time.Second) // Due to eventual consistency
 
 	for _, test := range tests {
-		url := repo.getURL(ctx, test.expectCode)
+		url := test.fn()
 		if url != test.expectURL {
 			t.Fatalf("Expected URL %s, got %s", test.expectURL, url)
 		}
-
-		url = test.fn(ctx)
-		if url != test.expectURL {
-			t.Fatalf("Expected URL %s, got %s", test.expectURL, url)
-		}
-	}
-
-	url := repo.getURL(ctx, "unknown")
-	if url != "" {
-		t.Fatalf("Expected URL empty, got %s", url)
 	}
 }

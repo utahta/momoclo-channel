@@ -10,12 +10,15 @@ import (
 )
 
 const (
+	// LatestEntryCode* defines identify code
 	LatestEntryCodeTamai    = "tamai-sd"
 	LatestEntryCodeMomota   = "momota-sd"
 	LatestEntryCodeAriyasu  = "ariyasu-sd"
 	LatestEntryCodeSasaki   = "sasaki-sd"
 	LatestEntryCodeTakagi   = "takagi-sd"
 	LatestEntryCodeHappyclo = "happyclo"
+	LatestEntryCodeAeNews   = "aenews"
+	LatestEntryCodeYoutube  = "youtube"
 )
 
 type (
@@ -60,16 +63,17 @@ func (l *LatestEntry) Save() ([]datastore.Property, error) {
 	return save(l)
 }
 
+// ParseLatestEntry creates LatestEntry given url
 func ParseLatestEntry(urlStr string) (*LatestEntry, error) {
-	code := ParseLatestEntryCode(urlStr)
-	if code == "" {
-		// not supported
-		return nil, errors.New("code not supported")
+	code, err := ParseLatestEntryCode(urlStr)
+	if err != nil {
+		return nil, err
 	}
 	return &LatestEntry{ID: code, Code: code, URL: urlStr}, nil
 }
 
-func ParseLatestEntryCode(urlStr string) string {
+// ParseLatestEntryCode gets identify code given url
+func ParseLatestEntryCode(urlStr string) (string, error) {
 	var code string
 	blogCodes := []string{
 		LatestEntryCodeTamai,
@@ -86,6 +90,14 @@ func ParseLatestEntryCode(urlStr string) string {
 	}
 	if strings.HasPrefix(urlStr, "http://www.tfm.co.jp/clover/") {
 		code = LatestEntryCodeHappyclo
+	} else if strings.HasPrefix(urlStr, "http://www.momoclo.net") {
+		code = LatestEntryCodeAeNews
+	} else if strings.HasPrefix(urlStr, "https://www.youtube.com") {
+		code = LatestEntryCodeYoutube
 	}
-	return code
+
+	if code == "" {
+		return "", errors.New("code not supported")
+	}
+	return code, nil
 }

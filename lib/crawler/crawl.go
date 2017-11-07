@@ -50,10 +50,11 @@ func Crawl(ctx context.Context) error {
 				if err == domain.ErrNoSuchEntity {
 					l, err = entity.ParseLatestEntry(item.Url)
 					if err != nil {
-						log.Warningf(ctx, "%v: parse url. url:%v err:%v", errTag, item.Url, err)
+						log.Warningf(ctx, "%v: parse url:%v err:%v", errTag, item.Url, err)
 						continue
 					}
 				} else if err != nil {
+					log.Errorf(ctx, "%v: FindByURL url:%v err:%v", errTag, item.Url, err)
 					continue
 				} else {
 					if l.URL == item.Url {
@@ -65,6 +66,7 @@ func Crawl(ctx context.Context) error {
 					log.Warningf(ctx, "%v: put latest entry. err:%v", errTag, err)
 					continue
 				}
+				break // first item is the latest item
 			}
 
 			q := NewQueueTask()

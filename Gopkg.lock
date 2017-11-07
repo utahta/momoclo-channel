@@ -38,18 +38,6 @@
   revision = "5a0f697c9ed9d68fef0116532c6e05cfeae00e55"
 
 [[projects]]
-  name = "github.com/gorilla/context"
-  packages = ["."]
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/gorilla/mux"
-  packages = ["."]
-  revision = "bcd8bc72b08df0f70df986b97f95590779502d31"
-  version = "v1.4.0"
-
-[[projects]]
   branch = "master"
   name = "github.com/jteeuwen/go-pkg-rss"
   packages = ["."]
@@ -102,12 +90,6 @@
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
-
-[[projects]]
-  name = "github.com/urfave/negroni"
-  packages = ["."]
-  revision = "fde5e16d32adc7ad637e9cd9ad21d4ebc6192535"
-  version = "v0.2.0"
 
 [[projects]]
   name = "github.com/utahta/go-linenotify"
@@ -172,6 +154,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8cd912f8d9f65f530e2f4fab2d55d5daf54a97e1797e9aa4360ad3373fa8372e"
+  inputs-digest = "47815069e5db1ec4b7e43455b4c3d4af4b2ae8f7a9ccb79e06840797af78e966"
   solver-name = "gps-cdcl"
   solver-version = 1

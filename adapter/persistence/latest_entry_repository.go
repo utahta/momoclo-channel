@@ -20,12 +20,17 @@ func (repo *LatestEntryRepository) Save(l *entity.LatestEntry) error {
 	}, nil)
 }
 
+// FindByURL finds LatestEntry given url
 func (repo *LatestEntryRepository) FindByURL(urlStr string) (*entity.LatestEntry, error) {
 	const errTag = "LatestEntryRepository.FindByURL failed"
 
-	l := &entity.LatestEntry{ID: entity.ParseLatestEntryCode(urlStr)}
+	code, err := entity.ParseLatestEntryCode(urlStr)
+	if err != nil {
+		return nil, errors.Wrap(err, errTag)
+	}
 
-	err := repo.Get(l)
+	l := &entity.LatestEntry{ID: code}
+	err = repo.Get(l)
 	if err == domain.ErrNoSuchEntity {
 		return nil, err
 	}

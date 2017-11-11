@@ -6,13 +6,14 @@ fmt:
 
 test:
 	@goapp test -v $$(goapp list ./... | grep -v "vendor")
-	@make review
 
 lint:
 	@golint $$(go list ./... | grep -v vendor) | grep -v ": exported const" | grep -v ": exported var Err"
 
 review:
 	@make lint | reviewdog -f=golint -diff="git diff master"
+
+test-review: test review
 
 serve:
 	@make -C appengine/backend prepare-serve

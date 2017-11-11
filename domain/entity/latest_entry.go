@@ -1,18 +1,14 @@
 package entity
 
 import (
-	"fmt"
-	"strings"
 	"time"
 
-	"github.com/pkg/errors"
 	"google.golang.org/appengine/datastore"
 )
 
 const (
-	// LatestEntryCode* defines identify code
-	LatestEntryCodeTamai    = "tamai-sd"
-	LatestEntryCodeMomota   = "momota-sd"
+	LatestEntryCodeTamai    = "tamai-sd"  // LatestEntryCodeTamai defines Shiori Tamai blog code
+	LatestEntryCodeMomota   = "momota-sd" // LatestEntryCodeTamai defines Kanako Momota blog code
 	LatestEntryCodeAriyasu  = "ariyasu-sd"
 	LatestEntryCodeSasaki   = "sasaki-sd"
 	LatestEntryCodeTakagi   = "takagi-sd"
@@ -61,43 +57,4 @@ func (l *LatestEntry) Load(p []datastore.Property) error {
 
 func (l *LatestEntry) Save() ([]datastore.Property, error) {
 	return save(l)
-}
-
-// ParseLatestEntry creates LatestEntry given url
-func ParseLatestEntry(urlStr string) (*LatestEntry, error) {
-	code, err := ParseLatestEntryCode(urlStr)
-	if err != nil {
-		return nil, err
-	}
-	return &LatestEntry{ID: code, Code: code, URL: urlStr}, nil
-}
-
-// ParseLatestEntryCode gets identify code given url
-func ParseLatestEntryCode(urlStr string) (string, error) {
-	var code string
-	blogCodes := []string{
-		LatestEntryCodeTamai,
-		LatestEntryCodeMomota,
-		LatestEntryCodeAriyasu,
-		LatestEntryCodeSasaki,
-		LatestEntryCodeTakagi,
-	}
-	for _, c := range blogCodes {
-		if strings.HasPrefix(urlStr, fmt.Sprintf("https://ameblo.jp/%s", c)) {
-			code = c
-			break
-		}
-	}
-	if strings.HasPrefix(urlStr, "http://www.tfm.co.jp/clover/") {
-		code = LatestEntryCodeHappyclo
-	} else if strings.HasPrefix(urlStr, "http://www.momoclo.net") {
-		code = LatestEntryCodeAeNews
-	} else if strings.HasPrefix(urlStr, "https://www.youtube.com") {
-		code = LatestEntryCodeYoutube
-	}
-
-	if code == "" {
-		return "", errors.New("code not supported")
-	}
-	return code, nil
 }

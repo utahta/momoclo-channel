@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/utahta/momoclo-channel/lib/timeutil"
 	"google.golang.org/appengine/aetest"
 )
 
@@ -33,7 +34,7 @@ func Test_crawlChannelClients(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		timeNow = func() time.Time {
+		timeutil.Now = func() time.Time {
 			t, _ := time.Parse("2006-01-02 15:04:05 -0700", test.date)
 			return t
 		}

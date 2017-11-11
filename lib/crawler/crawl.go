@@ -7,16 +7,15 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/adapter/persistence"
 	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/entity"
+	"github.com/utahta/momoclo-channel/domain/service/latest_entry"
 	"github.com/utahta/momoclo-channel/infrastructure/datastore"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
+	"github.com/utahta/momoclo-channel/lib/timeutil"
 	"github.com/utahta/momoclo-crawler"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/urlfetch"
 )
-
-var timeNow = time.Now
 
 func Crawl(ctx context.Context) error {
 	const errTag = "Crawl failed"
@@ -48,7 +47,7 @@ func Crawl(ctx context.Context) error {
 			for _, item := range ch.Items {
 				l, err := repo.FindByURL(item.Url)
 				if err == domain.ErrNoSuchEntity {
-					l, err = entity.ParseLatestEntry(item.Url)
+					l, err = latest_entry.Parse(item.Url)
 					if err != nil {
 						log.Warningf(ctx, "%v: parse url:%v err:%v", errTag, item.Url, err)
 						continue
@@ -99,7 +98,7 @@ func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 		retrieveChannelClient(crawler.NewYoutubeChannelClient(option)),
 	}
 
-	now := timeNow().In(config.JST)
+	now := timeutil.Now().In(config.JST)
 	if (now.Weekday() == time.Sunday && now.Hour() == 16 && (now.Minute() >= 55 && now.Minute() <= 59)) ||
 		(now.Hour() >= 8 && now.Hour() <= 23 && (now.Minute() == 0 || now.Minute() == 30)) {
 		clients = append(clients, retrieveChannelClient(crawler.NewHappycloChannelClient(repo.GetHappycloURL(), option)))

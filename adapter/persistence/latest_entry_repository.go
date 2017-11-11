@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/entity"
+	"github.com/utahta/momoclo-channel/domain/service/latest_entry"
 )
 
 // LatestEntryRepository operates datastore
@@ -25,12 +26,11 @@ func (repo *LatestEntryRepository) Save(l *entity.LatestEntry) error {
 func (repo *LatestEntryRepository) FindByURL(urlStr string) (*entity.LatestEntry, error) {
 	const errTag = "LatestEntryRepository.FindByURL failed"
 
-	code, err := entity.ParseLatestEntryCode(urlStr)
+	l, err := latest_entry.Parse(urlStr)
 	if err != nil {
 		return nil, errors.Wrap(err, errTag)
 	}
 
-	l := &entity.LatestEntry{ID: code}
 	err = repo.Get(l)
 	if err == domain.ErrNoSuchEntity {
 		return nil, err

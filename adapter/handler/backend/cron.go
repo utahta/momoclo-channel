@@ -1,15 +1,19 @@
 package backend
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/utahta/momoclo-channel/adapter/handler"
-	"github.com/utahta/momoclo-channel/lib/crawler"
+	"github.com/utahta/momoclo-channel/adapter/persistence"
+	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"github.com/utahta/momoclo-channel/lib/reminder"
 	"github.com/utahta/momoclo-channel/lib/ustream"
+	"github.com/utahta/momoclo-channel/usecase"
 )
 
-// Notify reminder
+// CronReminder checks reminder
 func CronReminder(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
@@ -19,7 +23,7 @@ func CronReminder(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// Notify ustream
+// CronUstream checks ustream status
 func CronUstream(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
@@ -29,11 +33,14 @@ func CronUstream(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// Crawling
+// CronCrawl crawling some sites
 func CronCrawl(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
+	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
+	defer cancel()
 
-	if err := crawler.Crawl(ctx); err != nil {
+	c := usecase.NewCrawler(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
+	if err := c.Crawl(ctx); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

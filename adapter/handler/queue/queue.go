@@ -4,12 +4,15 @@ import (
 	"net/http"
 
 	"github.com/utahta/momoclo-channel/adapter/handler"
-	"github.com/utahta/momoclo-channel/lib/crawler"
+	"github.com/utahta/momoclo-channel/adapter/persistence"
+	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"github.com/utahta/momoclo-channel/lib/linenotify"
 	"github.com/utahta/momoclo-channel/lib/twitter"
+	"github.com/utahta/momoclo-channel/usecase"
 )
 
-func QueueTweet(w http.ResponseWriter, req *http.Request) {
+// Tweet invokes tweet event
+func Tweet(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	if err := req.ParseForm(); err != nil {
@@ -18,7 +21,7 @@ func QueueTweet(w http.ResponseWriter, req *http.Request) {
 	}
 
 	param := &twitter.ChannelParam{}
-	q := crawler.NewQueueTask()
+	q := usecase.NewCrawler(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
 	if err := q.ParseURLValues(req.Form, param); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
@@ -30,7 +33,8 @@ func QueueTweet(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func QueueLine(w http.ResponseWriter, req *http.Request) {
+// LineNotify invokes line notification event
+func LineNotify(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	if err := req.ParseForm(); err != nil {
@@ -39,7 +43,7 @@ func QueueLine(w http.ResponseWriter, req *http.Request) {
 	}
 
 	param := &linenotify.ChannelParam{}
-	q := crawler.NewQueueTask()
+	q := usecase.NewCrawler(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
 	if err := q.ParseURLValues(req.Form, param); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return

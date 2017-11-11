@@ -21,8 +21,8 @@ func Tweet(w http.ResponseWriter, req *http.Request) {
 	}
 
 	param := &twitter.ChannelParam{}
-	q := usecase.NewCrawler(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
-	if err := q.ParseURLValues(req.Form, param); err != nil {
+	crawl := usecase.NewCrawl(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
+	if err := crawl.ParseURLValues(req.Form, param); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -43,8 +43,8 @@ func LineNotify(w http.ResponseWriter, req *http.Request) {
 	}
 
 	param := &linenotify.ChannelParam{}
-	q := usecase.NewCrawler(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
-	if err := q.ParseURLValues(req.Form, param); err != nil {
+	crawl := usecase.NewCrawl(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
+	if err := crawl.ParseURLValues(req.Form, param); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

@@ -39,8 +39,8 @@ func CronCrawl(w http.ResponseWriter, req *http.Request) {
 	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
 	defer cancel()
 
-	c := usecase.NewCrawler(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
-	if err := c.Crawl(ctx); err != nil {
+	crawl := usecase.NewCrawl(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
+	if err := crawl.Do(ctx); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

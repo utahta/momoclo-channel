@@ -17,22 +17,22 @@ import (
 )
 
 type (
-	// Crawler crawling use case
-	Crawler struct {
+	// Crawl crawling use case
+	Crawl struct {
 		latestEntryRepo entity.LatestEntryRepository
 	}
 )
 
-// NewCrawler returns Crawler use case
-func NewCrawler(latestEntryRepo entity.LatestEntryRepository) *Crawler {
-	return &Crawler{
+// NewCrawl returns Crawl use case
+func NewCrawl(latestEntryRepo entity.LatestEntryRepository) *Crawl {
+	return &Crawl{
 		latestEntryRepo: latestEntryRepo,
 	}
 }
 
-// Crawl crawls some sites
-func (c *Crawler) Crawl(ctx context.Context) error {
-	const errTag = "Crawler.Crawl failed"
+// Do crawls some sites
+func (c *Crawl) Do(ctx context.Context) error {
+	const errTag = "Crawl.Crawl failed"
 
 	var workQueue = make(chan bool, 20)
 	defer close(workQueue)
@@ -73,7 +73,7 @@ func (c *Crawler) Crawl(ctx context.Context) error {
 	return nil
 }
 
-func (c *Crawler) channelClients(ctx context.Context) []*crawler.ChannelClient {
+func (c *Crawl) channelClients(ctx context.Context) []*crawler.ChannelClient {
 	option := crawler.WithHTTPClient(urlfetch.Client(ctx))
 	clients := []*crawler.ChannelClient{
 		c.retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, c.latestEntryRepo.GetTamaiURL(), option)),
@@ -94,12 +94,12 @@ func (c *Crawler) channelClients(ctx context.Context) []*crawler.ChannelClient {
 	return clients
 }
 
-func (c *Crawler) retrieveChannelClient(cli *crawler.ChannelClient, _ error) *crawler.ChannelClient {
+func (c *Crawl) retrieveChannelClient(cli *crawler.ChannelClient, _ error) *crawler.ChannelClient {
 	return cli
 }
 
-func (c *Crawler) updateLatestEntry(ctx context.Context, ch *crawler.Channel) {
-	const errTag = "Crawler.updateLatestEntry failed"
+func (c *Crawl) updateLatestEntry(ctx context.Context, ch *crawler.Channel) {
+	const errTag = "Crawl.updateLatestEntry failed"
 
 	for _, item := range ch.Items {
 		l, err := c.latestEntryRepo.FindByURL(item.Url)

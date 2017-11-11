@@ -54,7 +54,6 @@ func (c *Crawl) Do(ctx context.Context) error {
 				return err
 			}
 
-			// update latest entry
 			c.updateLatestEntry(ctx, ch)
 
 			if err := c.PushTweet(ctx, ch); err != nil {

@@ -4,11 +4,9 @@ import (
 	"net/http"
 
 	"github.com/utahta/momoclo-channel/adapter/handler"
-	"github.com/utahta/momoclo-channel/adapter/persistence"
-	"github.com/utahta/momoclo-channel/infrastructure/dao"
+	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/lib/linenotify"
 	"github.com/utahta/momoclo-channel/lib/twitter"
-	"github.com/utahta/momoclo-channel/usecase"
 )
 
 // Tweet invokes tweet event
@@ -21,7 +19,7 @@ func Tweet(w http.ResponseWriter, req *http.Request) {
 	}
 
 	param := &twitter.ChannelParam{}
-	crawl := usecase.NewCrawl(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
+	crawl := container.Usecase(ctx).Crawl()
 	if err := crawl.ParseURLValues(req.Form, param); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
@@ -43,7 +41,7 @@ func LineNotify(w http.ResponseWriter, req *http.Request) {
 	}
 
 	param := &linenotify.ChannelParam{}
-	crawl := usecase.NewCrawl(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
+	crawl := container.Usecase(ctx).Crawl()
 	if err := crawl.ParseURLValues(req.Form, param); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return

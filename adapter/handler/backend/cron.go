@@ -6,11 +6,9 @@ import (
 	"time"
 
 	"github.com/utahta/momoclo-channel/adapter/handler"
-	"github.com/utahta/momoclo-channel/adapter/persistence"
-	"github.com/utahta/momoclo-channel/infrastructure/dao"
+	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/lib/reminder"
 	"github.com/utahta/momoclo-channel/lib/ustream"
-	"github.com/utahta/momoclo-channel/usecase"
 )
 
 // CronReminder checks reminder
@@ -39,7 +37,7 @@ func CronCrawl(w http.ResponseWriter, req *http.Request) {
 	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
 	defer cancel()
 
-	crawl := usecase.NewCrawl(persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx)))
+	crawl := container.Usecase(ctx).Crawl()
 	if err := crawl.Do(ctx); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return

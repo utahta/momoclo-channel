@@ -6,18 +6,19 @@ import (
 	"github.com/utahta/momoclo-channel/domain/entity"
 )
 
+// LatestEntryRepository operates datastore
 type LatestEntryRepository struct {
 	DatastoreHandler
 }
 
+// NewLatestEntryRepository returns the LatestEntryRepository
 func NewLatestEntryRepository(h DatastoreHandler) *LatestEntryRepository {
 	return &LatestEntryRepository{h}
 }
 
+// Save saves LatestEntry
 func (repo *LatestEntryRepository) Save(l *entity.LatestEntry) error {
-	return repo.RunInTransaction(func(h DatastoreHandler) error {
-		return h.Put(l)
-	}, nil)
+	return repo.Put(l)
 }
 
 // FindByURL finds LatestEntry given url

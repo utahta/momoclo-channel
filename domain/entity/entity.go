@@ -7,11 +7,13 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
+// CreateTimestamper provides set current timestamp to entity when save if not already set
 type CreateTimestamper interface {
 	SetCreatedAt(time.Time)
 	GetCreatedAt() time.Time
 }
 
+// UpdateTimestamper provides set current timestamp to entity when save
 type UpdateTimestamper interface {
 	SetUpdatedAt(time.Time)
 }

@@ -48,12 +48,7 @@ func (h *handler) GetMulti(dst interface{}) error {
 }
 
 // RunInTransaction wraps goon.RunInTransaction()
-func (h *handler) RunInTransaction(fn func(h persistence.DatastoreHandler) error, o *persistence.TransactionOptions) error {
-	var opts *datastore.TransactionOptions
-	if o != nil {
-		opts = &datastore.TransactionOptions{XG: o.XG, Attempts: o.Attempts}
-	}
-
+func (h *handler) RunInTransaction(fn func(h persistence.DatastoreHandler) error, opts *datastore.TransactionOptions) error {
 	return h.Goon.RunInTransaction(func(g *goon.Goon) error {
 		return fn(&handler{g})
 	}, opts)

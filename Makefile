@@ -5,7 +5,14 @@ fmt:
 	@goimports -w $$(goapp list -f '{{.Dir}}' ./... | grep -v "vendor")
 
 test:
-	@go test -v -race $$(goapp list ./... | grep -v "vendor")
+	@goapp test -v $$(goapp list ./... | grep -v "vendor")
+	@make review
+
+lint:
+	@golint $$(go list ./... | grep -v vendor) | grep -v ": exported const" | grep -v ": exported var Err"
+
+review:
+	@make lint | reviewdog -f=golint -diff="git diff master"
 
 serve:
 	@make -C appengine/backend prepare-serve

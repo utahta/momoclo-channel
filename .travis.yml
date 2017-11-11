@@ -18,4 +18,4 @@ install:
   - make install
 script:
   - make test
-  - golint $(go list ./... | grep -v vendor) | reviewdog -f=golint -ci=travis
+  - make lint | reviewdog -f=golint -ci=travis

@@ -7,6 +7,7 @@ import (
 	"google.golang.org/appengine/log"
 )
 
+// Fail responses error
 func Fail(ctx context.Context, w http.ResponseWriter, err error, code int) {
 	var message string
 	if err != nil {

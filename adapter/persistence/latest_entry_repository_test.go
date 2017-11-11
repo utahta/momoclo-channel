@@ -8,7 +8,7 @@ import (
 
 	"github.com/utahta/momoclo-channel/adapter/persistence"
 	"github.com/utahta/momoclo-channel/domain/entity"
-	"github.com/utahta/momoclo-channel/domain/service/latest_entry"
+	"github.com/utahta/momoclo-channel/domain/service/latestentry"
 	"github.com/utahta/momoclo-channel/infrastructure/datastore"
 	"google.golang.org/appengine/aetest"
 )
@@ -36,7 +36,7 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 
 	repo := persistence.NewLatestEntryRepository(datastore.New(ctx))
 	for _, test := range tests {
-		l, err := latest_entry.Parse(test.url)
+		l, err := latestentry.Parse(test.url)
 		if test.expectedSuccess {
 			if err != nil {
 				t.Fatal(err)

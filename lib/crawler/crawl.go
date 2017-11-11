@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/adapter/persistence"
 	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/service/latest_entry"
+	"github.com/utahta/momoclo-channel/domain/service/latestentry"
 	"github.com/utahta/momoclo-channel/infrastructure/datastore"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
@@ -47,7 +47,7 @@ func Crawl(ctx context.Context) error {
 			for _, item := range ch.Items {
 				l, err := repo.FindByURL(item.Url)
 				if err == domain.ErrNoSuchEntity {
-					l, err = latest_entry.Parse(item.Url)
+					l, err = latestentry.Parse(item.Url)
 					if err != nil {
 						log.Warningf(ctx, "%v: parse url:%v err:%v", errTag, item.Url, err)
 						continue

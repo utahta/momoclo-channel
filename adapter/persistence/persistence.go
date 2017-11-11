@@ -2,7 +2,7 @@ package persistence
 
 import "google.golang.org/appengine/datastore"
 
-// DatastoreHandler
+// DatastoreHandler interface
 type DatastoreHandler interface {
 	Put(interface{}) error
 	PutMulti(interface{}) error

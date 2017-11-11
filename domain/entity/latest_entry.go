@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	LatestEntryCodeTamai    = "tamai-sd"  // LatestEntryCodeTamai defines Shiori Tamai blog code
-	LatestEntryCodeMomota   = "momota-sd" // LatestEntryCodeTamai defines Kanako Momota blog code
+	LatestEntryCodeTamai    = "tamai-sd"
+	LatestEntryCodeMomota   = "momota-sd"
 	LatestEntryCodeAriyasu  = "ariyasu-sd"
 	LatestEntryCodeSasaki   = "sasaki-sd"
 	LatestEntryCodeTakagi   = "takagi-sd"
@@ -39,22 +39,27 @@ type (
 	}
 )
 
+// SetCreatedAt sets given time to CreatedAt
 func (l *LatestEntry) SetCreatedAt(t time.Time) {
 	l.CreatedAt = t
 }
 
+// GetCreatedAt gets CreatedAt
 func (l *LatestEntry) GetCreatedAt() time.Time {
 	return l.CreatedAt
 }
 
+// SetUpdatedAt sets given time to UpdatedAt
 func (l *LatestEntry) SetUpdatedAt(t time.Time) {
 	l.UpdatedAt = t
 }
 
+// Load loads own from datastore
 func (l *LatestEntry) Load(p []datastore.Property) error {
 	return load(l, p)
 }
 
+// Save saves own to datastore
 func (l *LatestEntry) Save() ([]datastore.Property, error) {
 	return save(l)
 }

@@ -1,4 +1,4 @@
-package latest_entry
+package latestentry
 
 import (
 	"errors"

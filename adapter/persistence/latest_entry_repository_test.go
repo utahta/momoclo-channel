@@ -9,7 +9,7 @@ import (
 	"github.com/utahta/momoclo-channel/adapter/persistence"
 	"github.com/utahta/momoclo-channel/domain/entity"
 	"github.com/utahta/momoclo-channel/domain/service/latestentry"
-	"github.com/utahta/momoclo-channel/infrastructure/datastore"
+	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"google.golang.org/appengine/aetest"
 )
 
@@ -34,7 +34,7 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 		{"http://www.tfm.co.jp/clover/", true},
 	}
 
-	repo := persistence.NewLatestEntryRepository(datastore.New(ctx))
+	repo := persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx))
 	for _, test := range tests {
 		l, err := latestentry.Parse(test.url)
 		if test.expectedSuccess {
@@ -61,7 +61,7 @@ func TestLatestEntryRepository_GetURL(t *testing.T) {
 	}
 	defer done()
 
-	repo := persistence.NewLatestEntryRepository(datastore.New(ctx))
+	repo := persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx))
 	tests := []struct {
 		expectCode string
 		expectURL  string

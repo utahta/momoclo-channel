@@ -1,4 +1,4 @@
-package datastore
+package dao
 
 import (
 	"context"
@@ -9,32 +9,32 @@ import (
 	"google.golang.org/appengine/datastore"
 )
 
-// handler implements DatastoreHandler interface using goon
-type handler struct {
+// datastoreHandler implements DatastoreHandler interface using goon
+type datastoreHandler struct {
 	*goon.Goon
 }
 
-// New returns DatastoreHandler
-func New(c context.Context) persistence.DatastoreHandler {
-	return &handler{
+// NewDatastoreHandler returns DatastoreHandler
+func NewDatastoreHandler(c context.Context) persistence.DatastoreHandler {
+	return &datastoreHandler{
 		goon.FromContext(c),
 	}
 }
 
 // Put wraps goon.Put()
-func (h *handler) Put(src interface{}) error {
+func (h *datastoreHandler) Put(src interface{}) error {
 	_, err := h.Goon.Put(src)
 	return err
 }
 
 // PutMulti wraps goon.PutMulti()
-func (h *handler) PutMulti(src interface{}) error {
+func (h *datastoreHandler) PutMulti(src interface{}) error {
 	_, err := h.Goon.PutMulti(src)
 	return err
 }
 
 // Get wraps goon.Get()
-func (h *handler) Get(dst interface{}) error {
+func (h *datastoreHandler) Get(dst interface{}) error {
 	err := h.Goon.Get(dst)
 	if err == datastore.ErrNoSuchEntity {
 		return domain.ErrNoSuchEntity
@@ -43,13 +43,13 @@ func (h *handler) Get(dst interface{}) error {
 }
 
 // GetMulti wraps goon.GetMulti()
-func (h *handler) GetMulti(dst interface{}) error {
+func (h *datastoreHandler) GetMulti(dst interface{}) error {
 	return h.Goon.GetMulti(dst)
 }
 
 // RunInTransaction wraps goon.RunInTransaction()
-func (h *handler) RunInTransaction(fn func(h persistence.DatastoreHandler) error, opts *datastore.TransactionOptions) error {
+func (h *datastoreHandler) RunInTransaction(fn func(h persistence.DatastoreHandler) error, opts *datastore.TransactionOptions) error {
 	return h.Goon.RunInTransaction(func(g *goon.Goon) error {
-		return fn(&handler{g})
+		return fn(&datastoreHandler{g})
 	}, opts)
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/utahta/momoclo-channel/adapter/persistence"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/service/latestentry"
-	"github.com/utahta/momoclo-channel/infrastructure/datastore"
+	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/lib/timeutil"
@@ -43,7 +43,7 @@ func Crawl(ctx context.Context) error {
 			}
 
 			// update latest entry
-			repo := persistence.NewLatestEntryRepository(datastore.New(ctx))
+			repo := persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx))
 			for _, item := range ch.Items {
 				l, err := repo.FindByURL(item.Url)
 				if err == domain.ErrNoSuchEntity {
@@ -87,7 +87,7 @@ func Crawl(ctx context.Context) error {
 
 func crawlChannelClients(ctx context.Context) []*crawler.ChannelClient {
 	option := crawler.WithHTTPClient(urlfetch.Client(ctx))
-	repo := persistence.NewLatestEntryRepository(datastore.New(ctx))
+	repo := persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx))
 	clients := []*crawler.ChannelClient{
 		retrieveChannelClient(crawler.NewTamaiBlogChannelClient(1, repo.GetTamaiURL(), option)),
 		retrieveChannelClient(crawler.NewMomotaBlogChannelClient(1, repo.GetMomotaURL(), option)),

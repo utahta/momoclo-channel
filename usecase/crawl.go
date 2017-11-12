@@ -32,7 +32,7 @@ func NewCrawl(latestEntryRepo entity.LatestEntryRepository) *Crawl {
 
 // Do crawls some sites
 func (c *Crawl) Do(ctx context.Context) error {
-	const errTag = "Crawl.Crawl failed"
+	const errTag = "Crawl.Do failed"
 
 	var workQueue = make(chan bool, 20)
 	defer close(workQueue)

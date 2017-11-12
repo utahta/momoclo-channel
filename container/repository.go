@@ -8,15 +8,17 @@ import (
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
 )
 
-type repositoryContainer struct {
+// RepositoryContainer dependency injection
+type RepositoryContainer struct {
 	ctx context.Context
 }
 
 // Repository returns repositories container
-func Repository(ctx context.Context) *repositoryContainer {
-	return &repositoryContainer{ctx}
+func Repository(ctx context.Context) *RepositoryContainer {
+	return &RepositoryContainer{ctx}
 }
 
-func (c *repositoryContainer) LatestEntryRepository() entity.LatestEntryRepository {
+// LatestEntryRepository returns LatestEntry repository
+func (c *RepositoryContainer) LatestEntryRepository() entity.LatestEntryRepository {
 	return persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(c.ctx))
 }

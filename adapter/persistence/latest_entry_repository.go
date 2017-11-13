@@ -41,7 +41,8 @@ func (repo *LatestEntryRepository) FindByURL(urlStr string) (*entity.LatestEntry
 	return l, nil
 }
 
-func (repo *LatestEntryRepository) getURL(code string) string {
+// GetURL returns URL given code
+func (repo *LatestEntryRepository) GetURL(code string) string {
 	l := &entity.LatestEntry{ID: code}
 	if err := repo.Get(l); err != nil {
 		return ""
@@ -51,30 +52,30 @@ func (repo *LatestEntryRepository) getURL(code string) string {
 
 // GetTamaiURL returns Shiori Tamai blog url
 func (repo *LatestEntryRepository) GetTamaiURL() string {
-	return repo.getURL(entity.LatestEntryCodeTamai)
+	return repo.GetURL(entity.LatestEntryCodeTamai)
 }
 
 // GetMomotaURL returns Kanako Momota blog url
 func (repo *LatestEntryRepository) GetMomotaURL() string {
-	return repo.getURL(entity.LatestEntryCodeMomota)
+	return repo.GetURL(entity.LatestEntryCodeMomota)
 }
 
 // GetAriyasuURL returns Momoka Ariyasu blog url
 func (repo *LatestEntryRepository) GetAriyasuURL() string {
-	return repo.getURL(entity.LatestEntryCodeAriyasu)
+	return repo.GetURL(entity.LatestEntryCodeAriyasu)
 }
 
 // GetSasakiURL returns Ayaka Sasaki blog url
 func (repo *LatestEntryRepository) GetSasakiURL() string {
-	return repo.getURL(entity.LatestEntryCodeSasaki)
+	return repo.GetURL(entity.LatestEntryCodeSasaki)
 }
 
 // GetTakagiURL returns Reni Takagi blog url
 func (repo *LatestEntryRepository) GetTakagiURL() string {
-	return repo.getURL(entity.LatestEntryCodeTakagi)
+	return repo.GetURL(entity.LatestEntryCodeTakagi)
 }
 
 // GetHappycloURL returns happyclo site url
 func (repo *LatestEntryRepository) GetHappycloURL() string {
-	return repo.getURL(entity.LatestEntryCodeHappyclo)
+	return repo.GetURL(entity.LatestEntryCodeHappyclo)
 }

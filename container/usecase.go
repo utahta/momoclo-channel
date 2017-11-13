@@ -3,6 +3,9 @@ package container
 import (
 	"context"
 
+	"github.com/utahta/momoclo-channel/infrastructure/crawler"
+	"github.com/utahta/momoclo-channel/infrastructure/event"
+	"github.com/utahta/momoclo-channel/infrastructure/log"
 	"github.com/utahta/momoclo-channel/usecase"
 )
 
@@ -12,12 +15,26 @@ type UsecaseContainer struct {
 	repo *RepositoryContainer
 }
 
-// Usecase returns use case container
+// Usecase returns container of use case
 func Usecase(ctx context.Context) *UsecaseContainer {
 	return &UsecaseContainer{ctx, Repository(ctx)}
 }
 
+// CrawlAll returns CrawlAll use case
+func (c *UsecaseContainer) CrawlAll() *usecase.CrawlAll {
+	return usecase.NewCrawlAll(
+		log.NewAppengineLogger(c.ctx),
+		c.repo.LatestEntryRepository(),
+	)
+}
+
 // Crawl returns Crawl use case
 func (c *UsecaseContainer) Crawl() *usecase.Crawl {
-	return usecase.NewCrawl(c.repo.LatestEntryRepository())
+	return usecase.NewCrawl(
+		c.ctx,
+		log.NewAppengineLogger(c.ctx),
+		crawler.New(c.ctx),
+		event.NewTaskQueue(c.ctx),
+		c.repo.LatestEntryRepository(),
+	)
 }

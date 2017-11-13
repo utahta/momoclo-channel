@@ -31,6 +31,7 @@ type (
 	LatestEntryRepository interface {
 		Save(*LatestEntry) error
 		FindByURL(urlStr string) (*LatestEntry, error)
+		GetURL(code string) string
 		GetTamaiURL() string
 		GetMomotaURL() string
 		GetAriyasuURL() string

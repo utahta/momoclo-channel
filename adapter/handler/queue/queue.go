@@ -19,7 +19,7 @@ func Tweet(w http.ResponseWriter, req *http.Request) {
 	}
 
 	param := &twitter.ChannelParam{}
-	crawl := container.Usecase(ctx).Crawl()
+	crawl := container.Usecase(ctx).CrawlAll()
 	if err := crawl.ParseURLValues(req.Form, param); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
@@ -41,7 +41,7 @@ func LineNotify(w http.ResponseWriter, req *http.Request) {
 	}
 
 	param := &linenotify.ChannelParam{}
-	crawl := container.Usecase(ctx).Crawl()
+	crawl := container.Usecase(ctx).CrawlAll()
 	if err := crawl.ParseURLValues(req.Form, param); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return

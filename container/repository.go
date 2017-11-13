@@ -13,7 +13,7 @@ type RepositoryContainer struct {
 	ctx context.Context
 }
 
-// Repository returns repositories container
+// Repository returns container of repositories
 func Repository(ctx context.Context) *RepositoryContainer {
 	return &RepositoryContainer{ctx}
 }

@@ -33,11 +33,10 @@ func CronUstream(w http.ResponseWriter, req *http.Request) {
 
 // CronCrawl crawling some sites
 func CronCrawl(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	ctx, cancel := context.WithTimeout(ctx, 50*time.Second)
+	ctx, cancel := context.WithTimeout(req.Context(), 50*time.Second)
 	defer cancel()
 
-	crawl := container.Usecase(ctx).Crawl()
+	crawl := container.Usecase(ctx).CrawlAll()
 	if err := crawl.Do(ctx); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return

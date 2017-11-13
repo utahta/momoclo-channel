@@ -15,7 +15,7 @@ import (
 //FIXME
 
 // PushTweet queues tweet task
-func (c *Crawl) PushTweet(ctx context.Context, ch *crawler.Channel) error {
+func (c *CrawlAll) PushTweet(ctx context.Context, ch *crawler.Channel) error {
 	for _, item := range ch.Items {
 		if err := domain.NewTweetItem(item).Put(ctx); err != nil {
 			continue
@@ -36,7 +36,7 @@ func (c *Crawl) PushTweet(ctx context.Context, ch *crawler.Channel) error {
 }
 
 // PushLine queues line notification task
-func (c *Crawl) PushLine(ctx context.Context, ch *crawler.Channel) error {
+func (c *CrawlAll) PushLine(ctx context.Context, ch *crawler.Channel) error {
 	for _, item := range ch.Items {
 		if err := domain.NewLineItem(item).Put(ctx); err != nil {
 			continue
@@ -57,14 +57,14 @@ func (c *Crawl) PushLine(ctx context.Context, ch *crawler.Channel) error {
 }
 
 // ParseURLValues parses channel params
-func (c *Crawl) ParseURLValues(v url.Values, ch interface{}) error {
+func (c *CrawlAll) ParseURLValues(v url.Values, ch interface{}) error {
 	if err := json.Unmarshal([]byte(v.Get("channel")), ch); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c *Crawl) buildURLValues(ch interface{}) (url.Values, error) {
+func (c *CrawlAll) buildURLValues(ch interface{}) (url.Values, error) {
 	bin, err := json.Marshal(ch)
 	if err != nil {
 		return nil, err

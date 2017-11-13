@@ -1,4 +1,4 @@
-package event
+package core
 
 // Logger interface
 type Logger interface {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/utahta/momoclo-channel/domain/event"
+	"github.com/utahta/momoclo-channel/domain/core"
 	"google.golang.org/appengine/log"
 )
 
@@ -13,7 +13,7 @@ type appengineLogger struct {
 }
 
 // NewAppengineLogger returns appengine logger
-func NewAppengineLogger(ctx context.Context) event.Logger {
+func NewAppengineLogger(ctx context.Context) core.Logger {
 	return &appengineLogger{ctx}
 }
 

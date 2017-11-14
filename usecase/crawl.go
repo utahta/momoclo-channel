@@ -32,7 +32,7 @@ type (
 		ctx             context.Context
 		log             core.Logger
 		crawler         Crawler
-		task            event.TaskQueue
+		taskQueue       event.TaskQueue
 		latestEntryRepo entity.LatestEntryRepository
 	}
 
@@ -47,13 +47,13 @@ func NewCrawl(
 	ctx context.Context,
 	log core.Logger,
 	crawler Crawler,
-	task event.TaskQueue,
+	taskQueue event.TaskQueue,
 	latestEntryRepo entity.LatestEntryRepository) *Crawl {
 	return &Crawl{
 		ctx:             ctx,
 		log:             log,
 		crawler:         crawler,
-		task:            task,
+		taskQueue:       taskQueue,
 		latestEntryRepo: latestEntryRepo,
 	}
 }
@@ -83,17 +83,16 @@ func (c *Crawl) Do(params CrawlParams) error {
 		}
 	}
 
-	// push task events
+	// push events
+	var tasks []event.Task
 	for _, item := range items {
-		if err := c.task.Push(event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: item}); err != nil {
-			c.log.Errorf("%v: queue tweet err:%v %#v", errTag, err, item)
-			continue
-		}
-
-		if err := c.task.Push(event.Task{QueueName: "queue-line", Path: "/queue/line", Object: item}); err != nil {
-			c.log.Errorf("%v: queue line err:%v %#v", errTag, err, item)
-			continue
-		}
+		tasks = append(tasks,
+			event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: item},
+			event.Task{QueueName: "queue-line", Path: "/queue/line", Object: item},
+		)
+	}
+	if err := c.taskQueue.PushMulti(tasks); err != nil {
+		return errors.Wrap(err, errTag)
 	}
 	return nil
 }

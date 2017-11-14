@@ -22,9 +22,10 @@ func (repo *LatestEntryRepository) Save(l *entity.LatestEntry) error {
 	return repo.Put(l)
 }
 
-// FindByURL finds LatestEntry given url
-func (repo *LatestEntryRepository) FindByURL(urlStr string) (*entity.LatestEntry, error) {
-	const errTag = "LatestEntryRepository.FindByURL failed"
+// FindOrCreateByURL finds LatestEntry given url
+// if not found returns new LatestEntry
+func (repo *LatestEntryRepository) FindOrCreateByURL(urlStr string) (*entity.LatestEntry, error) {
+	const errTag = "LatestEntryRepository.FindOrCreateByURL failed"
 
 	l, err := latestentry.Parse(urlStr)
 	if err != nil {
@@ -33,7 +34,7 @@ func (repo *LatestEntryRepository) FindByURL(urlStr string) (*entity.LatestEntry
 
 	err = repo.Get(l)
 	if err == domain.ErrNoSuchEntity {
-		return nil, err
+		return l, nil
 	}
 	if err != nil {
 		return nil, errors.Wrap(err, errTag)

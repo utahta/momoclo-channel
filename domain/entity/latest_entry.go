@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	LatestEntryCodeTamai    = "tamai-sd"
 	LatestEntryCodeMomota   = "momota-sd"
 	LatestEntryCodeAriyasu  = "ariyasu-sd"
+	LatestEntryCodeTamai    = "tamai-sd"
 	LatestEntryCodeSasaki   = "sasaki-sd"
 	LatestEntryCodeTakagi   = "takagi-sd"
 	LatestEntryCodeHappyclo = "happyclo"
@@ -30,8 +30,8 @@ type (
 	// LatestEntryRepository interface
 	LatestEntryRepository interface {
 		Save(*LatestEntry) error
-		FindByURL(urlStr string) (*LatestEntry, error)
-		GetURL(code string) string
+		FindOrCreateByURL(string) (*LatestEntry, error)
+		GetURL(string) string
 		GetTamaiURL() string
 		GetMomotaURL() string
 		GetAriyasuURL() string

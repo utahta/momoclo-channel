@@ -37,7 +37,7 @@ func CronCrawl(w http.ResponseWriter, req *http.Request) {
 	defer cancel()
 
 	crawl := container.Usecase(ctx).CrawlAll()
-	if err := crawl.Do(ctx); err != nil {
+	if err := crawl.Do(); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

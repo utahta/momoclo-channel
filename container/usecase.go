@@ -23,8 +23,9 @@ func Usecase(ctx context.Context) *UsecaseContainer {
 // CrawlAll returns CrawlAll use case
 func (c *UsecaseContainer) CrawlAll() *usecase.CrawlAll {
 	return usecase.NewCrawlAll(
+		c.ctx,
 		log.NewAppengineLogger(c.ctx),
-		c.repo.LatestEntryRepository(),
+		c.Crawl(),
 	)
 }
 

@@ -13,10 +13,6 @@ handlers:
   script: _go_app
   login: admin
 
-- url: /queue/tweet
-  script: _go_app
-  login: admin
-
-- url: /queue/line
+- url: /.*
   script: _go_app
   login: admin

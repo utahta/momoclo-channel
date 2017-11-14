@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/utahta/momoclo-channel/adapter/persistence"
-	"github.com/utahta/momoclo-channel/domain/entity"
+	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
+	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/latestentry"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"google.golang.org/appengine/aetest"
@@ -24,13 +24,13 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 		url             string
 		expectedSuccess bool
 	}{
-		{fmt.Sprintf("https://ameblo.jp/%s", entity.LatestEntryCodeTamai), true},
-		{fmt.Sprintf("https://ameblo.jp/%s", entity.LatestEntryCodeMomota), true},
-		{fmt.Sprintf("https://ameblo.jp/%s", entity.LatestEntryCodeAriyasu), true},
-		{fmt.Sprintf("https://ameblo.jp/%s", entity.LatestEntryCodeSasaki), true},
-		{fmt.Sprintf("https://ameblo.jp/%s", entity.LatestEntryCodeTakagi), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeTamai), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeMomota), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeAriyasu), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeSasaki), true},
+		{fmt.Sprintf("https://ameblo.jp/%s", model.LatestEntryCodeTakagi), true},
 		{fmt.Sprintf("https://ameblo.jp/%s", "aaa"), false},
-		{fmt.Sprintf("http://ameblo.jp/%s", entity.LatestEntryCodeMomota), false},
+		{fmt.Sprintf("http://ameblo.jp/%s", model.LatestEntryCodeMomota), false},
 		{"http://www.tfm.co.jp/clover/", true},
 	}
 
@@ -63,19 +63,18 @@ func TestLatestEntryRepository_GetURL(t *testing.T) {
 
 	repo := persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx))
 	tests := []struct {
-		expectCode string
-		expectURL  string
-		fn         func() string
+		code        string
+		expectedURL string
 	}{
-		{entity.LatestEntryCodeTamai, "http://example.com/1", repo.GetTamaiURL},
-		{entity.LatestEntryCodeMomota, "http://example.com/2", repo.GetMomotaURL},
-		{entity.LatestEntryCodeAriyasu, "http://example.com/3", repo.GetAriyasuURL},
-		{entity.LatestEntryCodeSasaki, "http://example.com/4", repo.GetSasakiURL},
-		{entity.LatestEntryCodeTakagi, "http://example.com/5", repo.GetTakagiURL},
-		{entity.LatestEntryCodeHappyclo, "http://example.com/6", repo.GetHappycloURL},
+		{model.LatestEntryCodeTamai, "http://example.com/1"},
+		{model.LatestEntryCodeMomota, "http://example.com/2"},
+		{model.LatestEntryCodeAriyasu, "http://example.com/3"},
+		{model.LatestEntryCodeSasaki, "http://example.com/4"},
+		{model.LatestEntryCodeTakagi, "http://example.com/5"},
+		{model.LatestEntryCodeHappyclo, "http://example.com/6"},
 	}
 	for _, test := range tests {
-		blog := &entity.LatestEntry{ID: test.expectCode, Code: test.expectCode, URL: test.expectURL}
+		blog := &model.LatestEntry{ID: test.code, Code: test.code, URL: test.expectedURL}
 		if err := repo.Save(blog); err != nil {
 			t.Fatal(err)
 		}
@@ -83,9 +82,9 @@ func TestLatestEntryRepository_GetURL(t *testing.T) {
 	time.Sleep(time.Second) // Due to eventual consistency
 
 	for _, test := range tests {
-		url := test.fn()
-		if url != test.expectURL {
-			t.Fatalf("Expected URL %s, got %s", test.expectURL, url)
+		url := repo.GetURL(test.code)
+		if url != test.expectedURL {
+			t.Fatalf("Expected URL %s, got %s", test.expectedURL, url)
 		}
 	}
 }

@@ -3,8 +3,8 @@ package container
 import (
 	"context"
 
-	"github.com/utahta/momoclo-channel/adapter/persistence"
-	"github.com/utahta/momoclo-channel/domain/entity"
+	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
+	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
 )
 
@@ -19,6 +19,6 @@ func Repository(ctx context.Context) *RepositoryContainer {
 }
 
 // LatestEntryRepository returns LatestEntry repository
-func (c *RepositoryContainer) LatestEntryRepository() entity.LatestEntryRepository {
+func (c *RepositoryContainer) LatestEntryRepository() model.LatestEntryRepository {
 	return persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(c.ctx))
 }

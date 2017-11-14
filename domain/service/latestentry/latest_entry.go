@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/utahta/momoclo-channel/domain/entity"
+	"github.com/utahta/momoclo-channel/domain/model"
 )
 
 // Parse returns *LatestEntry given url
-func Parse(urlStr string) (*entity.LatestEntry, error) {
+func Parse(urlStr string) (*model.LatestEntry, error) {
 	var code string
 	blogCodes := []string{
-		entity.LatestEntryCodeTamai,
-		entity.LatestEntryCodeMomota,
-		entity.LatestEntryCodeAriyasu,
-		entity.LatestEntryCodeSasaki,
-		entity.LatestEntryCodeTakagi,
+		model.LatestEntryCodeTamai,
+		model.LatestEntryCodeMomota,
+		model.LatestEntryCodeAriyasu,
+		model.LatestEntryCodeSasaki,
+		model.LatestEntryCodeTakagi,
 	}
 	for _, c := range blogCodes {
 		if strings.HasPrefix(urlStr, fmt.Sprintf("https://ameblo.jp/%s", c)) {
@@ -25,15 +25,15 @@ func Parse(urlStr string) (*entity.LatestEntry, error) {
 		}
 	}
 	if strings.HasPrefix(urlStr, "http://www.tfm.co.jp/clover/") {
-		code = entity.LatestEntryCodeHappyclo
+		code = model.LatestEntryCodeHappyclo
 	} else if strings.HasPrefix(urlStr, "http://www.momoclo.net") {
-		code = entity.LatestEntryCodeAeNews
+		code = model.LatestEntryCodeAeNews
 	} else if strings.HasPrefix(urlStr, "https://www.youtube.com") {
-		code = entity.LatestEntryCodeYoutube
+		code = model.LatestEntryCodeYoutube
 	}
 
 	if code == "" {
 		return nil, errors.New("code not supported")
 	}
-	return &entity.LatestEntry{ID: code, Code: code, URL: urlStr}, nil
+	return &model.LatestEntry{ID: code, Code: code, URL: urlStr}, nil
 }

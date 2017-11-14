@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/mjibson/goon"
-	"github.com/utahta/momoclo-channel/adapter/persistence"
+	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
 	"github.com/utahta/momoclo-channel/domain"
 	"google.golang.org/appengine/datastore"
 )

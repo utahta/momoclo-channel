@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
+	"github.com/utahta/momoclo-channel/domain/reminder"
+	"github.com/utahta/momoclo-channel/infrastructure/log"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/linenotify"
-	"github.com/utahta/momoclo-channel/lib/log"
-	"github.com/utahta/momoclo-channel/lib/twitter"
-	"github.com/utahta/momoclo-channel/domain/reminder"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -18,6 +18,8 @@ func Notify(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	logger := log.NewAppengineLogger(ctx)
+	tweeter := twitter.NewTweeter(ctx, logger)
 
 	now := time.Now().In(config.JST)
 	for _, row := range rows {
@@ -32,8 +34,8 @@ func Notify(ctx context.Context) error {
 		eg := new(errgroup.Group)
 
 		eg.Go(func() error {
-			if err := twitter.TweetMessage(ctx, row.Text); err != nil {
-				log.Error(ctx, err)
+			if err := tweeter.TweetMessage(row.Text); err != nil {
+				logger.Error(ctx, err)
 				return err
 			}
 			return nil
@@ -41,7 +43,7 @@ func Notify(ctx context.Context) error {
 
 		eg.Go(func() error {
 			if err := linenotify.NotifyMessage(ctx, row.Text); err != nil {
-				log.Error(ctx, err)
+				logger.Error(ctx, err)
 				return err
 			}
 			return nil

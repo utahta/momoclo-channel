@@ -1,4 +1,4 @@
-package entity
+package model
 
 import (
 	"time"
@@ -32,12 +32,6 @@ type (
 		Save(*LatestEntry) error
 		FindOrCreateByURL(string) (*LatestEntry, error)
 		GetURL(string) string
-		GetTamaiURL() string
-		GetMomotaURL() string
-		GetAriyasuURL() string
-		GetSasakiURL() string
-		GetTakagiURL() string
-		GetHappycloURL() string
 	}
 )
 

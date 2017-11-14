@@ -3,7 +3,8 @@ package container
 import (
 	"context"
 
-	"github.com/utahta/momoclo-channel/infrastructure/crawler"
+	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
+	"github.com/utahta/momoclo-channel/adapter/gateway/crawler"
 	"github.com/utahta/momoclo-channel/infrastructure/event"
 	"github.com/utahta/momoclo-channel/infrastructure/log"
 	"github.com/utahta/momoclo-channel/usecase"
@@ -20,22 +21,40 @@ func Usecase(ctx context.Context) *UsecaseContainer {
 	return &UsecaseContainer{ctx, Repository(ctx)}
 }
 
-// CrawlAll returns CrawlAll use case
-func (c *UsecaseContainer) CrawlAll() *usecase.CrawlAll {
-	return usecase.NewCrawlAll(
+// FeedsCrawl use case
+func (c *UsecaseContainer) FeedsCrawl() *usecase.FeedsCrawl {
+	return usecase.NewFeedsCrawl(
 		c.ctx,
 		log.NewAppengineLogger(c.ctx),
-		c.Crawl(),
+		c.FeedCrawl(),
 	)
 }
 
-// Crawl returns Crawl use case
-func (c *UsecaseContainer) Crawl() *usecase.Crawl {
-	return usecase.NewCrawl(
+// FeedCrawl use case
+func (c *UsecaseContainer) FeedCrawl() *usecase.FeedCrawl {
+	return usecase.NewFeedCrawl(
 		c.ctx,
 		log.NewAppengineLogger(c.ctx),
 		crawler.New(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		c.repo.LatestEntryRepository(),
+	)
+}
+
+// FeedTweetsEnqueue use case
+func (c *UsecaseContainer) FeedTweetsEnqueue() *usecase.FeedTweetsEnqueue {
+	return usecase.NewFeedTweetsEnqueue(
+		log.NewAppengineLogger(c.ctx),
+		event.NewTaskQueue(c.ctx),
+	)
+}
+
+// FeedTweet use case
+func (c *UsecaseContainer) FeedTweet() *usecase.FeedTweet {
+	logger := log.NewAppengineLogger(c.ctx)
+	return usecase.NewFeedTweet(
+		logger,
+		event.NewTaskQueue(c.ctx),
+		twitter.NewTweeter(c.ctx, logger),
 	)
 }

@@ -38,8 +38,8 @@ func (t *Task) Params() (url.Values, error) {
 	return v, nil
 }
 
-// Parse parses url.Values
-func (t *Task) Parse(v url.Values, o interface{}) error {
-	t.Payload = []byte(v.Get("payload"))
-	return json.Unmarshal(t.Payload, o)
+// ParseTask parses url.Values
+func ParseTask(v url.Values, o interface{}) error {
+	payload := []byte(v.Get("payload"))
+	return json.Unmarshal(payload, o)
 }

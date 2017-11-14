@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/utahta/momoclo-channel/adapter/handler/middleware"
 	"github.com/utahta/momoclo-channel/adapter/handler/queue"
-	"github.com/utahta/momoclo-channel/adapter/middleware"
 	"github.com/utahta/momoclo-channel/lib/config"
 )
 
@@ -17,7 +17,8 @@ func init() {
 
 	router.Get("/_ah/start", func(w http.ResponseWriter, req *http.Request) {})
 	router.Post("/queue/line", queue.LineNotify)
-	router.Post("/queue/tweet", queue.Tweet)
+	router.Post("/queue/feed/tweets/enqueue", queue.FeedTweetsEnqueue)
+	router.Post("/queue/feed/tweet", queue.FeedTweet)
 
 	http.Handle("/", router)
 }

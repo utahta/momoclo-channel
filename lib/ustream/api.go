@@ -6,10 +6,11 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
+	"github.com/utahta/momoclo-channel/domain"
+	"github.com/utahta/momoclo-channel/infrastructure/log"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/linenotify"
-	"github.com/utahta/momoclo-channel/lib/twitter"
-	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/uststat"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/datastore"
@@ -39,21 +40,16 @@ func Notify(ctx context.Context) error {
 	status.Put(ctx)
 
 	if isLive {
-		eg := &errgroup.Group{}
+		tweeter := twitter.NewTweeter(ctx, log.NewAppengineLogger(ctx))
 
+		eg := &errgroup.Group{}
 		eg.Go(func() error {
 			t := time.Now().In(config.JST)
-			if err := twitter.TweetMessage(ctx, fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))); err != nil {
-				return err
-			}
-			return nil
+			return tweeter.TweetMessage(fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05")))
 		})
 
 		eg.Go(func() error {
-			if err := linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"); err != nil {
-				return err
-			}
-			return nil
+			return linenotify.NotifyMessage(ctx, "momocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv")
 		})
 
 		if err := eg.Wait(); err != nil {

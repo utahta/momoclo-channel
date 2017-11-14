@@ -4,8 +4,7 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/entity"
-	"github.com/utahta/momoclo-channel/usecase"
+	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-crawler"
 	"google.golang.org/appengine/urlfetch"
 )
@@ -14,12 +13,12 @@ type handler struct {
 	ctx context.Context
 }
 
-// New returns usecase.Crawler that wraps momoclo-crawler
-func New(ctx context.Context) usecase.Crawler {
+// New returns model.FeedFetcher that wraps momoclo-crawler
+func New(ctx context.Context) model.FeedFetcher {
 	return &handler{ctx}
 }
 
-func (c *handler) Fetch(code string, maxItemNum int, latestURL string) ([]*usecase.CrawlItem, error) {
+func (c *handler) Fetch(code string, maxItemNum int, latestURL string) ([]model.FeedItem, error) {
 	const errTag = "client.Fetch failed"
 	var (
 		cli  *crawler.ChannelClient
@@ -28,21 +27,21 @@ func (c *handler) Fetch(code string, maxItemNum int, latestURL string) ([]*useca
 	)
 
 	switch code {
-	case entity.LatestEntryCodeTamai:
+	case model.LatestEntryCodeTamai:
 		cli, err = crawler.NewTamaiBlogChannelClient(maxItemNum, latestURL, opts)
-	case entity.LatestEntryCodeMomota:
+	case model.LatestEntryCodeMomota:
 		cli, err = crawler.NewMomotaBlogChannelClient(maxItemNum, latestURL, opts)
-	case entity.LatestEntryCodeAriyasu:
+	case model.LatestEntryCodeAriyasu:
 		cli, err = crawler.NewAriyasuBlogChannelClient(maxItemNum, latestURL, opts)
-	case entity.LatestEntryCodeSasaki:
+	case model.LatestEntryCodeSasaki:
 		cli, err = crawler.NewSasakiBlogChannelClient(maxItemNum, latestURL, opts)
-	case entity.LatestEntryCodeTakagi:
+	case model.LatestEntryCodeTakagi:
 		cli, err = crawler.NewTakagiBlogChannelClient(maxItemNum, latestURL, opts)
-	case entity.LatestEntryCodeHappyclo:
+	case model.LatestEntryCodeHappyclo:
 		cli, err = crawler.NewHappycloChannelClient(latestURL, opts)
-	case entity.LatestEntryCodeAeNews:
+	case model.LatestEntryCodeAeNews:
 		cli, err = crawler.NewAeNewsChannelClient(opts)
-	case entity.LatestEntryCodeYoutube:
+	case model.LatestEntryCodeYoutube:
 		cli, err = crawler.NewYoutubeChannelClient(opts)
 	default:
 		err = errors.Errorf("code:%s did not support", code)
@@ -57,9 +56,9 @@ func (c *handler) Fetch(code string, maxItemNum int, latestURL string) ([]*useca
 		return nil, errors.Wrap(err, errTag)
 	}
 
-	var items = make([]*usecase.CrawlItem, len(channel.Items))
+	var items = make([]model.FeedItem, len(channel.Items))
 	for i, feed := range channel.Items {
-		item := &usecase.CrawlItem{
+		item := model.FeedItem{
 			Title:       channel.Title,
 			URL:         channel.Url,
 			EntryTitle:  feed.Title,

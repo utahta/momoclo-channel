@@ -3,27 +3,50 @@ package model
 import (
 	"time"
 
-	"github.com/utahta/momoclo-channel/lib/config"
-	"google.golang.org/appengine/datastore"
+	"github.com/utahta/momoclo-channel/lib/timeutil"
 )
 
-// CreateTimestamper provides set current timestamp to entity when save if not already set
-type CreateTimestamper interface {
-	SetCreatedAt(time.Time)
-	GetCreatedAt() time.Time
-}
+type (
+	// CreateTimestamper provides set current timestamp to entity when save if not already set
+	CreateTimestamper interface {
+		SetCreatedAt(time.Time)
+		GetCreatedAt() time.Time
+	}
 
-// UpdateTimestamper provides set current timestamp to entity when save
-type UpdateTimestamper interface {
-	SetUpdatedAt(time.Time)
-}
+	// UpdateTimestamper provides set current timestamp to entity when save
+	UpdateTimestamper interface {
+		SetUpdatedAt(time.Time)
+	}
 
-func load(dst interface{}, p []datastore.Property) error {
-	return datastore.LoadStruct(dst, p)
-}
+	// PersistenceBeforeSaver hook
+	PersistenceBeforeSaver interface {
+		BeforeSave()
+	}
 
-func save(src interface{}) ([]datastore.Property, error) {
-	now := time.Now().In(config.JST)
+	// PersistenceHandler represents persist operations
+	PersistenceHandler interface {
+		Put(interface{}) error
+		PutMulti(interface{}) error
+		Get(dst interface{}) error
+		GetMulti(dst interface{}) error
+		FlushLocalCache()
+	}
+
+	// TransactionOptions represents transaction options (TODO: want to eliminate datastore dependence but no ideas)
+	TransactionOptions struct {
+		XG       bool
+		Attempts int
+	}
+
+	// Transactor provides transaction across entities
+	Transactor interface {
+		RunInTransaction(fn func(h PersistenceHandler) error, opts *TransactionOptions) error
+		With(h PersistenceHandler, repos ...interface{}) (done func())
+	}
+)
+
+func beforeSave(src interface{}) {
+	now := timeutil.Now()
 
 	if v, ok := src.(CreateTimestamper); ok {
 		if v.GetCreatedAt().IsZero() {
@@ -34,6 +57,4 @@ func save(src interface{}) ([]datastore.Property, error) {
 	if v, ok := src.(UpdateTimestamper); ok {
 		v.SetUpdatedAt(now)
 	}
-
-	return datastore.SaveStruct(src)
 }

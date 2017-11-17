@@ -5,6 +5,7 @@ import (
 
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
 	"github.com/utahta/momoclo-channel/adapter/gateway/crawler"
+	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"github.com/utahta/momoclo-channel/infrastructure/event"
 	"github.com/utahta/momoclo-channel/infrastructure/log"
 	"github.com/utahta/momoclo-channel/usecase"
@@ -44,6 +45,8 @@ func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
 	return usecase.NewEnqueueTweets(
 		log.NewAppengineLogger(c.ctx),
 		event.NewTaskQueue(c.ctx),
+		dao.NewDatastoreTransactor(c.ctx),
+		c.repo.TweetItemRepository(),
 	)
 }
 

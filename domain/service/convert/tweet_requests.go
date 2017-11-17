@@ -1,4 +1,4 @@
-package tweet
+package convert
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"github.com/utahta/momoclo-channel/domain/model"
 )
 
-// ConvertToTweetRequests converts FeedItem to []TweetRequest
-func ConvertToTweetRequests(item model.FeedItem) []model.TweetRequest {
+// FeedItemToTweetRequests converts FeedItem to []TweetRequest
+func FeedItemToTweetRequests(item model.FeedItem) []model.TweetRequest {
 	var requests []model.TweetRequest
 
 	const maxUploadMediaLen = 4
@@ -23,7 +23,7 @@ func ConvertToTweetRequests(item model.FeedItem) []model.TweetRequest {
 	if len(tmp) > 0 {
 		imagesURLs = append(imagesURLs, tmp)
 	}
-	text := makeText(item.Title, item.EntryTitle, item.EntryURL)
+	text := feedItemToTweetText(item.Title, item.EntryTitle, item.EntryURL)
 	videoURLs := item.VideoURLs
 
 	if len(imagesURLs) > 0 {
@@ -50,7 +50,7 @@ func ConvertToTweetRequests(item model.FeedItem) []model.TweetRequest {
 	return requests
 }
 
-func makeText(title, entryTitle, entryURL string) string {
+func feedItemToTweetText(title, entryTitle, entryURL string) string {
 	const maxCharCount = 77 // max character count without hashtag and any urls TODO: correct?
 
 	runes := []rune(fmt.Sprintf("%s %s", title, entryTitle))

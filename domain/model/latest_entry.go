@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"google.golang.org/appengine/datastore"
 )
 
 const (
@@ -50,12 +48,7 @@ func (l *LatestEntry) SetUpdatedAt(t time.Time) {
 	l.UpdatedAt = t
 }
 
-// Load loads own from datastore
-func (l *LatestEntry) Load(p []datastore.Property) error {
-	return load(l, p)
-}
-
-// Save saves own to datastore
-func (l *LatestEntry) Save() ([]datastore.Property, error) {
-	return save(l)
+// BeforeSave hook
+func (l *LatestEntry) BeforeSave() {
+	beforeSave(l)
 }

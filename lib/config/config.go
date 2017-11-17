@@ -63,5 +63,7 @@ func Load(path string) error {
 	if err := t.Unmarshal(&C); err != nil {
 		return err
 	}
+
+	time.Local = JST
 	return nil
 }

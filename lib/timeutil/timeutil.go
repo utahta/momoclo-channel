@@ -1,6 +1,8 @@
 package timeutil
 
-import "time"
+import (
+	"time"
+)
 
 // Now wraps time.Now (eventually for test)
 var Now = time.Now

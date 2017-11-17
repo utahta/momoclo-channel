@@ -22,3 +22,8 @@ func Repository(ctx context.Context) *RepositoryContainer {
 func (c *RepositoryContainer) LatestEntryRepository() model.LatestEntryRepository {
 	return persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(c.ctx))
 }
+
+// TweetItemRepository returns TweetItem repository
+func (c *RepositoryContainer) TweetItemRepository() model.TweetItemRepository {
+	return persistence.NewTweetItemRepository(dao.NewDatastoreHandler(c.ctx))
+}

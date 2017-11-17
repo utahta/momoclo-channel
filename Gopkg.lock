@@ -149,7 +149,7 @@
   branch = "master"
   name = "google.golang.org/appengine"
   packages = [".","aetest","datastore","internal","internal/app_identity","internal/base","internal/datastore","internal/log","internal/memcache","internal/modules","internal/remote_api","internal/taskqueue","internal/urlfetch","internal/user","log","memcache","taskqueue","urlfetch","user"]
-  revision = "d9a072cfa7b9736e44311ef77b3e09d804bfa599"
+  revision = "9d8544a6b2c7df9cff240fcf92d7b2f59bc13416"
 
 [solve-meta]
   analyzer-name = "dep"

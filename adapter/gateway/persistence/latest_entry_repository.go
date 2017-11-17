@@ -1,19 +1,18 @@
 package persistence
 
 import (
-	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/latestentry"
 )
 
-// LatestEntryRepository operates datastore
+// LatestEntryRepository operates LatestEntry entity
 type LatestEntryRepository struct {
-	DatastoreHandler
+	model.PersistenceHandler
 }
 
 // NewLatestEntryRepository returns the LatestEntryRepository
-func NewLatestEntryRepository(h DatastoreHandler) *LatestEntryRepository {
+func NewLatestEntryRepository(h model.PersistenceHandler) *LatestEntryRepository {
 	return &LatestEntryRepository{h}
 }
 
@@ -25,11 +24,9 @@ func (repo *LatestEntryRepository) Save(l *model.LatestEntry) error {
 // FindOrCreateByURL finds LatestEntry given url
 // if not found, returns new LatestEntry
 func (repo *LatestEntryRepository) FindOrCreateByURL(urlStr string) (*model.LatestEntry, error) {
-	const errTag = "LatestEntryRepository.FindOrCreateByURL failed"
-
 	l, err := latestentry.Parse(urlStr)
 	if err != nil {
-		return nil, errors.Wrap(err, errTag)
+		return nil, err
 	}
 
 	err = repo.Get(l)
@@ -37,7 +34,7 @@ func (repo *LatestEntryRepository) FindOrCreateByURL(urlStr string) (*model.Late
 		return l, nil
 	}
 	if err != nil {
-		return nil, errors.Wrap(err, errTag)
+		return nil, err
 	}
 	return l, nil
 }

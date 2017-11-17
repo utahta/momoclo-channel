@@ -33,7 +33,7 @@ func Parse(urlStr string) (*model.LatestEntry, error) {
 	}
 
 	if code == "" {
-		return nil, errors.New("code not supported")
+		return nil, errors.New("latestentry.Parse failed: code not supported")
 	}
 	return &model.LatestEntry{ID: code, Code: code, URL: urlStr}, nil
 }

@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type (
 	// FeedItem represents an entry in the feed

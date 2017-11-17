@@ -6,9 +6,9 @@ import (
 	"github.com/utahta/momoclo-channel/domain/model"
 )
 
-// ConvertFeedTweets converts FeedItem to FeedTweet
-func ConvertFeedTweets(item model.FeedItem) []model.FeedTweet {
-	var tweets []model.FeedTweet
+// ConvertToTweetRequests converts FeedItem to []TweetRequest
+func ConvertToTweetRequests(item model.FeedItem) []model.TweetRequest {
+	var requests []model.TweetRequest
 
 	const maxUploadMediaLen = 4
 	var imagesURLs [][]string
@@ -23,39 +23,39 @@ func ConvertFeedTweets(item model.FeedItem) []model.FeedTweet {
 	if len(tmp) > 0 {
 		imagesURLs = append(imagesURLs, tmp)
 	}
-	text := truncateText(item.Title, item.EntryTitle, item.EntryURL)
+	text := makeText(item.Title, item.EntryTitle, item.EntryURL)
 	videoURLs := item.VideoURLs
 
 	if len(imagesURLs) > 0 {
-		tweets = append(tweets, model.FeedTweet{Text: text, ImageURLs: imagesURLs[0]})
+		requests = append(requests, model.TweetRequest{Text: text, ImageURLs: imagesURLs[0]})
 		imagesURLs = imagesURLs[1:]
 	} else if len(videoURLs) > 0 {
-		tweets = append(tweets, model.FeedTweet{Text: text, VideoURL: videoURLs[0]})
+		requests = append(requests, model.TweetRequest{Text: text, VideoURL: videoURLs[0]})
 		videoURLs = videoURLs[1:]
 	} else {
-		tweets = append(tweets, model.FeedTweet{Text: text})
+		requests = append(requests, model.TweetRequest{Text: text})
 	}
 
 	if len(imagesURLs) > 0 {
 		for _, imageURLs := range imagesURLs {
-			tweets = append(tweets, model.FeedTweet{ImageURLs: imageURLs})
+			requests = append(requests, model.TweetRequest{ImageURLs: imageURLs})
 		}
 	}
 
 	if len(videoURLs) > 0 {
 		for _, videoURL := range videoURLs {
-			tweets = append(tweets, model.FeedTweet{VideoURL: videoURL})
+			requests = append(requests, model.TweetRequest{VideoURL: videoURL})
 		}
 	}
-	return tweets
+	return requests
 }
 
-func truncateText(title, entryTitle, entryURL string) string {
-	const maxTextLen = 77 // max text length without hashtag and image url
+func makeText(title, entryTitle, entryURL string) string {
+	const maxCharCount = 77 // max character count without hashtag and any urls TODO: correct?
 
 	runes := []rune(fmt.Sprintf("%s %s", title, entryTitle))
-	if len(runes) >= maxTextLen {
-		runes = append(runes[0:maxTextLen-3], []rune("...")...)
+	if len(runes) >= maxCharCount {
+		runes = append(runes[0:maxCharCount-3], []rune("...")...)
 	}
 	return fmt.Sprintf("%s %s #momoclo #ももクロ", string(runes), entryURL)
 }

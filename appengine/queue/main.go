@@ -17,8 +17,7 @@ func init() {
 
 	router.Get("/_ah/start", func(w http.ResponseWriter, req *http.Request) {})
 	router.Post("/queue/line", queue.LineNotify)
-	router.Post("/queue/feed/tweets/enqueue", queue.FeedTweetsEnqueue)
-	router.Post("/queue/feed/tweet", queue.FeedTweet)
+	router.Post("/queue/tweet", queue.Tweet)
 
 	http.Handle("/", router)
 }

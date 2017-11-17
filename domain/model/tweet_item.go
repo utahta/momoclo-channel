@@ -18,23 +18,22 @@ type (
 		CreatedAt   time.Time
 	}
 
-	// FeedTweet represents tweet feed item
-	FeedTweet struct {
+	// TweetRequest represents tweet message, img and video data
+	TweetRequest struct {
 		InReplyToStatusID string
 		Text              string
 		ImageURLs         []string
 		VideoURL          string
 	}
 
-	// FeedTweetResult represents tweet result data
-	FeedTweetResult struct {
+	// TweetResponse represents tweet response data
+	TweetResponse struct {
 		IDStr string
 	}
 
 	// Tweeter interface
 	Tweeter interface {
-		TweetMessage(string) error
-		TweetFeed(FeedTweet) (FeedTweetResult, error)
+		Tweet(TweetRequest) (TweetResponse, error)
 	}
 )
 

@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
 	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/infrastructure/log"
+	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/linenotify"
 	"github.com/utahta/uststat"
@@ -40,12 +40,16 @@ func Notify(ctx context.Context) error {
 	status.Put(ctx)
 
 	if isLive {
-		tweeter := twitter.NewTweeter(ctx, log.NewAppengineLogger(ctx))
+		tweeter := twitter.NewTweeter(ctx)
 
 		eg := &errgroup.Group{}
 		eg.Go(func() error {
 			t := time.Now().In(config.JST)
-			return tweeter.TweetMessage(fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05")))
+
+			_, err := tweeter.Tweet(model.TweetRequest{
+				Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05")),
+			})
+			return err
 		})
 
 		eg.Go(func() error {

@@ -7,7 +7,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/go-twitter"
 	"github.com/utahta/go-twitter/types"
-	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"google.golang.org/appengine/urlfetch"
@@ -15,11 +14,10 @@ import (
 
 type tweeter struct {
 	*twitter.Client
-	log core.Logger
 }
 
 // NewTweeter returns model.Tweeter that wraps go-twitter
-func NewTweeter(ctx context.Context, log core.Logger) model.Tweeter {
+func NewTweeter(ctx context.Context) model.Tweeter {
 	if config.C.Twitter.Disabled {
 		return &nop{}
 	}
@@ -33,47 +31,39 @@ func NewTweeter(ctx context.Context, log core.Logger) model.Tweeter {
 		config.C.Twitter.AccessTokenSecret,
 		twitter.WithHTTPClient(urlfetch.Client(ctx)),
 	)
-	return &tweeter{c, log}
+	return &tweeter{c}
 }
 
-// TweetMessage tweets text
-func (c *tweeter) TweetMessage(text string) error {
-	if _, err := c.Tweet(text, nil); err != nil {
-		return errors.Wrap(err, "TweetMessage failed")
-	}
-	return nil
-}
-
-// TweetFeed tweets feed
-func (c *tweeter) TweetFeed(item model.FeedTweet) (model.FeedTweetResult, error) {
-	const errTag = "TweetFeed failed"
+// Tweet tweets given request
+func (c *tweeter) Tweet(req model.TweetRequest) (model.TweetResponse, error) {
+	const errTag = "tweeter.Tweet failed"
 
 	var (
 		tweets *types.Tweets
 		err    error
 	)
-	if item.Text != "" {
-		if len(item.ImageURLs) > 0 {
-			tweets, err = c.TweetImageURLs(item.Text, item.ImageURLs, nil)
-		} else if item.VideoURL != "" {
-			tweets, err = c.TweetVideoURL(item.Text, item.VideoURL, "video/mp4", nil)
+	if req.Text != "" {
+		if len(req.ImageURLs) > 0 {
+			tweets, err = c.TweetImageURLs(req.Text, req.ImageURLs, nil)
+		} else if req.VideoURL != "" {
+			tweets, err = c.TweetVideoURL(req.Text, req.VideoURL, "video/mp4", nil)
 		} else {
-			tweets, err = c.Tweet(item.Text, nil)
+			tweets, err = c.Client.Tweet(req.Text, nil)
 		}
 	} else {
 		v := url.Values{}
-		if item.InReplyToStatusID != "" {
-			v.Set("in_reply_to_status_id", item.InReplyToStatusID)
+		if req.InReplyToStatusID != "" {
+			v.Set("in_reply_to_status_id", req.InReplyToStatusID)
 		}
-		if len(item.ImageURLs) > 0 {
-			tweets, err = c.TweetImageURLs("", item.ImageURLs, v)
-		} else if item.VideoURL != "" {
-			tweets, err = c.TweetVideoURL("", item.VideoURL, "video/mp4", v)
+		if len(req.ImageURLs) > 0 {
+			tweets, err = c.TweetImageURLs("", req.ImageURLs, v)
+		} else if req.VideoURL != "" {
+			tweets, err = c.TweetVideoURL("", req.VideoURL, "video/mp4", v)
 		}
 	}
 
 	if err != nil {
-		return model.FeedTweetResult{}, errors.Wrap(err, errTag)
+		return model.TweetResponse{}, errors.Wrap(err, errTag)
 	}
-	return model.FeedTweetResult{IDStr: tweets.IDStr}, nil
+	return model.TweetResponse{IDStr: tweets.IDStr}, nil
 }

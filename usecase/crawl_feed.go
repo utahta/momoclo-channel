@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"context"
-
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
@@ -10,30 +8,27 @@ import (
 )
 
 type (
-	// FeedCrawl use case
-	FeedCrawl struct {
-		ctx             context.Context
+	// CrawlFeed use case
+	CrawlFeed struct {
 		log             core.Logger
 		feed            model.FeedFetcher
 		taskQueue       event.TaskQueue
 		latestEntryRepo model.LatestEntryRepository
 	}
 
-	// FeedCrawlParams input parameters
-	FeedCrawlParams struct {
+	// CrawlFeedParams input parameters
+	CrawlFeedParams struct {
 		Code string // target identify code
 	}
 )
 
-// NewFeedCrawl returns Crawl use case
-func NewFeedCrawl(
-	ctx context.Context,
+// NewCrawlFeed returns Crawl use case
+func NewCrawlFeed(
 	log core.Logger,
 	feed model.FeedFetcher,
 	taskQueue event.TaskQueue,
-	latestEntryRepo model.LatestEntryRepository) *FeedCrawl {
-	return &FeedCrawl{
-		ctx:             ctx,
+	latestEntryRepo model.LatestEntryRepository) *CrawlFeed {
+	return &CrawlFeed{
 		log:             log,
 		feed:            feed,
 		taskQueue:       taskQueue,
@@ -42,8 +37,8 @@ func NewFeedCrawl(
 }
 
 // Do crawls a site and invokes tweet and line event
-func (c *FeedCrawl) Do(params FeedCrawlParams) error {
-	const errTag = "FeedCrawl.Do failed"
+func (c *CrawlFeed) Do(params CrawlFeedParams) error {
+	const errTag = "CrawlFeed.Do failed"
 
 	items, err := c.feed.Fetch(params.Code, 1, c.latestEntryRepo.GetURL(params.Code))
 	if err != nil {
@@ -71,8 +66,8 @@ func (c *FeedCrawl) Do(params FeedCrawlParams) error {
 	var tasks []event.Task
 	for _, item := range items {
 		tasks = append(tasks,
-			event.Task{QueueName: "queue-tweet", Path: "/queue/feed/tweets/enqueue", Object: item},
-			event.Task{QueueName: "queue-line", Path: "/queue/line", Object: item},
+			event.Task{QueueName: "enqueue", Path: "/enqueue/tweets", Object: item},
+			event.Task{QueueName: "enqueue", Path: "/enqueue/lines", Object: item},
 		)
 	}
 	if err := c.taskQueue.PushMulti(tasks); err != nil {

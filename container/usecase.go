@@ -21,19 +21,17 @@ func Usecase(ctx context.Context) *UsecaseContainer {
 	return &UsecaseContainer{ctx, Repository(ctx)}
 }
 
-// FeedsCrawl use case
-func (c *UsecaseContainer) FeedsCrawl() *usecase.FeedsCrawl {
-	return usecase.NewFeedsCrawl(
-		c.ctx,
+// CrawlFeeds use case
+func (c *UsecaseContainer) CrawlFeeds() *usecase.CrawlFeeds {
+	return usecase.NewCrawlFeeds(
 		log.NewAppengineLogger(c.ctx),
-		c.FeedCrawl(),
+		c.CrawlFeed(),
 	)
 }
 
-// FeedCrawl use case
-func (c *UsecaseContainer) FeedCrawl() *usecase.FeedCrawl {
-	return usecase.NewFeedCrawl(
-		c.ctx,
+// CrawlFeed use case
+func (c *UsecaseContainer) CrawlFeed() *usecase.CrawlFeed {
+	return usecase.NewCrawlFeed(
 		log.NewAppengineLogger(c.ctx),
 		crawler.New(c.ctx),
 		event.NewTaskQueue(c.ctx),
@@ -41,20 +39,19 @@ func (c *UsecaseContainer) FeedCrawl() *usecase.FeedCrawl {
 	)
 }
 
-// FeedTweetsEnqueue use case
-func (c *UsecaseContainer) FeedTweetsEnqueue() *usecase.FeedTweetsEnqueue {
-	return usecase.NewFeedTweetsEnqueue(
+// EnqueueTweets use case
+func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
+	return usecase.NewEnqueueTweets(
 		log.NewAppengineLogger(c.ctx),
 		event.NewTaskQueue(c.ctx),
 	)
 }
 
-// FeedTweet use case
-func (c *UsecaseContainer) FeedTweet() *usecase.FeedTweet {
-	logger := log.NewAppengineLogger(c.ctx)
-	return usecase.NewFeedTweet(
-		logger,
+// Tweet use case
+func (c *UsecaseContainer) Tweet() *usecase.Tweet {
+	return usecase.NewTweet(
+		log.NewAppengineLogger(c.ctx),
 		event.NewTaskQueue(c.ctx),
-		twitter.NewTweeter(c.ctx, logger),
+		twitter.NewTweeter(c.ctx),
 	)
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
+	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/reminder"
 	"github.com/utahta/momoclo-channel/infrastructure/log"
 	"github.com/utahta/momoclo-channel/lib/config"
@@ -19,7 +20,7 @@ func Notify(ctx context.Context) error {
 		return err
 	}
 	logger := log.NewAppengineLogger(ctx)
-	tweeter := twitter.NewTweeter(ctx, logger)
+	tweeter := twitter.NewTweeter(ctx)
 
 	now := time.Now().In(config.JST)
 	for _, row := range rows {
@@ -34,7 +35,7 @@ func Notify(ctx context.Context) error {
 		eg := new(errgroup.Group)
 
 		eg.Go(func() error {
-			if err := tweeter.TweetMessage(row.Text); err != nil {
+			if _, err := tweeter.Tweet(model.TweetRequest{Text: row.Text}); err != nil {
 				logger.Error(ctx, err)
 				return err
 			}

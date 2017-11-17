@@ -9,37 +9,37 @@ import (
 )
 
 type (
-	// FeedTweetsEnqueue use case
-	FeedTweetsEnqueue struct {
+	// EnqueueTweets use case
+	EnqueueTweets struct {
 		log       core.Logger
 		taskQueue event.TaskQueue
 	}
 
-	// FeedTweetsEnqueueParams input parameters
-	FeedTweetsEnqueueParams struct {
+	// EnqueueTweetsParams input parameters
+	EnqueueTweetsParams struct {
 		FeedItem model.FeedItem
 	}
 )
 
-// NewFeedTweetsEnqueue returns EnqueueTweets use case
-func NewFeedTweetsEnqueue(log core.Logger, taskqueue event.TaskQueue) *FeedTweetsEnqueue {
-	return &FeedTweetsEnqueue{
+// NewEnqueueTweets returns EnqueueTweets use case
+func NewEnqueueTweets(log core.Logger, taskqueue event.TaskQueue) *EnqueueTweets {
+	return &EnqueueTweets{
 		log:       log,
 		taskQueue: taskqueue,
 	}
 }
 
-// Do enqueue feed tweet item
-func (t *FeedTweetsEnqueue) Do(params FeedTweetsEnqueueParams) error {
+// Do converts feeds to tweet requests and enqueue it
+func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 	const errTag = "EnqueueTweets.Do failed"
 
-	feedTweets := tweet.ConvertFeedTweets(params.FeedItem)
-	if len(feedTweets) == 0 {
+	tweetRequests := tweet.ConvertToTweetRequests(params.FeedItem)
+	if len(tweetRequests) == 0 {
 		t.log.Errorf("%v: invalid enqueue tweets feedItem:%v", errTag, params.FeedItem)
 		return errors.New("invalid enqueue tweets")
 	}
 
-	task := event.Task{QueueName: "queue-tweet", Path: "/queue/feed/tweet", Object: feedTweets}
+	task := event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: tweetRequests}
 	if err := t.taskQueue.Push(task); err != nil {
 		return errors.Wrap(err, errTag)
 	}

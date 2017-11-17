@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"context"
-
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/model"
@@ -10,26 +8,24 @@ import (
 )
 
 type (
-	// FeedsCrawl use case
-	FeedsCrawl struct {
-		ctx   context.Context
+	// CrawlFeeds use case
+	CrawlFeeds struct {
 		log   core.Logger
-		crawl *FeedCrawl
+		crawl *CrawlFeed
 	}
 )
 
-// NewFeedsCrawl returns CrawlAll use case
-func NewFeedsCrawl(ctx context.Context, logger core.Logger, crawl *FeedCrawl) *FeedsCrawl {
-	return &FeedsCrawl{
-		ctx:   ctx,
+// NewCrawlFeeds returns CrawlAll use case
+func NewCrawlFeeds(logger core.Logger, crawl *CrawlFeed) *CrawlFeeds {
+	return &CrawlFeeds{
 		log:   logger,
 		crawl: crawl,
 	}
 }
 
-// Do crawls all sites
-func (c *FeedsCrawl) Do() error {
-	const errTag = "CrawlAll.Do failed"
+// Do crawls all known sites
+func (c *CrawlFeeds) Do() error {
+	const errTag = "CrawlFeeds.Do failed"
 
 	codes := []string{
 		model.LatestEntryCodeMomota,
@@ -47,7 +43,7 @@ func (c *FeedsCrawl) Do() error {
 		code := code
 
 		eg.Go(func() error {
-			return c.crawl.Do(FeedCrawlParams{code})
+			return c.crawl.Do(CrawlFeedParams{code})
 		})
 	}
 

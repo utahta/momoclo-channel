@@ -12,8 +12,8 @@ import (
 	"github.com/utahta/momoclo-channel/usecase"
 )
 
-// FeedTweetsEnqueue enqueue tweet
-func FeedTweetsEnqueue(w http.ResponseWriter, req *http.Request) {
+// Tweet tweets to twitter
+func Tweet(w http.ResponseWriter, req *http.Request) {
 	ctx, cancel := context.WithTimeout(req.Context(), 540*time.Second)
 	defer cancel()
 
@@ -22,37 +22,14 @@ func FeedTweetsEnqueue(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	item := model.FeedItem{}
-	if err := event.ParseTask(req.Form, &item); err != nil {
+	var tweetRequests []model.TweetRequest
+	if err := event.ParseTask(req.Form, &tweetRequests); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
-	params := usecase.FeedTweetsEnqueueParams{FeedItem: item}
-	if err := container.Usecase(ctx).FeedTweetsEnqueue().Do(params); err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
-		return
-	}
-}
-
-// FeedTweet tweets feed
-func FeedTweet(w http.ResponseWriter, req *http.Request) {
-	ctx, cancel := context.WithTimeout(req.Context(), 540*time.Second)
-	defer cancel()
-
-	if err := req.ParseForm(); err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
-		return
-	}
-
-	var tweets []model.FeedTweet
-	if err := event.ParseTask(req.Form, &tweets); err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
-		return
-	}
-
-	params := usecase.FeedTweetParams{FeedTweets: tweets}
-	if err := container.Usecase(ctx).FeedTweet().Do(params); err != nil {
+	params := usecase.TweetParams{TweetRequests: tweetRequests}
+	if err := container.Usecase(ctx).Tweet().Do(params); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

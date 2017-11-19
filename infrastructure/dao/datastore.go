@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/mjibson/goon"
+	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/infrastructure/dao/hook"
@@ -15,11 +16,6 @@ type (
 	datastoreHandler struct {
 		*goon.Goon
 	}
-
-	// datastoreTransactor implements Transactor interface using goon
-	datastoreTransactor struct {
-		*goon.Goon
-	}
 )
 
 // NewDatastoreHandler returns PersistenceHandler
@@ -27,6 +23,11 @@ func NewDatastoreHandler(ctx context.Context) model.PersistenceHandler {
 	return &datastoreHandler{
 		goon.FromContext(ctx),
 	}
+}
+
+// Kind returns datastore kind given src
+func (h *datastoreHandler) Kind(src interface{}) string {
+	return h.Goon.Kind(src)
 }
 
 // Put wraps goon.Put()
@@ -57,53 +58,23 @@ func (h *datastoreHandler) GetMulti(dst interface{}) error {
 	return h.Goon.GetMulti(dst)
 }
 
+// Query returns PersistenceQuery that wraps datastore query
+func (h *datastoreHandler) NewQuery(kind string) model.PersistenceQuery {
+	return NewQuery(kind)
+}
+
+// GetAll runs the query and returns all matches entities
+func (h *datastoreHandler) GetAll(q model.PersistenceQuery, dst interface{}) error {
+	v, ok := q.(*datastoreQuery)
+	if !ok {
+		return errors.New("required datastoreQuery")
+	}
+
+	_, err := h.Goon.GetAll(v.Query, dst)
+	return err
+}
+
 // FlushLocalCache clears local caches
 func (h *datastoreHandler) FlushLocalCache() {
 	h.Goon.FlushLocalCache()
-}
-
-// NewDatastoreTransactor wraps datastore transaction
-func NewDatastoreTransactor(ctx context.Context) model.Transactor {
-	return &datastoreTransactor{
-		goon.FromContext(ctx),
-	}
-}
-
-// RunInTransaction represents datastore transaction
-func (t *datastoreTransactor) RunInTransaction(fn func(h model.PersistenceHandler) error, opts *model.TransactionOptions) error {
-	o := &datastore.TransactionOptions{XG: true}
-	if opts != nil {
-		o = &datastore.TransactionOptions{
-			XG:       opts.XG,
-			Attempts: opts.Attempts,
-		}
-	}
-
-	return t.Goon.RunInTransaction(func(g *goon.Goon) error {
-		return fn(&datastoreHandler{g})
-	}, o)
-}
-
-// With can be used in RunInTransaction
-func (t *datastoreTransactor) With(h model.PersistenceHandler, args ...interface{}) (done func()) {
-	dh, ok := h.(*datastoreHandler)
-	if !ok {
-		return func() {}
-	}
-
-	tmp := make([]*goon.Goon, len(args))
-	for i, arg := range args {
-		if v, ok := arg.(*datastoreHandler); ok {
-			tmp[i] = v.Goon
-			v.Goon = dh.Goon // deliver goon in transaction
-		}
-	}
-
-	return func() {
-		for i, arg := range args {
-			if v, ok := arg.(*datastoreHandler); ok {
-				v.Goon = tmp[i] // recovery
-			}
-		}
-	}
 }

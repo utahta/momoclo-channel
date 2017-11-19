@@ -27,3 +27,8 @@ func (c *RepositoryContainer) LatestEntryRepository() model.LatestEntryRepositor
 func (c *RepositoryContainer) TweetItemRepository() model.TweetItemRepository {
 	return persistence.NewTweetItemRepository(dao.NewDatastoreHandler(c.ctx))
 }
+
+// ReminderRepository returns Reminder repository
+func (c *RepositoryContainer) ReminderRepository() model.ReminderRepository {
+	return persistence.NewReminderRepository(dao.NewDatastoreHandler(c.ctx))
+}

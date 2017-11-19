@@ -25,11 +25,19 @@ type (
 
 	// PersistenceHandler represents persist operations
 	PersistenceHandler interface {
+		Kind(interface{}) string
 		Put(interface{}) error
 		PutMulti(interface{}) error
-		Get(dst interface{}) error
-		GetMulti(dst interface{}) error
+		Get(interface{}) error
+		GetMulti(interface{}) error
+		NewQuery(string) PersistenceQuery
+		GetAll(PersistenceQuery, interface{}) error
 		FlushLocalCache()
+	}
+
+	// PersistenceQuery interface
+	PersistenceQuery interface {
+		Filter(string, interface{}) PersistenceQuery
 	}
 
 	// TransactionOptions represents transaction options (TODO: want to eliminate datastore dependence but no ideas)

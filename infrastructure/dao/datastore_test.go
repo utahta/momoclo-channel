@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/lib/aetestutil"
 	"google.golang.org/appengine/aetest"
 )
@@ -76,49 +75,5 @@ func TestDatastoreHandler_PutMulti(t *testing.T) {
 
 	if es[0].CreatedAt.IsZero() || es[1].CreatedAt.IsZero() {
 		t.Errorf("Expected set createdAt, got 0:%v, 1:%v", es[0].CreatedAt, es[1].CreatedAt)
-	}
-}
-
-func TestDatastoreTransactor_RunInTransaction(t *testing.T) {
-	ctx, done, err := aetestutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer done()
-
-	h := NewDatastoreHandler(ctx)
-	e := &TestEntity{ID: "plan-2", Name: "taroimo"}
-	if err := h.Put(e); err != nil {
-		t.Fatal(err)
-	}
-
-	tran := NewDatastoreTransactor(ctx)
-	err = tran.RunInTransaction(func(p model.PersistenceHandler) error {
-		e.Name = "taroimo_z"
-		if err := p.Put(e); err != nil {
-			return err
-		}
-
-		if err := p.Get(e); err != nil {
-			return err
-		}
-
-		// expected to not commit yet
-		if e.Name != "taroimo" {
-			t.Errorf("Expected taroimo, got %v", e.Name)
-		}
-		return nil
-	}, nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	h.FlushLocalCache()
-	if err := h.Get(e); err != nil {
-		t.Fatal(err)
-	}
-
-	if e.Name != "taroimo_z" {
-		t.Errorf("Expected taroimo_z, got %v", e.Name)
 	}
 }

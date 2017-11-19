@@ -7,7 +7,6 @@ import (
 
 	"github.com/utahta/momoclo-channel/adapter/handler"
 	"github.com/utahta/momoclo-channel/container"
-	"github.com/utahta/momoclo-channel/lib/reminder"
 	"github.com/utahta/momoclo-channel/lib/ustream"
 )
 
@@ -15,7 +14,7 @@ import (
 func CronReminder(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	if err := reminder.Notify(ctx); err != nil {
+	if err := container.Usecase(ctx).Reminder().Do(); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

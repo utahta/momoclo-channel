@@ -58,3 +58,12 @@ func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 		twitter.NewTweeter(c.ctx),
 	)
 }
+
+// Reminder use case
+func (c *UsecaseContainer) Reminder() *usecase.Reminder {
+	return usecase.NewReminder(
+		log.NewAppengineLogger(c.ctx),
+		c.repo.ReminderRepository(),
+		twitter.NewTweeter(c.ctx),
+	)
+}

@@ -12,10 +12,10 @@ import (
 type (
 	// EnqueueTweets use case
 	EnqueueTweets struct {
-		log           core.Logger
-		taskQueue     event.TaskQueue
-		transactor    model.Transactor
-		tweetItemRepo model.TweetItemRepository
+		log        core.Logger
+		taskQueue  event.TaskQueue
+		transactor model.Transactor
+		repo       model.TweetItemRepository
 	}
 
 	// EnqueueTweetsParams input parameters
@@ -29,12 +29,12 @@ func NewEnqueueTweets(
 	log core.Logger,
 	taskQueue event.TaskQueue,
 	transactor model.Transactor,
-	tweetItemRepo model.TweetItemRepository) *EnqueueTweets {
+	repo model.TweetItemRepository) *EnqueueTweets {
 	return &EnqueueTweets{
-		log:           log,
-		taskQueue:     taskQueue,
-		transactor:    transactor,
-		tweetItemRepo: tweetItemRepo,
+		log:        log,
+		taskQueue:  taskQueue,
+		transactor: transactor,
+		repo:       repo,
 	}
 }
 
@@ -43,18 +43,18 @@ func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 	const errTag = "EnqueueTweets.Do failed"
 
 	tweetItem := convert.FeedItemToTweetItem(params.FeedItem)
-	if t.tweetItemRepo.Exists(tweetItem.ID) {
+	if t.repo.Exists(tweetItem.ID) {
 		return nil // already enqueued
 	}
 
 	err := t.transactor.RunInTransaction(func(h model.PersistenceHandler) error {
-		done := t.transactor.With(h, t.tweetItemRepo)
+		done := t.transactor.With(h, t.repo)
 		defer done()
 
-		if _, err := t.tweetItemRepo.Find(tweetItem.ID); err != domain.ErrNoSuchEntity {
+		if _, err := t.repo.Find(tweetItem.ID); err != domain.ErrNoSuchEntity {
 			return err
 		}
-		return t.tweetItemRepo.Save(tweetItem)
+		return t.repo.Save(tweetItem)
 	}, nil)
 	if err != nil {
 		t.log.Errorf("%v: enqueue tweets feedItem:%v", errTag, params.FeedItem)

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
+	"github.com/utahta/momoclo-channel/adapter/gateway/api/ustream"
 	"github.com/utahta/momoclo-channel/adapter/gateway/crawler"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"github.com/utahta/momoclo-channel/infrastructure/event"
@@ -63,7 +64,17 @@ func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 func (c *UsecaseContainer) Reminder() *usecase.Reminder {
 	return usecase.NewReminder(
 		log.NewAppengineLogger(c.ctx),
+		event.NewTaskQueue(c.ctx),
 		c.repo.ReminderRepository(),
-		twitter.NewTweeter(c.ctx),
+	)
+}
+
+// CheckUstreamStatus use case
+func (c *UsecaseContainer) CheckUstreamStatus() *usecase.CheckUstreamStatus {
+	return usecase.NewCheckUstreamStatus(
+		log.NewAppengineLogger(c.ctx),
+		event.NewTaskQueue(c.ctx),
+		ustream.NewStatusChecker(c.ctx),
+		c.repo.UstreamStatusRepository(),
 	)
 }

@@ -10,10 +10,10 @@ import (
 type (
 	// CrawlFeed use case
 	CrawlFeed struct {
-		log             core.Logger
-		feed            model.FeedFetcher
-		taskQueue       event.TaskQueue
-		latestEntryRepo model.LatestEntryRepository
+		log       core.Logger
+		feed      model.FeedFetcher
+		taskQueue event.TaskQueue
+		repo      model.LatestEntryRepository
 	}
 
 	// CrawlFeedParams input parameters
@@ -27,12 +27,12 @@ func NewCrawlFeed(
 	log core.Logger,
 	feed model.FeedFetcher,
 	taskQueue event.TaskQueue,
-	latestEntryRepo model.LatestEntryRepository) *CrawlFeed {
+	repo model.LatestEntryRepository) *CrawlFeed {
 	return &CrawlFeed{
-		log:             log,
-		feed:            feed,
-		taskQueue:       taskQueue,
-		latestEntryRepo: latestEntryRepo,
+		log:       log,
+		feed:      feed,
+		taskQueue: taskQueue,
+		repo:      repo,
 	}
 }
 
@@ -40,7 +40,7 @@ func NewCrawlFeed(
 func (c *CrawlFeed) Do(params CrawlFeedParams) error {
 	const errTag = "CrawlFeed.Do failed"
 
-	items, err := c.feed.Fetch(params.Code, 1, c.latestEntryRepo.GetURL(params.Code))
+	items, err := c.feed.Fetch(params.Code, 1, c.repo.GetURL(params.Code))
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
@@ -50,7 +50,7 @@ func (c *CrawlFeed) Do(params CrawlFeedParams) error {
 
 	// update latest entry
 	item := items[0] // first item is the latest entry
-	l, err := c.latestEntryRepo.FindOrCreateByURL(item.EntryURL)
+	l, err := c.repo.FindOrCreateByURL(item.EntryURL)
 	if err != nil {
 		return errors.Wrapf(err, "%v: url:%v", errTag, item.EntryURL)
 	}
@@ -58,7 +58,7 @@ func (c *CrawlFeed) Do(params CrawlFeedParams) error {
 		return nil // already get feeds. nothing to do
 	}
 	l.URL = item.EntryURL
-	if err := c.latestEntryRepo.Save(l); err != nil {
+	if err := c.repo.Save(l); err != nil {
 		return errors.Wrapf(err, errTag)
 	}
 

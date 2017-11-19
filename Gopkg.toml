@@ -111,7 +111,7 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/utahta/uststat"
+  name = "github.com/utahta/ustream-live-status"
 
 [[constraint]]
   branch = "master"

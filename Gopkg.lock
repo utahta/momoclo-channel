@@ -117,7 +117,7 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/utahta/uststat"
+  name = "github.com/utahta/ustream-live-status"
   packages = ["."]
   revision = "0b788f8cd554ace1f8e9bbf51453b02796d4889c"
 
@@ -154,6 +154,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "47815069e5db1ec4b7e43455b4c3d4af4b2ae8f7a9ccb79e06840797af78e966"
+  inputs-digest = "e4ecbb0f2eccdc53463ef63e3026c418b5887e6ad13252debbe4316e888e40aa"
   solver-name = "gps-cdcl"
   solver-version = 1

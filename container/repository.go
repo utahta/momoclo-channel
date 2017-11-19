@@ -32,3 +32,8 @@ func (c *RepositoryContainer) TweetItemRepository() model.TweetItemRepository {
 func (c *RepositoryContainer) ReminderRepository() model.ReminderRepository {
 	return persistence.NewReminderRepository(dao.NewDatastoreHandler(c.ctx))
 }
+
+// UstreamStatusRepository returns UstreamStatus repository
+func (c *RepositoryContainer) UstreamStatusRepository() model.UstreamStatusRepository {
+	return persistence.NewUstreamStatusRepository(dao.NewDatastoreHandler(c.ctx))
+}

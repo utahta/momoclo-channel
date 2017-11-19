@@ -3,29 +3,29 @@ package usecase
 import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain/core"
+	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/lib/timeutil"
-	"golang.org/x/sync/errgroup"
 )
 
 type (
 	// Reminder use case
 	Reminder struct {
-		log     core.Logger
-		repo    model.ReminderRepository
-		tweeter model.Tweeter
+		log       core.Logger
+		taskQueue event.TaskQueue
+		repo      model.ReminderRepository
 	}
 )
 
 // NewReminder returns Reminder use case
 func NewReminder(
 	logger core.Logger,
-	repo model.ReminderRepository,
-	tweeter model.Tweeter) *Reminder {
+	taskQueue event.TaskQueue,
+	repo model.ReminderRepository) *Reminder {
 	return &Reminder{
-		log:     logger,
-		repo:    repo,
-		tweeter: tweeter,
+		log:       logger,
+		taskQueue: taskQueue,
+		repo:      repo,
 	}
 }
 
@@ -47,24 +47,6 @@ func (r *Reminder) Do() error {
 			continue
 		}
 
-		var eg errgroup.Group
-		eg.Go(func() error {
-			if _, err := r.tweeter.Tweet(model.TweetRequest{Text: reminder.Text}); err != nil {
-				r.log.Error("%v: tweet", errTag)
-				return err
-			}
-			return nil
-		})
-
-		eg.Go(func() error {
-			//FIXME
-			//if err := linenotify.NotifyMessage(ctx, row.Text); err != nil {
-			//	logger.Error(ctx, err)
-			//	return err
-			//}
-			return nil
-		})
-
 		if reminder.IsOneTime() {
 			reminder.Disable()
 			if err := r.repo.Save(reminder); err != nil {
@@ -73,10 +55,11 @@ func (r *Reminder) Do() error {
 			}
 		}
 
-		if err := eg.Wait(); err != nil {
-			r.log.Errorf("%v: remind text:%#v", reminder)
-			return errors.Wrap(err, errTag)
-		}
+		r.taskQueue.PushMulti([]event.Task{
+			{QueueName: "queue-tweet", Path: "/queue/tweet", Object: []model.TweetRequest{{Text: reminder.Text}}},
+			//FIXME add line event
+		})
+		r.log.Infof("remind: %#v", reminder)
 	}
 	return nil
 }

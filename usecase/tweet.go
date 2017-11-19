@@ -45,14 +45,14 @@ func (t *Tweet) Do(params TweetParams) error {
 	}
 	t.log.Infof("tweet: %v", params.TweetRequests[0])
 
-	feedTweets := params.TweetRequests[1:]
-	if len(feedTweets) == 0 {
-		t.log.Infof("tweet done!")
+	tweetRequests := params.TweetRequests[1:] // go to next tweet
+	if len(tweetRequests) == 0 {
+		t.log.Infof("done!")
 		return nil
 	}
-	feedTweets[0].InReplyToStatusID = res.IDStr
+	tweetRequests[0].InReplyToStatusID = res.IDStr
 
-	task := event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: feedTweets}
+	task := event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: tweetRequests}
 	if err := t.taskQueue.Push(task); err != nil {
 		return errors.Wrap(err, errTag)
 	}

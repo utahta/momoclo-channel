@@ -34,3 +34,22 @@ func EnqueueTweets(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 }
+
+// EnqueueLines enqueue lines event
+func EnqueueLines(w http.ResponseWriter, req *http.Request) {
+	ctx, cancel := context.WithTimeout(req.Context(), 540*time.Second)
+	defer cancel()
+
+	if err := req.ParseForm(); err != nil {
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		return
+	}
+
+	item := model.FeedItem{}
+	if err := event.ParseTask(req.Form, &item); err != nil {
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		return
+	}
+
+	//FIXME implement
+}

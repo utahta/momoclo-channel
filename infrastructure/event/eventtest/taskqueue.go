@@ -1,19 +1,17 @@
 package eventtest
 
 import (
-	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 )
 
 // TaskQueue presents mock
 type TaskQueue struct {
-	log   core.Logger
 	Tasks []event.Task
 }
 
 // NewTaskQueue returns no ops taskQueue instance
-func NewTaskQueue(log core.Logger) *TaskQueue {
-	return &TaskQueue{log, nil}
+func NewTaskQueue() *TaskQueue {
+	return &TaskQueue{}
 }
 
 // Push add task

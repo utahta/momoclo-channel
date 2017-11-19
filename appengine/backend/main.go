@@ -20,6 +20,7 @@ func init() {
 	router.Get("/cron/reminder", backend.CronReminder)
 
 	router.Post("/enqueue/tweets", backend.EnqueueTweets)
+	router.Post("/enqueue/lines", backend.EnqueueLines)
 
 	router.Post("/linebot/callback", backend.LineBotCallback)
 	router.Get("/linebot/help", backend.LineBotHelp)

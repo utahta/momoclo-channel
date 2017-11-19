@@ -73,5 +73,7 @@ func (c *CrawlFeed) Do(params CrawlFeedParams) error {
 	if err := c.taskQueue.PushMulti(tasks); err != nil {
 		return errors.Wrap(err, errTag)
 	}
+	c.log.Infof("crawl feed items:%v", items)
+
 	return nil
 }

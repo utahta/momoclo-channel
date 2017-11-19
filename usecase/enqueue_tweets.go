@@ -71,5 +71,7 @@ func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 	if err := t.taskQueue.Push(task); err != nil {
 		return errors.Wrap(err, errTag)
 	}
+	t.log.Infof("enqueue tweet requests:%#v", tweetRequests)
+
 	return nil
 }

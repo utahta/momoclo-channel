@@ -60,9 +60,9 @@ func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 	)
 }
 
-// Reminder use case
-func (c *UsecaseContainer) Reminder() *usecase.Reminder {
-	return usecase.NewReminder(
+// Remind use case
+func (c *UsecaseContainer) Remind() *usecase.Remind {
+	return usecase.NewRemind(
 		log.NewAppengineLogger(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		c.repo.ReminderRepository(),

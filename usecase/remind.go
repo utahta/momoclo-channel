@@ -9,20 +9,20 @@ import (
 )
 
 type (
-	// Reminder use case
-	Reminder struct {
+	// Remind use case
+	Remind struct {
 		log       core.Logger
 		taskQueue event.TaskQueue
 		repo      model.ReminderRepository
 	}
 )
 
-// NewReminder returns Reminder use case
-func NewReminder(
+// NewRemind returns Remind use case
+func NewRemind(
 	logger core.Logger,
 	taskQueue event.TaskQueue,
-	repo model.ReminderRepository) *Reminder {
-	return &Reminder{
+	repo model.ReminderRepository) *Remind {
+	return &Remind{
 		log:       logger,
 		taskQueue: taskQueue,
 		repo:      repo,
@@ -30,8 +30,8 @@ func NewReminder(
 }
 
 // Do remind
-func (r *Reminder) Do() error {
-	const errTag = "Reminder.Do failed"
+func (r *Remind) Do() error {
+	const errTag = "Remind.Do failed"
 
 	reminders, err := r.repo.FindAll()
 	if err != nil {

@@ -13,7 +13,7 @@ import (
 func CronReminder(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	if err := container.Usecase(ctx).Reminder().Do(); err != nil {
+	if err := container.Usecase(ctx).Remind().Do(); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

@@ -3,6 +3,8 @@ package container
 import (
 	"context"
 
+	"github.com/utahta/momoclo-channel/adapter/gateway/api/customsearch"
+	"github.com/utahta/momoclo-channel/adapter/gateway/api/linebot"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/linenotify"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/ustream"
@@ -86,5 +88,14 @@ func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 		log.NewAppengineLogger(c.ctx),
 		linenotify.NewTokenClient(c.ctx),
 		c.repo.LineNotificationRepository(),
+	)
+}
+
+// HandleLineBotEvents use case
+func (c *UsecaseContainer) HandleLineBotEvents() *usecase.HandleLineBotEvents {
+	return usecase.NewHandleLineBotEvents(
+		log.NewAppengineLogger(c.ctx),
+		linebot.NewClient(c.ctx),
+		customsearch.NewClient(c.ctx),
 	)
 }

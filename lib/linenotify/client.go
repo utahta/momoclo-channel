@@ -8,19 +8,20 @@ import (
 	"sync/atomic"
 
 	"github.com/utahta/go-linenotify"
+	"github.com/utahta/momoclo-channel/container"
+	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/lib/backoff"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/linenotification"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/appengine/urlfetch"
 )
 
 type client struct {
 	*linenotify.Client
-	users   []*domain.LineNotification
+	users   []*model.LineNotification
 	context context.Context
+	repo    model.LineNotificationRepository
 }
 
 func newClient(ctx context.Context) (*client, error) {
@@ -30,7 +31,8 @@ func newClient(ctx context.Context) (*client, error) {
 	}
 	c.HTTPClient = urlfetch.Client(ctx)
 
-	users, err := linenotification.Repository.GetAll(ctx)
+	c.repo = container.Repository(ctx).LineNotificationRepository()
+	users, err := c.repo.FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +60,7 @@ func (c *client) notifyChannelItem(param *ChannelParam) error {
 }
 
 func (c *client) notifyMessage(message, imageURL string) error {
-	if config.C.Linenotify.Disabled {
+	if config.C.LineNotify.Disabled {
 		return nil
 	}
 
@@ -88,9 +90,9 @@ func (c *client) notifyMessage(message, imageURL string) error {
 				<-workQueue
 			}()
 
-			token, err := user.Token()
+			token, err := user.Token(config.C.LineNotify.TokenKey)
 			if err != nil {
-				log.Errorf(ctx, "Failed to get token. hash:%v err:%v", user.Id, err)
+				log.Errorf(ctx, "Failed to get token. hash:%v err:%v", user.ID, err)
 				return err
 			}
 
@@ -103,13 +105,13 @@ func (c *client) notifyMessage(message, imageURL string) error {
 				err := c.Notify(token, message, "", "", image)
 				if err == linenotify.ErrNotifyInvalidAccessToken {
 					err = nil
-					user.Delete(c.context)
+					c.repo.Delete(user)
 					log.Infof(ctx, "Delete LINE Notify token. user:%#v", user)
 				}
 				return err
 			})
 			if err != nil {
-				log.Errorf(ctx, "Failed to LINE Notify. hash:%v err:%v", user.Id, err)
+				log.Errorf(ctx, "Failed to LINE Notify. hash:%v err:%v", user.ID, err)
 				return err
 			}
 			atomic.AddInt32(&count, 1)

@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
@@ -56,6 +57,28 @@ func (h *datastoreHandler) Get(dst interface{}) error {
 // GetMulti wraps goon.GetMulti()
 func (h *datastoreHandler) GetMulti(dst interface{}) error {
 	return h.Goon.GetMulti(dst)
+}
+
+// Delete wraps goon.Delete()
+func (h *datastoreHandler) Delete(src interface{}) error {
+	return h.Goon.Delete(h.Goon.Key(src))
+}
+
+// DeleteMulti wraps goon.DeleteMulti()
+func (h *datastoreHandler) DeleteMulti(src interface{}) error {
+	//TODO want to encapsulate logic that get datastore keys
+	v := reflect.Indirect(reflect.ValueOf(src))
+	if v.Kind() != reflect.Slice {
+		return errors.New("datastore: value must be a slice or pointer-to-slice")
+	}
+	l := v.Len()
+
+	keys := make([]*datastore.Key, l)
+	for i := 0; i < l; i++ {
+		vi := v.Index(i)
+		keys[i] = h.Goon.Key(vi.Interface())
+	}
+	return h.Goon.DeleteMulti(keys)
 }
 
 // Query returns PersistenceQuery that wraps datastore query

@@ -37,3 +37,8 @@ func (c *RepositoryContainer) ReminderRepository() model.ReminderRepository {
 func (c *RepositoryContainer) UstreamStatusRepository() model.UstreamStatusRepository {
 	return persistence.NewUstreamStatusRepository(dao.NewDatastoreHandler(c.ctx))
 }
+
+// LineNotificationRepository returns LineNotification repository
+func (c *RepositoryContainer) LineNotificationRepository() model.LineNotificationRepository {
+	return persistence.NewLineNotificationRepository(dao.NewDatastoreHandler(c.ctx))
+}

@@ -26,9 +26,9 @@ func init() {
 	router.Get("/linebot/help", backend.LineBotHelp)
 	router.Get("/linebot/about", backend.LineBotAbout)
 
-	router.HandleFunc("/linenotify/callback", backend.LinenotifyCallback)
-	router.Get("/linenotify/on", backend.LinenotifyOn)
-	router.Get("/linenotify/off", backend.LinenotifyOff)
+	router.HandleFunc("/linenotify/callback", backend.LineNotifyCallback)
+	router.Get("/linenotify/on", backend.LineNotifyOn)
+	router.Get("/linenotify/off", backend.LineNotifyOff)
 
 	http.Handle("/", router)
 }

@@ -6,18 +6,21 @@ import (
 	"github.com/pelletier/go-toml"
 )
 
+// Config represents all settings
 type Config struct {
 	App                App
 	Twitter            Twitter
-	Linebot            Linebot
+	LineBot            LineBot
 	GoogleCustomSearch GoogleCustomSearch
-	Linenotify         Linenotify
+	LineNotify         LineNotify
 }
 
+// App represents app entire settings
 type App struct {
 	BaseURL string
 }
 
+// Twitter represents twitter settings
 type Twitter struct {
 	ConsumerKey       string
 	ConsumerSecret    string
@@ -26,17 +29,20 @@ type Twitter struct {
 	Disabled          bool
 }
 
-type Linebot struct {
+// LineBot represents LINE Bot settings
+type LineBot struct {
 	ChannelSecret string
 	ChannelToken  string
 }
 
+// GoogleCustomSearch represents google custom search api settings
 type GoogleCustomSearch struct {
 	ApiID  string
 	ApiKey string
 }
 
-type Linenotify struct {
+// LineNotify represents LINE Notify settings
+type LineNotify struct {
 	ClientID     string
 	ClientSecret string
 	TokenKey     string
@@ -48,12 +54,20 @@ var (
 	JST = time.FixedZone("Asia/Tokyo", 9*60*60)
 )
 
+// LineNotifyCallbackURL returns LINE Notify callback URL
+func LineNotifyCallbackURL() string {
+	return C.App.BaseURL + "/linenotify/callback"
+}
+
+// MustLoad loads config file
+// it causes panic if failed
 func MustLoad(path string) {
 	if err := Load(path); err != nil {
 		panic(err)
 	}
 }
 
+// Load loads config file
 func Load(path string) error {
 	t, err := toml.LoadFile(path)
 	if err != nil {

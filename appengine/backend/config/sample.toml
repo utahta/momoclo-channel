@@ -8,7 +8,7 @@
   AccessTokenSecret = ""
   Disabled = true
 
-[Linebot]
+[LineBot]
   ChannelSecret = ""
   ChannelToken = ""
 
@@ -16,7 +16,7 @@
   ApiID = ""
   ApiKey = ""
 
-[Linenotify]
+[LineNotify]
   ClientID = ""
   ClientSecret = ""
   TokenKey = ""

@@ -8,22 +8,24 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
 	"github.com/utahta/momoclo-channel/adapter/handler"
-	"github.com/utahta/momoclo-channel/domain/linenotification"
+	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/momoclo-channel/lib/log"
-	"google.golang.org/appengine/urlfetch"
+	"github.com/utahta/momoclo-channel/usecase"
 )
 
-// LINE Notify と連携する
-func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
+// LineNotifyOn redirect to LINE Notify connection page
+func LineNotifyOn(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	c, err := linenotify.NewAuthorization(config.C.Linenotify.ClientID, config.C.App.BaseURL+"/linenotify/callback")
+	c, err := linenotify.NewAuthorization(config.C.LineNotify.ClientID, config.LineNotifyCallbackURL())
 	if err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 	http.SetCookie(w, &http.Cookie{Name: "state", Value: c.State, Expires: time.Now().Add(300 * time.Second), Secure: true})
+
+	log.Info(ctx, "Redirect to LINE Notify connection page")
 
 	err = c.Redirect(w, req)
 	if err != nil {
@@ -32,17 +34,18 @@ func LinenotifyOn(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// LINE Notify の連携を解除する
-func LinenotifyOff(w http.ResponseWriter, req *http.Request) {
+// LineNotifyOff redirect to LINE Notify revoking page
+func LineNotifyOff(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	log.Info(ctx, "Redirect to LINE Notification revoke page")
+	log.Info(ctx, "Redirect to LINE Notify revoking page")
 
 	// official url
 	http.Redirect(w, req, "https://notify-bot.line.me/my/", http.StatusFound)
 }
 
-func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
+// LineNotifyCallback stores LINE Notify token
+func LineNotifyCallback(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	params, err := linenotify.ParseAuthorization(req)
@@ -62,22 +65,7 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	c := linenotify.NewToken(
-		params.Code,
-		config.C.App.BaseURL+"/linenotify/callback",
-		config.C.Linenotify.ClientID,
-		config.C.Linenotify.ClientSecret,
-	)
-	c.HTTPClient = urlfetch.Client(ctx)
-
-	token, err := c.Get()
-	if err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
-		return
-	}
-
-	ln, err := linenotification.Repository.PutToken(ctx, token)
-	if err != nil {
+	if err := container.Usecase(ctx).AddLineNotification().Do(usecase.AddLineNotificationParams{Code: params.Code}); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -92,6 +80,4 @@ func LinenotifyCallback(w http.ResponseWriter, req *http.Request) {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
-
-	log.Infof(ctx, "LINE Notification accepted! id:%v", ln.Id)
 }

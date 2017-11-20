@@ -16,8 +16,8 @@ type Client struct {
 
 func New(ctx context.Context) (*Client, error) {
 	var (
-		channelSecret = config.C.Linebot.ChannelSecret
-		channelToken  = config.C.Linebot.ChannelToken
+		channelSecret = config.C.LineBot.ChannelSecret
+		channelToken  = config.C.LineBot.ChannelToken
 	)
 	bot, err := linebot.New(channelSecret, channelToken, linebot.WithHTTPClient(urlfetch.Client(ctx)))
 	if err != nil {

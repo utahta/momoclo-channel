@@ -3,6 +3,7 @@ package container
 import (
 	"context"
 
+	"github.com/utahta/momoclo-channel/adapter/gateway/api/linenotify"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/ustream"
 	"github.com/utahta/momoclo-channel/adapter/gateway/crawler"
@@ -76,5 +77,14 @@ func (c *UsecaseContainer) CheckUstreamStatus() *usecase.CheckUstreamStatus {
 		event.NewTaskQueue(c.ctx),
 		ustream.NewStatusChecker(c.ctx),
 		c.repo.UstreamStatusRepository(),
+	)
+}
+
+// AddLineNotification use case
+func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
+	return usecase.NewAddLineNotification(
+		log.NewAppengineLogger(c.ctx),
+		linenotify.NewTokenClient(c.ctx),
+		c.repo.LineNotificationRepository(),
 	)
 }

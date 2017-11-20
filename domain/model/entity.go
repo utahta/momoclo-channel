@@ -30,6 +30,8 @@ type (
 		PutMulti(interface{}) error
 		Get(interface{}) error
 		GetMulti(interface{}) error
+		Delete(interface{}) error
+		DeleteMulti(interface{}) error
 		NewQuery(string) PersistenceQuery
 		GetAll(PersistenceQuery, interface{}) error
 		FlushLocalCache()
@@ -48,8 +50,8 @@ type (
 
 	// Transactor provides transaction across entities
 	Transactor interface {
-		RunInTransaction(fn func(h PersistenceHandler) error, opts *TransactionOptions) error
-		With(h PersistenceHandler, repos ...interface{}) (done func())
+		RunInTransaction(func(PersistenceHandler) error, *TransactionOptions) error
+		With(PersistenceHandler, ...interface{}) func()
 	}
 )
 

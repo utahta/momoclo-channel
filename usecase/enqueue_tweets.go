@@ -6,7 +6,7 @@ import (
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/convert"
+	"github.com/utahta/momoclo-channel/domain/service/feeditem"
 )
 
 type (
@@ -42,7 +42,7 @@ func NewEnqueueTweets(
 func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 	const errTag = "EnqueueTweets.Do failed"
 
-	tweetItem := convert.FeedItemToTweetItem(params.FeedItem)
+	tweetItem := feeditem.ToTweetItem(params.FeedItem)
 	if t.repo.Exists(tweetItem.ID) {
 		return nil // already enqueued
 	}
@@ -61,7 +61,7 @@ func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	tweetRequests := convert.FeedItemToTweetRequests(params.FeedItem)
+	tweetRequests := feeditem.ToTweetRequests(params.FeedItem)
 	if len(tweetRequests) == 0 {
 		t.log.Errorf("%v: invalid enqueue tweets feedItem:%v", errTag, params.FeedItem)
 		return errors.New("invalid enqueue tweets")

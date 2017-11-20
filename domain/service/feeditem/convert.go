@@ -1,13 +1,27 @@
-package convert
+package feeditem
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/utahta/momoclo-channel/domain/model"
 )
 
-// FeedItemToTweetRequests converts FeedItem to []TweetRequest
-func FeedItemToTweetRequests(item model.FeedItem) []model.TweetRequest {
+// ToTweetItem returns TweetItem given FeedItem
+func ToTweetItem(item model.FeedItem) *model.TweetItem {
+	ti := &model.TweetItem{
+		Title:       item.EntryTitle,
+		URL:         item.EntryURL,
+		PublishedAt: item.PublishedAt,
+		ImageURLs:   strings.Join(item.ImageURLs, ","),
+		VideoURLs:   strings.Join(item.VideoURLs, ","),
+	}
+	ti.BuildID()
+	return ti
+}
+
+// ToTweetRequests converts FeedItem to []TweetRequest
+func ToTweetRequests(item model.FeedItem) []model.TweetRequest {
 	var requests []model.TweetRequest
 
 	const maxUploadMediaLen = 4
@@ -23,7 +37,7 @@ func FeedItemToTweetRequests(item model.FeedItem) []model.TweetRequest {
 	if len(tmp) > 0 {
 		imagesURLs = append(imagesURLs, tmp)
 	}
-	text := feedItemToTweetText(item.Title, item.EntryTitle, item.EntryURL)
+	text := toTweetText(item)
 	videoURLs := item.VideoURLs
 
 	if len(imagesURLs) > 0 {
@@ -50,12 +64,12 @@ func FeedItemToTweetRequests(item model.FeedItem) []model.TweetRequest {
 	return requests
 }
 
-func feedItemToTweetText(title, entryTitle, entryURL string) string {
+func toTweetText(item model.FeedItem) string {
 	const maxCharCount = 77 // max character count without hashtag and any urls TODO: correct?
 
-	runes := []rune(fmt.Sprintf("%s %s", title, entryTitle))
+	runes := []rune(fmt.Sprintf("%s %s", item.Title, item.EntryTitle))
 	if len(runes) >= maxCharCount {
 		runes = append(runes[0:maxCharCount-3], []rune("...")...)
 	}
-	return fmt.Sprintf("%s %s #momoclo #ももクロ", string(runes), entryURL)
+	return fmt.Sprintf("%s %s #momoclo #ももクロ", string(runes), item.EntryURL)
 }

@@ -1,8 +1,8 @@
 package model
 
 type (
-	// LineNotifyTokenGetter interface
-	LineNotifyTokenGetter interface {
-		Get(string) (string, error)
+	// LineNotifyToken interface
+	LineNotifyToken interface {
+		GetAccessToken(string) (string, error)
 	}
 )

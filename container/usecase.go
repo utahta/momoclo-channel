@@ -86,7 +86,7 @@ func (c *UsecaseContainer) CheckUstreamStatus() *usecase.CheckUstreamStatus {
 func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 	return usecase.NewAddLineNotification(
 		log.NewAppengineLogger(c.ctx),
-		linenotify.NewTokenGetter(c.ctx),
+		linenotify.NewToken(c.ctx),
 		c.repo.LineNotificationRepository(),
 	)
 }

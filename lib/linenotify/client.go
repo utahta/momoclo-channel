@@ -102,7 +102,7 @@ func (c *client) notifyMessage(message, imageURL string) error {
 			}
 
 			err = backoff.Retry(3, func() error {
-				err := c.Notify(token, message, "", "", image)
+				_, err := c.Notify(token, message, "", "", image)
 				if err == linenotify.ErrNotifyInvalidAccessToken {
 					err = nil
 					c.repo.Delete(user)

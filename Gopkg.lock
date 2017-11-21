@@ -39,6 +39,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/google/uuid"
+  packages = ["."]
+  revision = "8c31c18f31ede9fc8eae72290a7e7a8064e9b3e3"
+
+[[projects]]
+  branch = "master"
   name = "github.com/jteeuwen/go-pkg-rss"
   packages = ["."]
   revision = "72391e6fd7384785fa3c46a405214a616d6c4a1d"
@@ -86,16 +92,16 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
+  revision = "f15c970de5b76fac0b59abb32d62c17cc7bed265"
 
 [[projects]]
   name = "github.com/utahta/go-linenotify"
   packages = ["."]
-  revision = "b8ba6c0ca3a8e80dfad8f6740a865bcc9b7678cc"
-  version = "v0.1.0"
+  revision = "043c5ca823cd30308d915a4eaa82efbc33f123c1"
+  version = "v0.4.0"
 
 [[projects]]
   branch = "master"
@@ -154,6 +160,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e4ecbb0f2eccdc53463ef63e3026c418b5887e6ad13252debbe4316e888e40aa"
+  inputs-digest = "0e1de182798f2ed7c398bbe38c8eb9941fe3f8d1f021720f0c8ccf143062da97"
   solver-name = "gps-cdcl"
   solver-version = 1

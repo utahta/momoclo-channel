@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/go-linenotify"
+	"github.com/utahta/go-linenotify/auth"
 	"github.com/utahta/momoclo-channel/adapter/handler"
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/lib/config"
@@ -18,7 +18,7 @@ import (
 func LineNotifyOn(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	c, err := linenotify.NewAuthorization(config.C.LineNotify.ClientID, config.LineNotifyCallbackURL())
+	c, err := auth.New(config.C.LineNotify.ClientID, config.LineNotifyCallbackURL())
 	if err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
@@ -48,7 +48,7 @@ func LineNotifyOff(w http.ResponseWriter, req *http.Request) {
 func LineNotifyCallback(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	params, err := linenotify.ParseAuthorization(req)
+	params, err := auth.ParseRequest(req)
 	if err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return

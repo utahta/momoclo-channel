@@ -3,34 +3,31 @@ package linenotify
 import (
 	"context"
 
-	"github.com/utahta/go-linenotify"
+	"github.com/utahta/go-linenotify/token"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"google.golang.org/appengine/urlfetch"
 )
 
 type (
-	tokenGetter struct {
-		*linenotify.TokenClient
+	client struct {
+		token.Client
 	}
 )
 
-// NewTokenGetter returns LineNotifyTokenClient
-func NewTokenGetter(ctx context.Context) model.LineNotifyTokenGetter {
-	c := &tokenGetter{
-		linenotify.NewToken(
-			"",
+// NewToken returns LineNotifyToken
+func NewToken(ctx context.Context) model.LineNotifyToken {
+	return &client{
+		token.New(
 			config.LineNotifyCallbackURL(),
 			config.C.LineNotify.ClientID,
 			config.C.LineNotify.ClientSecret,
+			token.WithHTTPClient(urlfetch.Client(ctx)),
 		),
 	}
-	c.HTTPClient = urlfetch.Client(ctx)
-	return c
 }
 
-// GetToken returns LINE Notify token
-func (c *tokenGetter) Get(code string) (string, error) {
-	c.TokenClient.Code = code
-	return c.TokenClient.Get()
+// GetAccessToken returns access token that published by LINE Notify
+func (c *client) GetAccessToken(code string) (string, error) {
+	return c.Client.GetAccessToken(code)
 }

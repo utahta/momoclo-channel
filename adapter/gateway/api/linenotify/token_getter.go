@@ -10,14 +10,14 @@ import (
 )
 
 type (
-	tokenClient struct {
+	tokenGetter struct {
 		*linenotify.TokenClient
 	}
 )
 
-// NewTokenClient returns LineNotifyTokenClient
-func NewTokenClient(ctx context.Context) model.LineNotifyTokenClient {
-	c := &tokenClient{
+// NewTokenGetter returns LineNotifyTokenClient
+func NewTokenGetter(ctx context.Context) model.LineNotifyTokenGetter {
+	c := &tokenGetter{
 		linenotify.NewToken(
 			"",
 			config.LineNotifyCallbackURL(),
@@ -30,7 +30,7 @@ func NewTokenClient(ctx context.Context) model.LineNotifyTokenClient {
 }
 
 // GetToken returns LINE Notify token
-func (c *tokenClient) GetToken(code string) (string, error) {
+func (c *tokenGetter) Get(code string) (string, error) {
 	c.TokenClient.Code = code
 	return c.TokenClient.Get()
 }

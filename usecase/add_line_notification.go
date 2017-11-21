@@ -11,7 +11,7 @@ type (
 	// AddLineNotification use case
 	AddLineNotification struct {
 		log         core.Logger
-		tokenClient model.LineNotifyTokenClient
+		tokenGetter model.LineNotifyTokenGetter
 		repo        model.LineNotificationRepository
 	}
 
@@ -24,11 +24,11 @@ type (
 // NewAddLineNotification returns AddLineNotification use case
 func NewAddLineNotification(
 	logger core.Logger,
-	tokenClient model.LineNotifyTokenClient,
+	tokenGetter model.LineNotifyTokenGetter,
 	repo model.LineNotificationRepository) *AddLineNotification {
 	return &AddLineNotification{
 		log:         logger,
-		tokenClient: tokenClient,
+		tokenGetter: tokenGetter,
 		repo:        repo,
 	}
 }
@@ -37,7 +37,7 @@ func NewAddLineNotification(
 func (use *AddLineNotification) Do(params AddLineNotificationParams) error {
 	const errTag = "AddLineNotification.Do failed"
 
-	token, err := use.tokenClient.GetToken(params.Code)
+	token, err := use.tokenGetter.Get(params.Code)
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}

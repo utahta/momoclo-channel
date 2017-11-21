@@ -86,7 +86,7 @@ func (c *UsecaseContainer) CheckUstreamStatus() *usecase.CheckUstreamStatus {
 func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 	return usecase.NewAddLineNotification(
 		log.NewAppengineLogger(c.ctx),
-		linenotify.NewTokenClient(c.ctx),
+		linenotify.NewTokenGetter(c.ctx),
 		c.repo.LineNotificationRepository(),
 	)
 }
@@ -95,7 +95,7 @@ func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 func (c *UsecaseContainer) HandleLineBotEvents() *usecase.HandleLineBotEvents {
 	return usecase.NewHandleLineBotEvents(
 		log.NewAppengineLogger(c.ctx),
-		linebot.NewClient(c.ctx),
-		customsearch.NewClient(c.ctx),
+		linebot.New(c.ctx),
+		customsearch.NewImageSearcher(c.ctx),
 	)
 }

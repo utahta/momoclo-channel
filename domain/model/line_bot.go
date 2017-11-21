@@ -21,19 +21,17 @@ type (
 		TextMessage LineBotTextMessage
 	}
 
-	// LineBotClient represents line bot dispatch
-	LineBotClient interface {
+	// LineBot represents line bot conversations
+	LineBot interface {
 		ReplyText(string, string) error
 		ReplyImage(string, string, string) error
 	}
 )
 
 const (
-	LineBotEventTypeNone     LineBotEventType = ""
 	LineBotEventTypeMessage  LineBotEventType = "message"
 	LineBotEventTypeFollow   LineBotEventType = "follow"
 	LineBotEventTypeUnfollow LineBotEventType = "unfollow"
 
-	LineBotMessageTypeNone LineBotMessageType = ""
 	LineBotMessageTypeText LineBotMessageType = "text"
 )

@@ -9,9 +9,9 @@ import (
 type (
 	// HandleLineBotEvents use case
 	HandleLineBotEvents struct {
-		log          core.Logger
-		lineBot      model.LineBotClient
-		customSearch model.CustomSearchClient
+		log           core.Logger
+		lineBot       model.LineBot
+		imageSearcher model.ImageSearcher
 	}
 
 	// HandleLineBotEventsParams use case params
@@ -23,12 +23,12 @@ type (
 // NewHandleLineBotEvents returns HandleLineBotEvents use case
 func NewHandleLineBotEvents(
 	logger core.Logger,
-	lineBot model.LineBotClient,
-	customSearch model.CustomSearchClient) *HandleLineBotEvents {
+	lineBot model.LineBot,
+	imageSearcher model.ImageSearcher) *HandleLineBotEvents {
 	return &HandleLineBotEvents{
-		log:          logger,
-		lineBot:      lineBot,
-		customSearch: customSearch,
+		log:           logger,
+		lineBot:       lineBot,
+		imageSearcher: imageSearcher,
 	}
 }
 
@@ -57,9 +57,9 @@ func (use *HandleLineBotEvents) Do(params HandleLineBotEventsParams) error {
 					continue
 				}
 
-				img, err := use.customSearch.SearchImage(memberName)
+				img, err := use.imageSearcher.Search(memberName)
 				if err != nil {
-					use.log.Warningf("%v: image not found word:%v", err, memberName)
+					use.log.Warningf("%v: image not found word:%v err:%v", errTag, memberName, err)
 					use.lineBot.ReplyText(event.ReplyToken, linebot.ImageNotFoundMessage())
 					continue
 				}

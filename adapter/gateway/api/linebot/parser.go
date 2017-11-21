@@ -21,8 +21,6 @@ func ParseRequest(r *http.Request) ([]model.LineBotEvent, error) {
 	results := make([]model.LineBotEvent, len(events))
 	for i, event := range events {
 		results[i].ReplyToken = event.ReplyToken
-		results[i].Type = model.LineBotEventTypeNone
-		results[i].MessageType = model.LineBotMessageTypeNone
 
 		switch event.Type {
 		case linebot.EventTypeMessage:

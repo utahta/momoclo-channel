@@ -10,34 +10,34 @@ import (
 )
 
 type (
-	client struct {
+	bot struct {
 		*linebot.Client
 	}
 )
 
-// NewClient returns LineBotClient
-func NewClient(ctx context.Context) model.LineBotClient {
+// New returns LineBot
+func New(ctx context.Context) model.LineBot {
 	c, _ := linebot.New(
 		config.C.LineBot.ChannelSecret,
 		config.C.LineBot.ChannelToken,
 		linebot.WithHTTPClient(urlfetch.Client(ctx)),
 	)
-	return &client{c}
+	return &bot{c}
 }
 
 // ReplyText reply text message to bot
-func (c *client) ReplyText(replyToken, text string) error {
+func (c *bot) ReplyText(replyToken, text string) error {
 	textMessage := linebot.NewTextMessage(text)
-	if _, err := c.Client.ReplyMessage(replyToken, textMessage).Do(); err != nil {
+	if _, err := c.ReplyMessage(replyToken, textMessage).Do(); err != nil {
 		return err
 	}
 	return nil
 }
 
 // ReplyImage reply image message to bot
-func (c *client) ReplyImage(replyToken, originalContentURL, previewImageURL string) error {
+func (c *bot) ReplyImage(replyToken, originalContentURL, previewImageURL string) error {
 	imageMessage := linebot.NewImageMessage(originalContentURL, previewImageURL)
-	if _, err := c.Client.ReplyMessage(replyToken, imageMessage).Do(); err != nil {
+	if _, err := c.ReplyMessage(replyToken, imageMessage).Do(); err != nil {
 		return err
 	}
 	return nil

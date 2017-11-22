@@ -100,8 +100,8 @@
 [[projects]]
   name = "github.com/utahta/go-linenotify"
   packages = [".","auth","token"]
-  revision = "043c5ca823cd30308d915a4eaa82efbc33f123c1"
-  version = "v0.4.0"
+  revision = "c8eaacdadd89c54509c3ff164f8d9f1daa9d0fdf"
+  version = "v0.4.1"
 
 [[projects]]
   branch = "master"

@@ -3,7 +3,6 @@ package persistence
 import (
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/latestentry"
 )
 
 // LatestEntryRepository operates LatestEntry entity
@@ -24,7 +23,7 @@ func (repo *LatestEntryRepository) Save(l *model.LatestEntry) error {
 // FindOrCreateByURL finds LatestEntry given url
 // if not found, returns new LatestEntry
 func (repo *LatestEntryRepository) FindOrCreateByURL(urlStr string) (*model.LatestEntry, error) {
-	l, err := latestentry.Parse(urlStr)
+	l, err := model.NewLatestEntry(urlStr)
 	if err != nil {
 		return nil, err
 	}

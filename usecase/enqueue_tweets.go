@@ -42,7 +42,7 @@ func NewEnqueueTweets(
 func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 	const errTag = "EnqueueTweets.Do failed"
 
-	item := feeditem.ToTweetItem(params.FeedItem)
+	item := model.NewTweetItem(params.FeedItem)
 	if t.repo.Exists(item.ID) {
 		return nil // already enqueued
 	}

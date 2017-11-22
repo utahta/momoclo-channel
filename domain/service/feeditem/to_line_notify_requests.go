@@ -2,23 +2,9 @@ package feeditem
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/utahta/momoclo-channel/domain/model"
 )
-
-// ToLineItem returns LineItem given FeedItem
-func ToLineItem(item model.FeedItem) *model.LineItem {
-	ti := &model.LineItem{
-		Title:       item.EntryTitle,
-		URL:         item.EntryURL,
-		PublishedAt: item.PublishedAt,
-		ImageURLs:   strings.Join(item.ImageURLs, ","),
-		VideoURLs:   strings.Join(item.VideoURLs, ","),
-	}
-	ti.BuildID()
-	return ti
-}
 
 // ToLineNotifyRequests converts FeedItem to []LineNotifyRequest
 func ToLineNotifyRequests(item model.FeedItem) []model.LineNotifyRequest {

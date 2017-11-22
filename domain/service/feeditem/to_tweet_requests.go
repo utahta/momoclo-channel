@@ -2,23 +2,9 @@ package feeditem
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/utahta/momoclo-channel/domain/model"
 )
-
-// ToTweetItem returns TweetItem given FeedItem
-func ToTweetItem(item model.FeedItem) *model.TweetItem {
-	ti := &model.TweetItem{
-		Title:       item.EntryTitle,
-		URL:         item.EntryURL,
-		PublishedAt: item.PublishedAt,
-		ImageURLs:   strings.Join(item.ImageURLs, ","),
-		VideoURLs:   strings.Join(item.VideoURLs, ","),
-	}
-	ti.BuildID()
-	return ti
-}
 
 // ToTweetRequests converts FeedItem to []TweetRequest
 func ToTweetRequests(item model.FeedItem) []model.TweetRequest {

@@ -6,7 +6,6 @@ import (
 
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/feeditem"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"github.com/utahta/momoclo-channel/infrastructure/event/eventtest"
 	"github.com/utahta/momoclo-channel/infrastructure/log"
@@ -35,8 +34,8 @@ func TestEnqueueTweets_Do(t *testing.T) {
 		VideoURLs:   []string{"http://localhost/mp4_1"},
 		PublishedAt: publishedAt,
 	}
-	tweetItem := feeditem.ToTweetItem(feedItem)
-	if repo.Exists(tweetItem.ID) {
+	item := model.NewTweetItem(feedItem)
+	if repo.Exists(item.ID) {
 		t.Errorf("Expected tweet item not found, but exists. feedItem:%v", feedItem)
 	}
 
@@ -44,7 +43,7 @@ func TestEnqueueTweets_Do(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if !repo.Exists(tweetItem.ID) {
+	if !repo.Exists(item.ID) {
 		t.Errorf("Expected tweet item exists, but not found. feedItem:%v", feedItem)
 	}
 

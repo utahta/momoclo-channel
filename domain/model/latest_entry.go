@@ -1,7 +1,11 @@
 package model
 
 import (
+	"fmt"
+	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -32,6 +36,36 @@ type (
 		GetURL(string) string
 	}
 )
+
+// NewLatestEntry builds *LatestEntry given url
+func NewLatestEntry(urlStr string) (*LatestEntry, error) {
+	var code string
+	blogCodes := []string{
+		LatestEntryCodeTamai,
+		LatestEntryCodeMomota,
+		LatestEntryCodeAriyasu,
+		LatestEntryCodeSasaki,
+		LatestEntryCodeTakagi,
+	}
+	for _, c := range blogCodes {
+		if strings.HasPrefix(urlStr, fmt.Sprintf("https://ameblo.jp/%s", c)) {
+			code = c
+			break
+		}
+	}
+	if strings.HasPrefix(urlStr, "http://www.tfm.co.jp/clover/") {
+		code = LatestEntryCodeHappyclo
+	} else if strings.HasPrefix(urlStr, "http://www.momoclo.net") {
+		code = LatestEntryCodeAeNews
+	} else if strings.HasPrefix(urlStr, "https://www.youtube.com") {
+		code = LatestEntryCodeYoutube
+	}
+
+	if code == "" {
+		return nil, errors.New("latestentry.Parse failed: code not supported")
+	}
+	return &LatestEntry{ID: code, Code: code, URL: urlStr}, nil
+}
 
 // SetCreatedAt sets given time to CreatedAt
 func (l *LatestEntry) SetCreatedAt(t time.Time) {

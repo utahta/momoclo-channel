@@ -28,6 +28,11 @@ func (c *RepositoryContainer) TweetItemRepository() model.TweetItemRepository {
 	return persistence.NewTweetItemRepository(dao.NewDatastoreHandler(c.ctx))
 }
 
+// LineItemRepository returns LineItem repository
+func (c *RepositoryContainer) LineItemRepository() model.LineItemRepository {
+	return persistence.NewLineItemRepository(dao.NewDatastoreHandler(c.ctx))
+}
+
 // ReminderRepository returns Reminder repository
 func (c *RepositoryContainer) ReminderRepository() model.ReminderRepository {
 	return persistence.NewReminderRepository(dao.NewDatastoreHandler(c.ctx))

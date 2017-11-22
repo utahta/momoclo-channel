@@ -10,27 +10,27 @@ import (
 )
 
 type (
-	// EnqueueTweets use case
-	EnqueueTweets struct {
+	// EnqueueLines use case
+	EnqueueLines struct {
 		log        core.Logger
 		taskQueue  event.TaskQueue
 		transactor model.Transactor
-		repo       model.TweetItemRepository
+		repo       model.LineItemRepository
 	}
 
-	// EnqueueTweetsParams input parameters
-	EnqueueTweetsParams struct {
+	// EnqueueLinesParams input parameters
+	EnqueueLinesParams struct {
 		FeedItem model.FeedItem
 	}
 )
 
-// NewEnqueueTweets returns EnqueueTweets use case
-func NewEnqueueTweets(
+// NewEnqueueLines returns EnqueueLines use case
+func NewEnqueueLines(
 	log core.Logger,
 	taskQueue event.TaskQueue,
 	transactor model.Transactor,
-	repo model.TweetItemRepository) *EnqueueTweets {
-	return &EnqueueTweets{
+	repo model.LineItemRepository) *EnqueueLines {
+	return &EnqueueLines{
 		log:        log,
 		taskQueue:  taskQueue,
 		transactor: transactor,
@@ -38,11 +38,11 @@ func NewEnqueueTweets(
 	}
 }
 
-// Do converts feeds to tweet requests and enqueue it
-func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
-	const errTag = "EnqueueTweets.Do failed"
+// Do converts feeds to line notify requests and enqueue it
+func (t *EnqueueLines) Do(params EnqueueLinesParams) error {
+	const errTag = "EnqueueLines.Do failed"
 
-	item := feeditem.ToTweetItem(params.FeedItem)
+	item := feeditem.ToLineItem(params.FeedItem)
 	if t.repo.Exists(item.ID) {
 		return nil // already enqueued
 	}
@@ -57,21 +57,21 @@ func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 		return t.repo.Save(item)
 	}, nil)
 	if err != nil {
-		t.log.Errorf("%v: enqueue tweets feedItem:%v", errTag, params.FeedItem)
+		t.log.Errorf("%v: enqueue lines feedItem:%v", errTag, params.FeedItem)
 		return errors.Wrap(err, errTag)
 	}
 
-	requests := feeditem.ToTweetRequests(params.FeedItem)
+	requests := feeditem.ToLineNotifyRequests(params.FeedItem)
 	if len(requests) == 0 {
-		t.log.Errorf("%v: invalid enqueue tweets feedItem:%v", errTag, params.FeedItem)
-		return errors.New("invalid enqueue tweets")
+		t.log.Errorf("%v: invalid enqueue lines feedItem:%v", errTag, params.FeedItem)
+		return errors.New("invalid enqueue lines")
 	}
 
-	task := event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: requests}
+	task := event.Task{QueueName: "queue-line", Path: "/queue/line", Object: requests}
 	if err := t.taskQueue.Push(task); err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	t.log.Infof("enqueue tweet requests:%#v", requests)
+	t.log.Infof("enqueue line requests:%#v", requests)
 
 	return nil
 }

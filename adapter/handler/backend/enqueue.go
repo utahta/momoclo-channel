@@ -51,5 +51,9 @@ func EnqueueLines(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	//FIXME implement
+	params := usecase.EnqueueLinesParams{FeedItem: item}
+	if err := container.Usecase(ctx).EnqueueLines().Do(params); err != nil {
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		return
+	}
 }

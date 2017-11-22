@@ -54,6 +54,16 @@ func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
 	)
 }
 
+// EnqueueLines use case
+func (c *UsecaseContainer) EnqueueLines() *usecase.EnqueueLines {
+	return usecase.NewEnqueueLines(
+		log.NewAppengineLogger(c.ctx),
+		event.NewTaskQueue(c.ctx),
+		dao.NewDatastoreTransactor(c.ctx),
+		c.repo.LineItemRepository(),
+	)
+}
+
 // Tweet use case
 func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 	return usecase.NewTweet(

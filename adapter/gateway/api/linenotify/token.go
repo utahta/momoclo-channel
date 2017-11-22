@@ -11,7 +11,7 @@ import (
 
 type (
 	client struct {
-		token.Client
+		*token.Client
 	}
 )
 

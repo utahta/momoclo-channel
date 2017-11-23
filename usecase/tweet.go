@@ -9,7 +9,7 @@ import (
 )
 
 type (
-	// Tweet tweet any message to twitter
+	// Tweet use case
 	Tweet struct {
 		log       core.Logger
 		taskQueue event.TaskQueue
@@ -32,29 +32,28 @@ func NewTweet(log core.Logger, taskQueue event.TaskQueue, tweeter model.Tweeter)
 }
 
 // Do tweet
-func (t *Tweet) Do(params TweetParams) error {
+func (use *Tweet) Do(params TweetParams) error {
 	const errTag = "Tweet.Do failed"
 
 	if len(params.TweetRequests) == 0 {
-		t.log.Errorf("%v: invalid tweet requests", errTag)
-		return errors.New("invalid tweet requests")
+		return errors.Errorf("%v: invalid tweet requests", errTag)
 	}
 
-	res, err := t.tweeter.Tweet(params.TweetRequests[0])
+	res, err := use.tweeter.Tweet(params.TweetRequests[0])
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	t.log.Infof("tweet: %v", params.TweetRequests[0])
+	use.log.Infof("tweet: %v", params.TweetRequests[0])
 
 	requests := params.TweetRequests[1:] // go to next tweet
 	if len(requests) == 0 {
-		t.log.Infof("done!")
+		use.log.Infof("done!")
 		return nil
 	}
 	requests[0].InReplyToStatusID = res.IDStr
 
 	task := eventtask.NewTweets(requests)
-	if err := t.taskQueue.Push(task); err != nil {
+	if err := use.taskQueue.Push(task); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 	return nil

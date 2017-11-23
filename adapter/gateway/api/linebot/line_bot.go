@@ -10,7 +10,7 @@ import (
 )
 
 type (
-	bot struct {
+	client struct {
 		*linebot.Client
 	}
 )
@@ -22,11 +22,11 @@ func New(ctx context.Context) model.LineBot {
 		config.C.LineBot.ChannelToken,
 		linebot.WithHTTPClient(urlfetch.Client(ctx)),
 	)
-	return &bot{c}
+	return &client{c}
 }
 
 // ReplyText reply text message to bot
-func (c *bot) ReplyText(replyToken, text string) error {
+func (c *client) ReplyText(replyToken, text string) error {
 	textMessage := linebot.NewTextMessage(text)
 	if _, err := c.ReplyMessage(replyToken, textMessage).Do(); err != nil {
 		return err
@@ -35,7 +35,7 @@ func (c *bot) ReplyText(replyToken, text string) error {
 }
 
 // ReplyImage reply image message to bot
-func (c *bot) ReplyImage(replyToken, originalContentURL, previewImageURL string) error {
+func (c *client) ReplyImage(replyToken, originalContentURL, previewImageURL string) error {
 	imageMessage := linebot.NewImageMessage(originalContentURL, previewImageURL)
 	if _, err := c.ReplyMessage(replyToken, imageMessage).Do(); err != nil {
 		return err

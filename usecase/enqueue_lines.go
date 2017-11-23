@@ -62,17 +62,17 @@ func (t *EnqueueLines) Do(params EnqueueLinesParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	requests := feeditem.ToLineNotifyRequests(params.FeedItem)
-	if len(requests) == 0 {
+	messages := feeditem.ToLineNotifyMessages(params.FeedItem)
+	if len(messages) == 0 {
 		t.log.Errorf("%v: invalid enqueue lines feedItem:%v", errTag, params.FeedItem)
-		return errors.New("invalid enqueue lines")
+		return errors.New("invalid enqueue line messages")
 	}
 
-	task := eventtask.NewLines(requests)
+	task := eventtask.NewLinesBroadcast(messages)
 	if err := t.taskQueue.Push(task); err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	t.log.Infof("enqueue line requests:%#v", requests)
+	t.log.Infof("enqueue line messages:%#v", messages)
 
 	return nil
 }

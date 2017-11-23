@@ -64,7 +64,7 @@ func (u *CheckUstream) Do() error {
 			eventtask.NewTweet(
 				model.TweetRequest{Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))},
 			),
-			eventtask.NewLine(model.LineNotifyRequest{Text: "momocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"}),
+			eventtask.NewLineBroadcast(model.LineNotifyMessage{Text: "momocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"}),
 		})
 	}
 	return nil

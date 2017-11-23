@@ -25,12 +25,17 @@ func NewTweets(v []model.TweetRequest) event.Task {
 	return event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: v}
 }
 
-// NewLine returns line task
-func NewLine(v model.LineNotifyRequest) event.Task {
-	return NewLines([]model.LineNotifyRequest{v})
+// NewLineBroadcast returns broadcast line notification task
+func NewLineBroadcast(v model.LineNotifyMessage) event.Task {
+	return NewLinesBroadcast([]model.LineNotifyMessage{v})
 }
 
-// NewLines returns line task
-func NewLines(v []model.LineNotifyRequest) event.Task {
+// NewLinesBroadcast returns broadcast line notification task
+func NewLinesBroadcast(v []model.LineNotifyMessage) event.Task {
+	return event.Task{QueueName: "queue-line", Path: "/queue/line/broadcast", Object: v}
+}
+
+// NewLine returns line task
+func NewLine(v model.LineNotifyRequest) event.Task {
 	return event.Task{QueueName: "queue-line", Path: "/queue/line", Object: v}
 }

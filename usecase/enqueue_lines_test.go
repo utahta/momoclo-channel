@@ -8,7 +8,6 @@ import (
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"github.com/utahta/momoclo-channel/infrastructure/event/eventtest"
-	"github.com/utahta/momoclo-channel/infrastructure/log"
 	"github.com/utahta/momoclo-channel/lib/aetestutil"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
@@ -23,7 +22,7 @@ func TestEnqueueLines_Do(t *testing.T) {
 
 	taskQueue := eventtest.NewTaskQueue()
 	repo := container.Repository(ctx).LineItemRepository()
-	u := usecase.NewEnqueueLines(log.NewAppengineLogger(ctx), taskQueue, dao.NewDatastoreTransactor(ctx), repo)
+	u := usecase.NewEnqueueLines(container.Logger(ctx).AE(), taskQueue, dao.NewDatastoreTransactor(ctx), repo)
 	publishedAt, _ := time.Parse("2006-01-02 15:04:05", "2008-05-17 00:00:00")
 	feedItem := model.FeedItem{
 		Title:       "title",
@@ -53,7 +52,7 @@ func TestEnqueueLines_Do(t *testing.T) {
 	if taskQueue.Tasks[0].QueueName != "queue-line" {
 		t.Errorf("Expected queue name queue-line, got %v", taskQueue.Tasks[0].QueueName)
 	}
-	if taskQueue.Tasks[0].Path != "/queue/line" {
-		t.Errorf("Expected queue path /queue/line, got %v", taskQueue.Tasks[0].Path)
+	if taskQueue.Tasks[0].Path != "/queue/line/broadcast" {
+		t.Errorf("Expected queue path /queue/line/broadcast, got %v", taskQueue.Tasks[0].Path)
 	}
 }

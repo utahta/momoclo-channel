@@ -22,14 +22,36 @@ func Tweet(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var tweetRequests []model.TweetRequest
-	if err := event.ParseTask(req.Form, &tweetRequests); err != nil {
+	var requests []model.TweetRequest
+	if err := event.ParseTask(req.Form, &requests); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
-	params := usecase.TweetParams{TweetRequests: tweetRequests}
+	params := usecase.TweetParams{TweetRequests: requests}
 	if err := container.Usecase(ctx).Tweet().Do(params); err != nil {
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		return
+	}
+}
+
+// LineNotifyBroadcast invokes broadcast line notification event
+func LineNotifyBroadcast(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+
+	if err := req.ParseForm(); err != nil {
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		return
+	}
+
+	var messages []model.LineNotifyMessage
+	if err := event.ParseTask(req.Form, &messages); err != nil {
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		return
+	}
+
+	params := usecase.LineNotifyBroadcastParams{Messages: messages}
+	if err := container.Usecase(ctx).LineNotifyBroadcast().Do(params); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -44,15 +66,15 @@ func LineNotify(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	//param := &linenotify.ChannelParam{}
-	//crawl := container.Usecase(ctx).CrawlAll()
-	//if err := crawl.ParseURLValues(req.Form, param); err != nil {
-	//	handler.Fail(ctx, w, err, http.StatusInternalServerError)
-	//	return
-	//}
+	var request model.LineNotifyRequest
+	if err := event.ParseTask(req.Form, &request); err != nil {
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		return
+	}
 
-	//if err := linenotify.NotifyChannel(ctx, param); err != nil {
-	//	handler.Fail(ctx, w, err, http.StatusInternalServerError)
-	//	return
-	//}
+	params := usecase.LineNotifyParams{Request: request}
+	if err := container.Usecase(ctx).LineNotify().Do(params); err != nil {
+		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		return
+	}
 }

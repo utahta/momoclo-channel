@@ -6,21 +6,21 @@ import (
 	"github.com/utahta/momoclo-channel/domain/model"
 )
 
-// ToLineNotifyRequests converts FeedItem to []LineNotifyRequest
-func ToLineNotifyRequests(item model.FeedItem) []model.LineNotifyRequest {
-	var requests []model.LineNotifyRequest
+// ToLineNotifyMessages converts FeedItem to []LineNotifyMessage
+func ToLineNotifyMessages(item model.FeedItem) []model.LineNotifyMessage {
+	var messages []model.LineNotifyMessage
 
 	text := fmt.Sprintf("\n%s\n%s\n%s", item.Title, item.EntryTitle, item.EntryURL)
 	if len(item.ImageURLs) > 0 {
-		requests = append(requests, model.LineNotifyRequest{Text: text, ImageURL: item.ImageURLs[0]})
+		messages = append(messages, model.LineNotifyMessage{Text: text, ImageURL: item.ImageURLs[0]})
 		item.ImageURLs = item.ImageURLs[1:]
 	} else {
-		requests = append(requests, model.LineNotifyRequest{Text: text})
+		messages = append(messages, model.LineNotifyMessage{Text: text})
 	}
 
 	for _, imageURL := range item.ImageURLs {
-		requests = append(requests, model.LineNotifyRequest{ImageURL: imageURL})
+		messages = append(messages, model.LineNotifyMessage{ImageURL: imageURL})
 	}
 
-	return requests
+	return messages
 }

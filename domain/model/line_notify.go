@@ -6,18 +6,20 @@ type (
 		GetAccessToken(string) (string, error)
 	}
 
-	// LineNotifyRequest represents request that line notify message, img urls
-	LineNotifyRequest struct {
+	// LineNotifyMessage represents text message and image
+	LineNotifyMessage struct {
 		Text     string
 		ImageURL string
 	}
 
-	// LineNotifyResponse represents response line notify data
-	LineNotifyResponse struct {
+	// LineNotifyRequest represents request that notification message
+	LineNotifyRequest struct {
+		AccessToken string
+		Messages    []LineNotifyMessage
 	}
 
 	// LineNotify interface
 	LineNotify interface {
-		Notify(LineNotifyRequest) (LineNotifyResponse, error)
+		Notify(string, LineNotifyMessage) error
 	}
 )

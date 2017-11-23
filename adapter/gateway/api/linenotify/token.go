@@ -10,14 +10,14 @@ import (
 )
 
 type (
-	client struct {
+	tokenClient struct {
 		*token.Client
 	}
 )
 
 // NewToken returns LineNotifyToken
 func NewToken(ctx context.Context) model.LineNotifyToken {
-	return &client{
+	return &tokenClient{
 		token.New(
 			config.LineNotifyCallbackURL(),
 			config.C.LineNotify.ClientID,
@@ -28,6 +28,6 @@ func NewToken(ctx context.Context) model.LineNotifyToken {
 }
 
 // GetAccessToken returns access token that published by LINE Notify
-func (c *client) GetAccessToken(code string) (string, error) {
+func (c *tokenClient) GetAccessToken(code string) (string, error) {
 	return c.Client.GetAccessToken(code)
 }

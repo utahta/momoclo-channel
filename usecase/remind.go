@@ -58,7 +58,7 @@ func (r *Remind) Do() error {
 
 		r.taskQueue.PushMulti([]event.Task{
 			eventtask.NewTweet(model.TweetRequest{Text: reminder.Text}),
-			eventtask.NewLine(model.LineNotifyRequest{Text: reminder.Text}),
+			eventtask.NewLineBroadcast(model.LineNotifyMessage{Text: reminder.Text}),
 		})
 		r.log.Infof("remind: %#v", reminder)
 	}

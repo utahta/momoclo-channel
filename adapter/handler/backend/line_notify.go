@@ -10,7 +10,6 @@ import (
 	"github.com/utahta/momoclo-channel/adapter/handler"
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/lib/config"
-	"github.com/utahta/momoclo-channel/lib/log"
 	"github.com/utahta/momoclo-channel/usecase"
 )
 
@@ -25,7 +24,7 @@ func LineNotifyOn(w http.ResponseWriter, req *http.Request) {
 	}
 	http.SetCookie(w, &http.Cookie{Name: "state", Value: c.State, Expires: time.Now().Add(300 * time.Second), Secure: true})
 
-	log.Info(ctx, "Redirect to LINE Notify connection page")
+	container.Logger(ctx).AE().Info(ctx, "Redirect to LINE Notify connection page")
 
 	err = c.Redirect(w, req)
 	if err != nil {
@@ -38,7 +37,7 @@ func LineNotifyOn(w http.ResponseWriter, req *http.Request) {
 func LineNotifyOff(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	log.Info(ctx, "Redirect to LINE Notify revoking page")
+	container.Logger(ctx).AE().Info(ctx, "Redirect to LINE Notify revoking page")
 
 	// official url
 	http.Redirect(w, req, "https://notify-bot.line.me/my/", http.StatusFound)

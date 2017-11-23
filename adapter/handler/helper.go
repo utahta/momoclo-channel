@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"google.golang.org/appengine/log"
+	"github.com/utahta/momoclo-channel/container"
 )
 
 // Fail responses error
@@ -14,6 +14,6 @@ func Fail(ctx context.Context, w http.ResponseWriter, err error, code int) {
 		message = err.Error()
 	}
 
-	log.Errorf(ctx, "An error has occurred! code:%v err:%+v", code, err)
+	container.Logger(ctx).AE().Errorf("An error has occurred! code:%v err:%+v", code, err)
 	http.Error(w, message, code)
 }

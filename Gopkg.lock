@@ -100,8 +100,8 @@
 [[projects]]
   name = "github.com/utahta/go-linenotify"
   packages = [".","auth","token"]
-  revision = "c8eaacdadd89c54509c3ff164f8d9f1daa9d0fdf"
-  version = "v0.4.1"
+  revision = "1f9c5d4f257800db7c9f02f94dcd319963e313ec"
+  version = "v0.4.2"
 
 [[projects]]
   branch = "master"
@@ -160,6 +160,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "64bbfcb594fcfb9d8150ddf7a3b3fa8cdf8d8844eea6be8db7d8fd5b2800133f"
+  inputs-digest = "9e74ba619147e30f18e6f6ede3d7a7047994722020a1c638660c0dab6a2429df"
   solver-name = "gps-cdcl"
   solver-version = 1

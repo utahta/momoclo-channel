@@ -39,9 +39,9 @@ func (r *Remind) Do() error {
 		return errors.Wrap(err, errTag)
 	}
 
-	currentTime := timeutil.Now()
+	now := timeutil.Now()
 	for _, reminder := range reminders {
-		if ok, err := reminder.Valid(currentTime); !ok {
+		if ok, err := reminder.Valid(now); !ok {
 			if err != nil {
 				return err
 			}

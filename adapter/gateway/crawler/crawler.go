@@ -60,20 +60,20 @@ func (c *handler) Fetch(code string, maxItemNum int, latestURL string) ([]model.
 	for i, feed := range channel.Items {
 		item := model.FeedItem{
 			Title:       channel.Title,
-			URL:         channel.Url,
+			URL:         channel.URL,
 			EntryTitle:  feed.Title,
-			EntryURL:    feed.Url,
-			PublishedAt: *feed.PublishedAt,
+			EntryURL:    feed.URL,
+			PublishedAt: feed.PublishedAt,
 		}
 
 		item.ImageURLs = make([]string, len(feed.Images))
 		for i, image := range feed.Images {
-			item.ImageURLs[i] = image.Url
+			item.ImageURLs[i] = image.URL
 		}
 
 		item.VideoURLs = make([]string, len(feed.Videos))
 		for i, video := range feed.Videos {
-			item.VideoURLs[i] = video.Url
+			item.VideoURLs[i] = video.URL
 		}
 
 		items[i] = item

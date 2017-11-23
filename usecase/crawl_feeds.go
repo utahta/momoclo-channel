@@ -1,9 +1,12 @@
 package usecase
 
 import (
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/lib/timeutil"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -27,15 +30,18 @@ func NewCrawlFeeds(logger core.Logger, crawl *CrawlFeed) *CrawlFeeds {
 func (c *CrawlFeeds) Do() error {
 	const errTag = "CrawlFeeds.Do failed"
 
+	now := timeutil.Now()
 	codes := []string{
 		model.LatestEntryCodeMomota,
 		model.LatestEntryCodeAriyasu,
 		model.LatestEntryCodeTamai,
 		model.LatestEntryCodeSasaki,
 		model.LatestEntryCodeTakagi,
-		model.LatestEntryCodeHappyclo,
 		model.LatestEntryCodeAeNews,
 		model.LatestEntryCodeYoutube,
+	}
+	if now.Weekday() == time.Sunday {
+		codes = append(codes, model.LatestEntryCodeHappyclo)
 	}
 
 	eg := &errgroup.Group{}

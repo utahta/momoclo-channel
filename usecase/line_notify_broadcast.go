@@ -57,6 +57,7 @@ func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
 			continue
 		}
 		tasks = append(tasks, eventtask.NewLine(model.LineNotifyRequest{
+			ID:          n.ID,
 			AccessToken: accessToken,
 			Messages:    params.Messages,
 		}))

@@ -47,10 +47,11 @@ func (use *LineNotify) Do(params LineNotifyParams) error {
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	request.Messages = request.Messages[1:]
+	use.log.Infof("line notify id:%v message:%v", request.ID, request.Messages[0])
 
+	request.Messages = request.Messages[1:]
 	if len(request.Messages) == 0 {
-		use.log.Infof("done!")
+		use.log.Info("done!")
 		return nil
 	}
 

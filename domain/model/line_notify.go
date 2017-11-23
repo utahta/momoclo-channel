@@ -14,6 +14,7 @@ type (
 
 	// LineNotifyRequest represents request that notification message
 	LineNotifyRequest struct {
+		ID          string
 		AccessToken string
 		Messages    []LineNotifyMessage
 	}

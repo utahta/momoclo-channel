@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
@@ -58,7 +60,7 @@ func (r *Remind) Do() error {
 
 		r.taskQueue.PushMulti([]event.Task{
 			eventtask.NewTweet(model.TweetRequest{Text: reminder.Text}),
-			eventtask.NewLineBroadcast(model.LineNotifyMessage{Text: reminder.Text}),
+			eventtask.NewLineBroadcast(model.LineNotifyMessage{Text: fmt.Sprintf("\n%s", reminder.Text)}),
 		})
 		r.log.Infof("remind: %#v", reminder)
 	}

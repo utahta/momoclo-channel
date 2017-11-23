@@ -47,7 +47,7 @@ func (use *Tweet) Do(params TweetParams) error {
 
 	requests := params.TweetRequests[1:] // go to next tweet
 	if len(requests) == 0 {
-		use.log.Infof("done!")
+		use.log.Info("done!")
 		return nil
 	}
 	requests[0].InReplyToStatusID = res.IDStr

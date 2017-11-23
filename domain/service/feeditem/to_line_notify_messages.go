@@ -19,7 +19,7 @@ func ToLineNotifyMessages(item model.FeedItem) []model.LineNotifyMessage {
 	}
 
 	for _, imageURL := range item.ImageURLs {
-		messages = append(messages, model.LineNotifyMessage{ImageURL: imageURL})
+		messages = append(messages, model.LineNotifyMessage{Text: " ", ImageURL: imageURL}) // need space
 	}
 
 	return messages

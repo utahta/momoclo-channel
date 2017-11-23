@@ -6,6 +6,7 @@ import (
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/domain/service/eventtask"
 	"github.com/utahta/momoclo-channel/domain/service/feeditem"
 )
 
@@ -67,7 +68,7 @@ func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 		return errors.New("invalid enqueue tweets")
 	}
 
-	task := event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: requests}
+	task := eventtask.NewTweets(requests)
 	if err := t.taskQueue.Push(task); err != nil {
 		return errors.Wrap(err, errTag)
 	}

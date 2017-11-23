@@ -8,7 +8,6 @@ import (
 
 	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/latestentry"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"google.golang.org/appengine/aetest"
 )
@@ -36,7 +35,7 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 
 	repo := persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(ctx))
 	for _, test := range tests {
-		l, err := latestentry.Parse(test.url)
+		l, err := model.NewLatestEntry(test.url)
 		if test.expectedSuccess {
 			if err != nil {
 				t.Fatal(err)

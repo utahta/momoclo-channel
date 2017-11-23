@@ -8,12 +8,13 @@ import (
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/domain/service/eventtask"
 	"github.com/utahta/momoclo-channel/lib/timeutil"
 )
 
 type (
-	// CheckUstreamStatus use case
-	CheckUstreamStatus struct {
+	// CheckUstream use case
+	CheckUstream struct {
 		log       core.Logger
 		taskQueue event.TaskQueue
 		checker   model.UstreamStatusChecker
@@ -21,13 +22,13 @@ type (
 	}
 )
 
-// NewCheckUstreamStatus returns CheckUstreamStatus use case
-func NewCheckUstreamStatus(
+// NewCheckUstream returns CheckUstream use case
+func NewCheckUstream(
 	logger core.Logger,
 	taskQueue event.TaskQueue,
 	checker model.UstreamStatusChecker,
-	repo model.UstreamStatusRepository) *CheckUstreamStatus {
-	return &CheckUstreamStatus{
+	repo model.UstreamStatusRepository) *CheckUstream {
+	return &CheckUstream{
 		log:       logger,
 		taskQueue: taskQueue,
 		checker:   checker,
@@ -35,8 +36,8 @@ func NewCheckUstreamStatus(
 	}
 }
 
-// Do checks ustream status
-func (u *CheckUstreamStatus) Do() error {
+// Do checks momocloTV live status
+func (u *CheckUstream) Do() error {
 	const errTag = "CheckUstream.Do failed"
 
 	isLive, err := u.checker.IsLive()
@@ -60,10 +61,10 @@ func (u *CheckUstreamStatus) Do() error {
 	if isLive {
 		t := timeutil.Now()
 		u.taskQueue.PushMulti([]event.Task{
-			{QueueName: "queue-tweet", Path: "/queue/tweet", Object: []model.TweetRequest{
-				{Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))},
-			}},
-			//FIXME add line event
+			eventtask.NewTweet(
+				model.TweetRequest{Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))},
+			),
+			eventtask.NewLine(model.LineNotifyRequest{Text: "momocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"}),
 		})
 	}
 	return nil

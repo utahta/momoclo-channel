@@ -23,7 +23,7 @@ func CronReminder(w http.ResponseWriter, req *http.Request) {
 func CronUstream(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	if err := container.Usecase(ctx).CheckUstreamStatus().Do(); err != nil {
+	if err := container.Usecase(ctx).CheckUstream().Do(); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

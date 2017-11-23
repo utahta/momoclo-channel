@@ -6,21 +6,23 @@ import (
 	"time"
 )
 
-// TaskQueue interface
-type TaskQueue interface {
-	Push(Task) error
-	PushMulti([]Task) error
-}
+type (
+	// TaskQueue interface
+	TaskQueue interface {
+		Push(Task) error
+		PushMulti([]Task) error
+	}
 
-// Task event
-type Task struct {
-	QueueName  string
-	Path       string
-	Object     interface{}
-	Payload    []byte
-	Delay      time.Duration
-	RetryLimit int
-}
+	// Task event
+	Task struct {
+		QueueName  string
+		Path       string
+		Object     interface{}
+		Payload    []byte
+		Delay      time.Duration
+		RetryLimit int
+	}
+)
 
 // Params sets payload to url.Values
 func (t *Task) Params() (url.Values, error) {

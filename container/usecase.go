@@ -82,9 +82,9 @@ func (c *UsecaseContainer) Remind() *usecase.Remind {
 	)
 }
 
-// CheckUstreamStatus use case
-func (c *UsecaseContainer) CheckUstreamStatus() *usecase.CheckUstreamStatus {
-	return usecase.NewCheckUstreamStatus(
+// CheckUstream use case
+func (c *UsecaseContainer) CheckUstream() *usecase.CheckUstream {
+	return usecase.NewCheckUstream(
 		log.NewAppengineLogger(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		ustream.NewStatusChecker(c.ctx),

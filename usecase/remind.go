@@ -5,6 +5,7 @@ import (
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/domain/service/eventtask"
 	"github.com/utahta/momoclo-channel/lib/timeutil"
 )
 
@@ -56,8 +57,8 @@ func (r *Remind) Do() error {
 		}
 
 		r.taskQueue.PushMulti([]event.Task{
-			{QueueName: "queue-tweet", Path: "/queue/tweet", Object: []model.TweetRequest{{Text: reminder.Text}}},
-			//FIXME add line event
+			eventtask.NewTweet(model.TweetRequest{Text: reminder.Text}),
+			eventtask.NewLine(model.LineNotifyRequest{Text: reminder.Text}),
 		})
 		r.log.Infof("remind: %#v", reminder)
 	}

@@ -5,6 +5,7 @@ import (
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/domain/service/eventtask"
 )
 
 type (
@@ -45,14 +46,14 @@ func (t *Tweet) Do(params TweetParams) error {
 	}
 	t.log.Infof("tweet: %v", params.TweetRequests[0])
 
-	tweetRequests := params.TweetRequests[1:] // go to next tweet
-	if len(tweetRequests) == 0 {
+	requests := params.TweetRequests[1:] // go to next tweet
+	if len(requests) == 0 {
 		t.log.Infof("done!")
 		return nil
 	}
-	tweetRequests[0].InReplyToStatusID = res.IDStr
+	requests[0].InReplyToStatusID = res.IDStr
 
-	task := event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: tweetRequests}
+	task := eventtask.NewTweets(requests)
 	if err := t.taskQueue.Push(task); err != nil {
 		return errors.Wrap(err, errTag)
 	}

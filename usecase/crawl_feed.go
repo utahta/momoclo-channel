@@ -5,6 +5,7 @@ import (
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/domain/service/eventtask"
 )
 
 type (
@@ -66,8 +67,8 @@ func (c *CrawlFeed) Do(params CrawlFeedParams) error {
 	var tasks []event.Task
 	for _, item := range items {
 		tasks = append(tasks,
-			event.Task{QueueName: "enqueue", Path: "/enqueue/tweets", Object: item},
-			event.Task{QueueName: "enqueue", Path: "/enqueue/lines", Object: item},
+			eventtask.NewEnqueueTweets(item),
+			eventtask.NewEnqueueLines(item),
 		)
 	}
 	if err := c.taskQueue.PushMulti(tasks); err != nil {

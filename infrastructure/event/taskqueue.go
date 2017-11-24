@@ -68,7 +68,7 @@ func (t *taskQueue) PushMulti(tasks []event.Task) error {
 func (t *taskQueue) newPOSTTask(task event.Task) (*taskqueue.Task, error) {
 	v, err := task.Params()
 	if err != nil {
-		return nil, errors.Wrapf(err, "taskQueue.convert failed: task:%v", task)
+		return nil, errors.Wrapf(err, "taskQueue.newPOSTTask failed: task:%v", task)
 	}
 
 	req := taskqueue.NewPOSTTask(task.Path, v)

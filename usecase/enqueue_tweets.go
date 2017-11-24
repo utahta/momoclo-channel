@@ -43,6 +43,10 @@ func NewEnqueueTweets(
 func (t *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 	const errTag = "EnqueueTweets.Do failed"
 
+	if err := core.Validate(params); err != nil {
+		return errors.Wrap(err, errTag)
+	}
+
 	item := model.NewTweetItem(params.FeedItem)
 	if t.repo.Exists(item.ID) {
 		return nil // already enqueued

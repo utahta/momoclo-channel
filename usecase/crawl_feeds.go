@@ -31,17 +31,17 @@ func (c *CrawlFeeds) Do() error {
 	const errTag = "CrawlFeeds.Do failed"
 
 	now := timeutil.Now()
-	codes := []string{
-		model.LatestEntryCodeMomota,
-		model.LatestEntryCodeAriyasu,
-		model.LatestEntryCodeTamai,
-		model.LatestEntryCodeSasaki,
-		model.LatestEntryCodeTakagi,
-		model.LatestEntryCodeAeNews,
-		model.LatestEntryCodeYoutube,
+	codes := []model.FeedCode{
+		model.FeedCodeMomota,
+		model.FeedCodeAriyasu,
+		model.FeedCodeTamai,
+		model.FeedCodeSasaki,
+		model.FeedCodeTakagi,
+		model.FeedCodeAeNews,
+		model.FeedCodeYoutube,
 	}
 	if now.Weekday() == time.Sunday {
-		codes = append(codes, model.LatestEntryCodeHappyclo)
+		codes = append(codes, model.FeedCodeHappyclo)
 	}
 
 	eg := &errgroup.Group{}

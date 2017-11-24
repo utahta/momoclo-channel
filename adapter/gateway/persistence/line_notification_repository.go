@@ -29,6 +29,6 @@ func (repo *LineNotificationRepository) Save(item *model.LineNotification) error
 }
 
 // Delete deletes given line notification entity
-func (repo *LineNotificationRepository) Delete(item *model.LineNotification) error {
-	return repo.PersistenceHandler.Delete(item)
+func (repo *LineNotificationRepository) Delete(id string) error {
+	return repo.PersistenceHandler.Delete(&model.LineNotification{ID: id})
 }

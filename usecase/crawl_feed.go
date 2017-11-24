@@ -19,7 +19,7 @@ type (
 
 	// CrawlFeedParams input parameters
 	CrawlFeedParams struct {
-		Code string // target identify code
+		Code model.FeedCode // target identify code
 	}
 )
 
@@ -38,20 +38,26 @@ func NewCrawlFeed(
 }
 
 // Do crawls a site and invokes tweet and line event
-func (c *CrawlFeed) Do(params CrawlFeedParams) error {
+func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 	const errTag = "CrawlFeed.Do failed"
 
-	items, err := c.feed.Fetch(params.Code, 1, c.repo.GetURL(params.Code))
+	items, err := use.feed.Fetch(params.Code, 1, use.repo.GetURL(params.Code.String()))
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
 	if len(items) == 0 {
 		return nil
 	}
+	for i := range items {
+		if err := core.Validate(items[i]); err != nil {
+			use.log.Errorf("%v: validate error i:%v items:%v err:%v", i, items, err)
+			return errors.Wrap(err, errTag)
+		}
+	}
 
 	// update latest entry
 	item := items[0] // first item is the latest entry
-	l, err := c.repo.FindOrCreateByURL(item.EntryURL)
+	l, err := use.repo.FindOrNewByURL(item.EntryURL)
 	if err != nil {
 		return errors.Wrapf(err, "%v: url:%v", errTag, item.EntryURL)
 	}
@@ -59,7 +65,7 @@ func (c *CrawlFeed) Do(params CrawlFeedParams) error {
 		return nil // already get feeds. nothing to do
 	}
 	l.URL = item.EntryURL
-	if err := c.repo.Save(l); err != nil {
+	if err := use.repo.Save(l); err != nil {
 		return errors.Wrapf(err, errTag)
 	}
 
@@ -71,10 +77,10 @@ func (c *CrawlFeed) Do(params CrawlFeedParams) error {
 			eventtask.NewEnqueueLines(item),
 		)
 	}
-	if err := c.taskQueue.PushMulti(tasks); err != nil {
+	if err := use.taskQueue.PushMulti(tasks); err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	c.log.Infof("crawl feed items:%v", items)
+	use.log.Infof("crawl feed items:%v", items)
 
 	return nil
 }

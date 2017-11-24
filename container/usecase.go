@@ -125,5 +125,6 @@ func (c *UsecaseContainer) LineNotify() *usecase.LineNotify {
 		c.logger.AE(),
 		event.NewTaskQueue(c.ctx),
 		linenotify.New(c.ctx),
+		c.repo.LineNotificationRepository(),
 	)
 }

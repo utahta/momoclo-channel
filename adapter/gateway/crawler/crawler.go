@@ -18,7 +18,7 @@ func New(ctx context.Context) model.FeedFetcher {
 	return &handler{ctx}
 }
 
-func (c *handler) Fetch(code string, maxItemNum int, latestURL string) ([]model.FeedItem, error) {
+func (c *handler) Fetch(code model.FeedCode, maxItemNum int, latestURL string) ([]model.FeedItem, error) {
 	const errTag = "client.Fetch failed"
 	var (
 		cli  *crawler.ChannelClient
@@ -27,21 +27,21 @@ func (c *handler) Fetch(code string, maxItemNum int, latestURL string) ([]model.
 	)
 
 	switch code {
-	case model.LatestEntryCodeTamai:
+	case model.FeedCodeTamai:
 		cli, err = crawler.NewTamaiBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.LatestEntryCodeMomota:
+	case model.FeedCodeMomota:
 		cli, err = crawler.NewMomotaBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.LatestEntryCodeAriyasu:
+	case model.FeedCodeAriyasu:
 		cli, err = crawler.NewAriyasuBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.LatestEntryCodeSasaki:
+	case model.FeedCodeSasaki:
 		cli, err = crawler.NewSasakiBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.LatestEntryCodeTakagi:
+	case model.FeedCodeTakagi:
 		cli, err = crawler.NewTakagiBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.LatestEntryCodeHappyclo:
+	case model.FeedCodeHappyclo:
 		cli, err = crawler.NewHappycloChannelClient(latestURL, opts)
-	case model.LatestEntryCodeAeNews:
+	case model.FeedCodeAeNews:
 		cli, err = crawler.NewAeNewsChannelClient(opts)
-	case model.LatestEntryCodeYoutube:
+	case model.FeedCodeYoutube:
 		cli, err = crawler.NewYoutubeChannelClient(opts)
 	default:
 		err = errors.Errorf("code:%s did not support", code)

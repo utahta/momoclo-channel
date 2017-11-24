@@ -4,13 +4,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-playground/validator"
 	"github.com/utahta/momoclo-channel/lib/aetestutil"
 	"google.golang.org/appengine/aetest"
 )
 
 type TestEntity struct {
-	ID        string `datastore:"-" goon:"id"`
-	Name      string
+	ID        string `datastore:"-" goon:"id" validate:"required"`
+	Name      string `validate:"required"`
 	CreatedAt time.Time
 }
 
@@ -41,6 +42,11 @@ func TestDatastoreHandler_Put(t *testing.T) {
 
 	if e.CreatedAt.IsZero() {
 		t.Errorf("Expected set createdAt, got %v", e.CreatedAt)
+	}
+
+	err = h.Put(&TestEntity{ID: "plan-2"})
+	if errs, ok := err.(validator.ValidationErrors); !ok {
+		t.Errorf("Expected validation errors, got %v", errs)
 	}
 }
 

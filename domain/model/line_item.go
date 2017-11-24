@@ -9,13 +9,13 @@ import (
 type (
 	// LineItem represents line notification history
 	LineItem struct {
-		ID          string `datastore:"-" goon:"id"`
-		Title       string
-		URL         string
-		PublishedAt time.Time
-		ImageURLs   string `datastore:",noindex"`
-		VideoURLs   string `datastore:",noindex"`
-		CreatedAt   time.Time
+		ID          string    `datastore:"-" goon:"id" validate:"required"`
+		Title       string    `validate:"required"`
+		URL         string    `validate:"required,url"`
+		PublishedAt time.Time `validate:"required"`
+		ImageURLs   string    `datastore:",noindex"`
+		VideoURLs   string    `datastore:",noindex"`
+		CreatedAt   time.Time `validate:"required"`
 	}
 
 	// LineItemRepository interface

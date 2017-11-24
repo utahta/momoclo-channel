@@ -19,7 +19,7 @@ type (
 
 	// LineNotifyBroadcastParams input parameters
 	LineNotifyBroadcastParams struct {
-		Messages []model.LineNotifyMessage
+		Messages []model.LineNotifyMessage `validate:"min=1,dive"`
 	}
 )
 
@@ -39,8 +39,8 @@ func NewLineNotifyBroadcast(
 func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
 	const errTag = "LineNotifyBroadcast.Do failed"
 
-	if len(params.Messages) == 0 {
-		return errors.Errorf("%v: invalid line notify messages", errTag)
+	if err := core.Validate(params); err != nil {
+		return errors.Wrap(err, errTag)
 	}
 
 	//TODO use iterator

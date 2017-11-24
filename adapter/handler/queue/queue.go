@@ -28,7 +28,7 @@ func Tweet(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	params := usecase.TweetParams{TweetRequests: requests}
+	params := usecase.TweetParams{Requests: requests}
 	if err := container.Usecase(ctx).Tweet().Do(params); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)
 		return
@@ -57,7 +57,7 @@ func LineNotifyBroadcast(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// LineNotify invokes line notification event
+// LineNotify notify to user with LINE
 func LineNotify(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 

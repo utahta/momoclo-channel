@@ -12,8 +12,8 @@ type (
 
 	// Reminder represents any remind information
 	Reminder struct {
-		ID      int64 `datastore:"-" goon:"id"`
-		Text    string
+		ID      int64  `datastore:"-" goon:"id"`
+		Text    string `validate:"required"`
 		Type    ReminderType
 		Enabled bool
 

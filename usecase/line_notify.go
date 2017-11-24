@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
@@ -14,6 +15,7 @@ type (
 		log       core.Logger
 		taskQueue event.TaskQueue
 		notify    model.LineNotify
+		repo      model.LineNotificationRepository
 	}
 
 	// LineNotifyParams input parameters
@@ -26,11 +28,13 @@ type (
 func NewLineNotify(
 	log core.Logger,
 	taskQueue event.TaskQueue,
-	notify model.LineNotify) *LineNotify {
+	notify model.LineNotify,
+	repo model.LineNotificationRepository) *LineNotify {
 	return &LineNotify{
 		log:       log,
 		taskQueue: taskQueue,
 		notify:    notify,
+		repo:      repo,
 	}
 }
 
@@ -38,13 +42,17 @@ func NewLineNotify(
 func (use *LineNotify) Do(params LineNotifyParams) error {
 	const errTag = "LineNotify.Do failed"
 
-	request := params.Request
-	if len(request.Messages) == 0 {
-		return errors.Errorf("%v: invalid line notify request", errTag)
+	if err := core.Validate(params); err != nil {
+		return errors.Wrap(err, errTag)
 	}
 
+	request := params.Request
 	err := use.notify.Notify(request.AccessToken, request.Messages[0])
 	if err != nil {
+		if err == domain.ErrInvalidAccessToken {
+			err = use.repo.Delete(request.ID)
+			use.log.Infof("delete id:%v err:%v", request.ID, err)
+		}
 		return errors.Wrap(err, errTag)
 	}
 	use.log.Infof("line notify id:%v message:%v", request.ID, request.Messages[0])

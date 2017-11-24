@@ -20,9 +20,9 @@ func (repo *LatestEntryRepository) Save(l *model.LatestEntry) error {
 	return repo.Put(l)
 }
 
-// FindOrCreateByURL finds LatestEntry given url
+// FindOrNewByURL finds LatestEntry given url
 // if not found, returns new LatestEntry
-func (repo *LatestEntryRepository) FindOrCreateByURL(urlStr string) (*model.LatestEntry, error) {
+func (repo *LatestEntryRepository) FindOrNewByURL(urlStr string) (*model.LatestEntry, error) {
 	l, err := model.NewLatestEntry(urlStr)
 	if err != nil {
 		return nil, err

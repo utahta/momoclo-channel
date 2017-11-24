@@ -34,13 +34,28 @@ func (h *datastoreHandler) Kind(src interface{}) string {
 // Put wraps goon.Put()
 func (h *datastoreHandler) Put(src interface{}) error {
 	hook.BeforeSave(src)
+	if err := hook.Validate(src); err != nil {
+		return err
+	}
 	_, err := h.Goon.Put(src)
 	return err
 }
 
 // PutMulti wraps goon.PutMulti()
 func (h *datastoreHandler) PutMulti(src interface{}) error {
-	hook.BeforeSaveMulti(src)
+	v := reflect.Indirect(reflect.ValueOf(src))
+	if v.Kind() != reflect.Slice {
+		return errors.New("value must be a slice")
+	}
+
+	for i := 0; i < v.Len(); i++ {
+		hook.BeforeSave(v.Index(i).Interface())
+
+		//TODO perhaps should return multi error
+		if err := hook.Validate(v.Index(i).Interface()); err != nil {
+			return err
+		}
+	}
 	_, err := h.Goon.PutMulti(src)
 	return err
 }

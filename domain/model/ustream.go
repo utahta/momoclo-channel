@@ -3,7 +3,7 @@ package model
 type (
 	// UstreamStatus represents ustream status
 	UstreamStatus struct {
-		ID     string `datastore:"-" goon:"id"`
+		ID     string `datastore:"-" goon:"id" validate:"required"`
 		IsLive bool
 	}
 

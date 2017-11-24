@@ -19,7 +19,7 @@ type tweeter struct {
 // NewTweeter returns model.Tweeter that wraps go-twitter
 func NewTweeter(ctx context.Context) model.Tweeter {
 	if config.C.Twitter.Disabled {
-		return &nop{}
+		return NewNopTweeter()
 	}
 
 	twitter.SetConsumerCredentials(

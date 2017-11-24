@@ -8,15 +8,15 @@ type (
 
 	// LineNotifyMessage represents text message and image
 	LineNotifyMessage struct {
-		Text     string
-		ImageURL string
+		Text     string `validate:"required"`
+		ImageURL string `validate:"omitempty,url"`
 	}
 
 	// LineNotifyRequest represents request that notification message
 	LineNotifyRequest struct {
-		ID          string
-		AccessToken string
-		Messages    []LineNotifyMessage
+		ID          string              `validate:"required"`
+		AccessToken string              `validate:"required"`
+		Messages    []LineNotifyMessage `validate:"min=1,dive"`
 	}
 
 	// LineNotify interface

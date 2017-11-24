@@ -1,8 +1,7 @@
 package hook
 
 import (
-	"reflect"
-
+	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/model"
 )
 
@@ -13,11 +12,7 @@ func BeforeSave(src interface{}) {
 	}
 }
 
-// BeforeSaveMulti hook
-func BeforeSaveMulti(src interface{}) {
-	//TODO need to prevent panic given invalid args. (e.g. validation)
-	v := reflect.ValueOf(src)
-	for i := 0; i < v.Len(); i++ {
-		BeforeSave(v.Index(i).Interface())
-	}
+// Validate hook
+func Validate(src interface{}) error {
+	return core.Validate(src)
 }

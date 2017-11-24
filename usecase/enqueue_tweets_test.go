@@ -4,6 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-playground/validator"
+	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
@@ -36,6 +38,11 @@ func TestEnqueueTweets_Do(t *testing.T) {
 	item := model.NewTweetItem(feedItem)
 	if repo.Exists(item.ID) {
 		t.Errorf("Expected tweet item not found, but exists. feedItem:%v", feedItem)
+	}
+
+	err = u.Do(usecase.EnqueueTweetsParams{FeedItem: model.FeedItem{}})
+	if errs, ok := errors.Cause(err).(validator.ValidationErrors); !ok {
+		t.Errorf("Expected validation errors, got %v", errs)
 	}
 
 	if err := u.Do(usecase.EnqueueTweetsParams{FeedItem: feedItem}); err != nil {

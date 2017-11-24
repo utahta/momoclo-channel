@@ -139,3 +139,8 @@
 [[constraint]]
   name = "github.com/go-chi/chi"
   version = "^3.2.1"
+
+[[constraint]]
+  name = "github.com/go-playground/validator"
+  version = "^9.9.0"
+

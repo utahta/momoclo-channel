@@ -43,6 +43,10 @@ func NewEnqueueLines(
 func (t *EnqueueLines) Do(params EnqueueLinesParams) error {
 	const errTag = "EnqueueLines.Do failed"
 
+	if err := core.Validate(params); err != nil {
+		return errors.Wrap(err, errTag)
+	}
+
 	item := model.NewLineItem(params.FeedItem)
 	if t.repo.Exists(item.ID) {
 		return nil // already enqueued

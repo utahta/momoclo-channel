@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
 	"github.com/utahta/go-openuri"
+	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/lib/config"
 	"google.golang.org/appengine/urlfetch"
@@ -33,7 +34,7 @@ var pool = sync.Pool{
 // New returns LineNotify
 func New(ctx context.Context) model.LineNotify {
 	if config.C.LineNotify.Disabled {
-		return &nop{}
+		return NewNop()
 	}
 
 	c := linenotify.New()
@@ -43,6 +44,16 @@ func New(ctx context.Context) model.LineNotify {
 
 // Notify sends message to given token
 func (c *client) Notify(accessToken string, msg model.LineNotifyMessage) error {
+	if err := c.notify(accessToken, msg); err != nil {
+		if err == linenotify.ErrNotifyInvalidAccessToken {
+			return domain.ErrInvalidAccessToken
+		}
+		return err
+	}
+	return nil
+}
+
+func (c *client) notify(accessToken string, msg model.LineNotifyMessage) error {
 	if msg.ImageURL != "" {
 		b, err := c.fetchImage(msg.ImageURL)
 		if err != nil {

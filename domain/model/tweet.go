@@ -5,8 +5,8 @@ type (
 	TweetRequest struct {
 		InReplyToStatusID string
 		Text              string
-		ImageURLs         []string
-		VideoURL          string
+		ImageURLs         []string `validate:"dive,omitempty,url"`
+		VideoURL          string   `validate:"omitempty,url"`
 	}
 
 	// TweetResponse represents response tweet data

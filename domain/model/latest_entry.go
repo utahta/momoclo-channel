@@ -8,44 +8,33 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	LatestEntryCodeMomota   = "momota-sd"
-	LatestEntryCodeAriyasu  = "ariyasu-sd"
-	LatestEntryCodeTamai    = "tamai-sd"
-	LatestEntryCodeSasaki   = "sasaki-sd"
-	LatestEntryCodeTakagi   = "takagi-sd"
-	LatestEntryCodeHappyclo = "happyclo"
-	LatestEntryCodeAeNews   = "aenews"
-	LatestEntryCodeYoutube  = "youtube"
-)
-
 type (
 	// LatestEntry for confirm last updated entry url
 	LatestEntry struct {
-		ID        string `datastore:"-" goon:"id"`
-		Code      string
-		URL       string
-		CreatedAt time.Time
-		UpdatedAt time.Time
+		ID        string    `datastore:"-" goon:"id"`
+		Code      FeedCode  `validate:"required"`
+		URL       string    `validate:"required,url"`
+		CreatedAt time.Time `validate:"required"`
+		UpdatedAt time.Time `validate:"required"`
 	}
 
 	// LatestEntryRepository interface
 	LatestEntryRepository interface {
 		Save(*LatestEntry) error
-		FindOrCreateByURL(string) (*LatestEntry, error)
+		FindOrNewByURL(string) (*LatestEntry, error)
 		GetURL(string) string
 	}
 )
 
 // NewLatestEntry builds *LatestEntry given url
 func NewLatestEntry(urlStr string) (*LatestEntry, error) {
-	var code string
-	blogCodes := []string{
-		LatestEntryCodeTamai,
-		LatestEntryCodeMomota,
-		LatestEntryCodeAriyasu,
-		LatestEntryCodeSasaki,
-		LatestEntryCodeTakagi,
+	var code FeedCode
+	blogCodes := []FeedCode{
+		FeedCodeTamai,
+		FeedCodeMomota,
+		FeedCodeAriyasu,
+		FeedCodeSasaki,
+		FeedCodeTakagi,
 	}
 	for _, c := range blogCodes {
 		if strings.HasPrefix(urlStr, fmt.Sprintf("https://ameblo.jp/%s", c)) {
@@ -54,17 +43,17 @@ func NewLatestEntry(urlStr string) (*LatestEntry, error) {
 		}
 	}
 	if strings.HasPrefix(urlStr, "http://www.tfm.co.jp/clover/") {
-		code = LatestEntryCodeHappyclo
+		code = FeedCodeHappyclo
 	} else if strings.HasPrefix(urlStr, "http://www.momoclo.net") {
-		code = LatestEntryCodeAeNews
+		code = FeedCodeAeNews
 	} else if strings.HasPrefix(urlStr, "https://www.youtube.com") {
-		code = LatestEntryCodeYoutube
+		code = FeedCodeYoutube
 	}
 
 	if code == "" {
 		return nil, errors.New("latestentry.Parse failed: code not supported")
 	}
-	return &LatestEntry{ID: code, Code: code, URL: urlStr}, nil
+	return &LatestEntry{ID: string(code), Code: code, URL: urlStr}, nil
 }
 
 // SetCreatedAt sets given time to CreatedAt

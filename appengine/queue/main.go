@@ -13,12 +13,15 @@ func init() {
 	config.MustLoad("config/deploy.toml")
 
 	router := chi.NewRouter()
-	router.Use(middleware.AppengineContext)
+	router.Use(middleware.AEContext)
 
 	router.Get("/_ah/start", func(w http.ResponseWriter, req *http.Request) {})
-	router.Post("/queue/tweet", queue.Tweet)
-	router.Post("/queue/line/broadcast", queue.LineNotifyBroadcast)
-	router.Post("/queue/line", queue.LineNotify)
+
+	router.Route("/queue", func(r chi.Router) {
+		r.Post("/tweet", queue.Tweet)
+		r.Post("/line/broadcast", queue.LineNotifyBroadcast)
+		r.Post("/line", queue.LineNotify)
+	})
 
 	http.Handle("/", router)
 }

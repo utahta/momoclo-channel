@@ -13,22 +13,30 @@ func init() {
 	config.MustLoad("config/deploy.toml")
 
 	router := chi.NewRouter()
-	router.Use(middleware.AppengineContext)
+	router.Use(middleware.AEContext)
 
-	router.Get("/cron/crawl", backend.CronCrawl)
-	router.Get("/cron/ustream", backend.CronUstream)
-	router.Get("/cron/reminder", backend.CronReminder)
+	router.Route("/cron", func(r chi.Router) {
+		r.Get("/crawl", backend.CronCrawl)
+		r.Get("/ustream", backend.CronUstream)
+		r.Get("/reminder", backend.CronReminder)
+	})
 
-	router.Post("/enqueue/tweets", backend.EnqueueTweets)
-	router.Post("/enqueue/lines", backend.EnqueueLines)
+	router.Route("/enqueue", func(r chi.Router) {
+		r.Post("/tweets", backend.EnqueueTweets)
+		r.Post("/lines", backend.EnqueueLines)
+	})
 
-	router.Post("/linebot/callback", backend.LineBotCallback)
-	router.Get("/linebot/help", backend.LineBotHelp)
-	router.Get("/linebot/about", backend.LineBotAbout)
+	router.Route("/linebot", func(r chi.Router) {
+		r.Post("/callback", backend.LineBotCallback)
+		r.Get("/help", backend.LineBotHelp)
+		r.Get("/about", backend.LineBotAbout)
+	})
 
-	router.HandleFunc("/linenotify/callback", backend.LineNotifyCallback)
-	router.Get("/linenotify/on", backend.LineNotifyOn)
-	router.Get("/linenotify/off", backend.LineNotifyOff)
+	router.Route("/linenotify", func(r chi.Router) {
+		r.HandleFunc("/callback", backend.LineNotifyCallback)
+		r.Get("/on", backend.LineNotifyOn)
+		r.Get("/off", backend.LineNotifyOff)
+	})
 
 	http.Handle("/", router)
 }

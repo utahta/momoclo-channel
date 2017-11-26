@@ -25,11 +25,14 @@ type (
 	cacheRepository map[string][]byte
 )
 
-var pool = sync.Pool{
-	New: func() interface{} {
-		return cacheRepository{}
-	},
-}
+var (
+	cachePool = sync.Pool{
+		New: func() interface{} {
+			return cacheRepository{}
+		},
+	}
+	cacheMux sync.Mutex
+)
 
 // New returns LineNotify
 func New(ctx context.Context) model.LineNotify {
@@ -39,7 +42,7 @@ func New(ctx context.Context) model.LineNotify {
 
 	c := linenotify.New()
 	c.HTTPClient = urlfetch.Client(ctx)
-	return &client{c}
+	return &client{Client: c}
 }
 
 // Notify sends message to given token
@@ -71,8 +74,11 @@ func (c *client) notify(accessToken string, msg model.LineNotifyMessage) error {
 }
 
 func (c *client) fetchImage(urlStr string) ([]byte, error) {
-	cache := pool.Get().(cacheRepository)
-	defer pool.Put(cache)
+	cacheMux.Lock()
+	defer cacheMux.Unlock()
+
+	cache := cachePool.Get().(cacheRepository)
+	defer cachePool.Put(cache)
 
 	if b, ok := cache[urlStr]; ok {
 		return b, nil

@@ -6,8 +6,8 @@ import (
 	"google.golang.org/appengine"
 )
 
-// Appengine wraps appengine context.
-func AppengineContext(next http.Handler) http.Handler {
+// AEContext wraps appengine context.
+func AEContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := appengine.WithContext(r.Context(), r)
 		next.ServeHTTP(w, r.WithContext(ctx))

@@ -40,7 +40,7 @@ func NewEnqueueLines(
 }
 
 // Do converts feeds to line notify requests and enqueue it
-func (t *EnqueueLines) Do(params EnqueueLinesParams) error {
+func (use *EnqueueLines) Do(params EnqueueLinesParams) error {
 	const errTag = "EnqueueLines.Do failed"
 
 	if err := core.Validate(params); err != nil {
@@ -48,35 +48,35 @@ func (t *EnqueueLines) Do(params EnqueueLinesParams) error {
 	}
 
 	item := model.NewLineItem(params.FeedItem)
-	if t.repo.Exists(item.ID) {
+	if use.repo.Exists(item.ID) {
 		return nil // already enqueued
 	}
 
-	err := t.transactor.RunInTransaction(func(h model.PersistenceHandler) error {
-		done := t.transactor.With(h, t.repo)
+	err := use.transactor.RunInTransaction(func(h model.PersistenceHandler) error {
+		done := use.transactor.With(h, use.repo)
 		defer done()
 
-		if _, err := t.repo.Find(item.ID); err != domain.ErrNoSuchEntity {
+		if _, err := use.repo.Find(item.ID); err != domain.ErrNoSuchEntity {
 			return err
 		}
-		return t.repo.Save(item)
+		return use.repo.Save(item)
 	}, nil)
 	if err != nil {
-		t.log.Errorf("%v: enqueue lines feedItem:%v", errTag, params.FeedItem)
+		use.log.Errorf("%v: enqueue lines feedItem:%v", errTag, params.FeedItem)
 		return errors.Wrap(err, errTag)
 	}
 
 	messages := feeditem.ToLineNotifyMessages(params.FeedItem)
 	if len(messages) == 0 {
-		t.log.Errorf("%v: invalid enqueue lines feedItem:%v", errTag, params.FeedItem)
+		use.log.Errorf("%v: invalid enqueue lines feedItem:%v", errTag, params.FeedItem)
 		return errors.New("invalid enqueue line messages")
 	}
 
 	task := eventtask.NewLinesBroadcast(messages)
-	if err := t.taskQueue.Push(task); err != nil {
+	if err := use.taskQueue.Push(task); err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	t.log.Infof("enqueue line messages:%#v", messages)
+	use.log.Infof("enqueue line messages:%#v", messages)
 
 	return nil
 }

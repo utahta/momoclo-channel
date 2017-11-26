@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -39,4 +40,13 @@ type (
 // String returns string representation of FeedCode
 func (f FeedCode) String() string {
 	return string(f)
+}
+
+// UniqueURL builds unique url
+func (i FeedItem) UniqueURL() string {
+	id := i.EntryURL
+	if !i.PublishedAt.IsZero() {
+		id = fmt.Sprintf("%s&t=%s", id, i.PublishedAt.Format("20060102150405"))
+	}
+	return id
 }

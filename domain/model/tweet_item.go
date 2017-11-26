@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"strings"
 	"time"
 )
@@ -28,24 +27,14 @@ type (
 
 // NewTweetItem returns TweetItem given FeedItem
 func NewTweetItem(params FeedItem) *TweetItem {
-	ti := &TweetItem{
+	return &TweetItem{
+		ID:          params.UniqueURL(),
 		Title:       params.EntryTitle,
 		URL:         params.EntryURL,
 		PublishedAt: params.PublishedAt,
 		ImageURLs:   strings.Join(params.ImageURLs, ","),
 		VideoURLs:   strings.Join(params.VideoURLs, ","),
 	}
-	ti.ID = ti.UniqueID()
-	return ti
-}
-
-// UniqueID builds unique id
-func (e *TweetItem) UniqueID() string {
-	id := e.URL
-	if !e.PublishedAt.IsZero() {
-		id = fmt.Sprintf("%s%s", id, e.PublishedAt.Format("20060102150405"))
-	}
-	return id
 }
 
 // SetCreatedAt sets given time to CreatedAt

@@ -14,7 +14,7 @@ import (
 
 // Tweet tweets to twitter
 func Tweet(w http.ResponseWriter, req *http.Request) {
-	ctx, cancel := context.WithTimeout(req.Context(), 540*time.Second)
+	ctx, cancel := context.WithTimeout(req.Context(), 180*time.Second) //TODO ctx should be an argument?
 	defer cancel()
 
 	if err := req.ParseForm(); err != nil {
@@ -59,7 +59,8 @@ func LineNotifyBroadcast(w http.ResponseWriter, req *http.Request) {
 
 // LineNotify notify to user with LINE
 func LineNotify(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
+	ctx, cancel := context.WithTimeout(req.Context(), 30*time.Second)
+	defer cancel()
 
 	if err := req.ParseForm(); err != nil {
 		handler.Fail(ctx, w, err, http.StatusInternalServerError)

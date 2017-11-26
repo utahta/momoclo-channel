@@ -9,11 +9,12 @@ import (
 	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
+	"github.com/utahta/momoclo-channel/lib/aetestutil"
 	"google.golang.org/appengine/aetest"
 )
 
 func TestLatestEntryRepository_Save(t *testing.T) {
-	ctx, done, err := aetest.NewContext()
+	ctx, done, err := aetestutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Error(err)
 	}
@@ -47,6 +48,7 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 			continue
 		}
 
+		l.PublishedAt = time.Now()
 		if err := repo.Save(l); err != nil {
 			t.Fatal(err)
 		}
@@ -61,13 +63,16 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 		}
 	}
 
-	if err := repo.Save(&model.LatestEntry{ID: "fail-test", URL: "unknown"}); err == nil {
+	if err := repo.Save(&model.LatestEntry{ID: "fail-test", URL: "unknown", PublishedAt: time.Now()}); err == nil {
+		t.Errorf("Expected got error, but nil")
+	}
+	if err := repo.Save(&model.LatestEntry{ID: "fail-test", URL: "http://localhost"}); err == nil {
 		t.Errorf("Expected got error, but nil")
 	}
 }
 
 func TestLatestEntryRepository_GetURL(t *testing.T) {
-	ctx, done, err := aetest.NewContext()
+	ctx, done, err := aetestutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Error(err)
 	}
@@ -86,12 +91,11 @@ func TestLatestEntryRepository_GetURL(t *testing.T) {
 		{model.FeedCodeHappyclo, "http://example.com/6"},
 	}
 	for _, test := range tests {
-		blog := &model.LatestEntry{ID: test.code.String(), Code: test.code, URL: test.expectedURL}
+		blog := &model.LatestEntry{ID: test.code.String(), Code: test.code, URL: test.expectedURL, PublishedAt: time.Now()}
 		if err := repo.Save(blog); err != nil {
 			t.Fatal(err)
 		}
 	}
-	time.Sleep(time.Second) // Due to eventual consistency
 
 	for _, test := range tests {
 		url := repo.GetURL(test.code.String())

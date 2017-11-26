@@ -31,7 +31,7 @@ func CronUstream(w http.ResponseWriter, req *http.Request) {
 
 // CronCrawl crawling some sites
 func CronCrawl(w http.ResponseWriter, req *http.Request) {
-	ctx, cancel := context.WithTimeout(req.Context(), 50*time.Second)
+	ctx, cancel := context.WithTimeout(req.Context(), 30*time.Second)
 	defer cancel()
 
 	if err := container.Usecase(ctx).CrawlFeeds().Do(); err != nil {

@@ -61,10 +61,11 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 	if err != nil {
 		return errors.Wrapf(err, "%v: url:%v", errTag, item.EntryURL)
 	}
-	if !l.CreatedAt.IsZero() && l.URL == item.EntryURL {
+	if l.URL == item.EntryURL && l.PublishedAt.Equal(item.PublishedAt) {
 		return nil // already get feeds. nothing to do
 	}
 	l.URL = item.EntryURL
+	l.PublishedAt = item.PublishedAt
 	if err := use.repo.Save(l); err != nil {
 		return errors.Wrapf(err, errTag)
 	}

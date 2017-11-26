@@ -11,11 +11,12 @@ import (
 type (
 	// LatestEntry for confirm last updated entry url
 	LatestEntry struct {
-		ID        string    `datastore:"-" goon:"id"`
-		Code      FeedCode  `validate:"required"`
-		URL       string    `validate:"required,url"`
-		CreatedAt time.Time `validate:"required"`
-		UpdatedAt time.Time `validate:"required"`
+		ID          string    `datastore:"-" goon:"id"`
+		Code        FeedCode  `validate:"required"`
+		URL         string    `validate:"required,url"`
+		PublishedAt time.Time `validate:"required"`
+		CreatedAt   time.Time `validate:"required"`
+		UpdatedAt   time.Time `validate:"required"`
 	}
 
 	// LatestEntryRepository interface
@@ -51,9 +52,9 @@ func NewLatestEntry(urlStr string) (*LatestEntry, error) {
 	}
 
 	if code == "" {
-		return nil, errors.New("latestentry.Parse failed: code not supported")
+		return nil, errors.New("NewLatestEntry failed: code not supported")
 	}
-	return &LatestEntry{ID: string(code), Code: code, URL: urlStr}, nil
+	return &LatestEntry{ID: code.String(), Code: code, URL: urlStr}, nil
 }
 
 // SetCreatedAt sets given time to CreatedAt

@@ -22,6 +22,7 @@ type (
 		Exists(string) bool
 		Find(string) (*LineItem, error)
 		Save(*LineItem) error
+		Tx(PersistenceHandler) LineItemRepository
 	}
 )
 

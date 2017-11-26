@@ -51,7 +51,6 @@ type (
 	// Transactor provides transaction across entities
 	Transactor interface {
 		RunInTransaction(func(PersistenceHandler) error, *TransactionOptions) error
-		With(PersistenceHandler, ...interface{}) func()
 	}
 )
 

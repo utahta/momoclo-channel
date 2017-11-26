@@ -30,3 +30,8 @@ func (repo *LineItemRepository) Find(id string) (*model.LineItem, error) {
 func (repo *LineItemRepository) Save(item *model.LineItem) error {
 	return repo.Put(item)
 }
+
+// Tx can be used in RunInTransaction
+func (repo *LineItemRepository) Tx(h model.PersistenceHandler) model.LineItemRepository {
+	return NewLineItemRepository(h)
+}

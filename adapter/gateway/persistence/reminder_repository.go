@@ -10,7 +10,7 @@ type ReminderRepository struct {
 }
 
 // NewReminderRepository returns the ReminderRepository
-func NewReminderRepository(h model.PersistenceHandler) *ReminderRepository {
+func NewReminderRepository(h model.PersistenceHandler) model.ReminderRepository {
 	return &ReminderRepository{h}
 }
 

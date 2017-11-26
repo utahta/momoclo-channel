@@ -53,13 +53,11 @@ func (use *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 	}
 
 	err := use.transactor.RunInTransaction(func(h model.PersistenceHandler) error {
-		done := use.transactor.With(h, use.repo)
-		defer done()
-
-		if _, err := use.repo.Find(item.ID); err != domain.ErrNoSuchEntity {
+		repo := use.repo.Tx(h)
+		if _, err := repo.Find(item.ID); err != domain.ErrNoSuchEntity {
 			return err
 		}
-		return use.repo.Save(item)
+		return repo.Save(item)
 	}, nil)
 	if err != nil {
 		use.log.Errorf("%v: enqueue tweets feedItem:%v", errTag, params.FeedItem)

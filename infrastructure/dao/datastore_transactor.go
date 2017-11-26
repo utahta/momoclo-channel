@@ -36,27 +36,3 @@ func (t *datastoreTransactor) RunInTransaction(fn func(h model.PersistenceHandle
 		return fn(&datastoreHandler{g})
 	}, o)
 }
-
-// With can be used in RunInTransaction
-func (t *datastoreTransactor) With(h model.PersistenceHandler, args ...interface{}) (done func()) {
-	dh, ok := h.(*datastoreHandler)
-	if !ok {
-		return func() {}
-	}
-
-	tmp := make([]*goon.Goon, len(args))
-	for i, arg := range args {
-		if v, ok := arg.(*datastoreHandler); ok {
-			tmp[i] = v.Goon
-			v.Goon = dh.Goon // deliver goon in transaction
-		}
-	}
-
-	return func() {
-		for i, arg := range args {
-			if v, ok := arg.(*datastoreHandler); ok {
-				v.Goon = tmp[i] // recovery
-			}
-		}
-	}
-}

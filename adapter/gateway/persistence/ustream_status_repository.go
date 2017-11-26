@@ -10,7 +10,7 @@ type UstreamStatusRepository struct {
 }
 
 // NewUstreamStatusRepository returns the UstreamStatusRepository
-func NewUstreamStatusRepository(h model.PersistenceHandler) *UstreamStatusRepository {
+func NewUstreamStatusRepository(h model.PersistenceHandler) model.UstreamStatusRepository {
 	return &UstreamStatusRepository{h}
 }
 

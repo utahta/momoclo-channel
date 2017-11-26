@@ -10,7 +10,7 @@ type LineNotificationRepository struct {
 }
 
 // NewLineNotificationRepository returns the LineNotificationRepository
-func NewLineNotificationRepository(h model.PersistenceHandler) *LineNotificationRepository {
+func NewLineNotificationRepository(h model.PersistenceHandler) model.LineNotificationRepository {
 	return &LineNotificationRepository{h}
 }
 

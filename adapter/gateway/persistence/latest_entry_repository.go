@@ -11,7 +11,7 @@ type LatestEntryRepository struct {
 }
 
 // NewLatestEntryRepository returns the LatestEntryRepository
-func NewLatestEntryRepository(h model.PersistenceHandler) *LatestEntryRepository {
+func NewLatestEntryRepository(h model.PersistenceHandler) model.LatestEntryRepository {
 	return &LatestEntryRepository{h}
 }
 

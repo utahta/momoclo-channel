@@ -22,6 +22,7 @@ type (
 		Exists(string) bool
 		Find(string) (*TweetItem, error)
 		Save(*TweetItem) error
+		Tx(PersistenceHandler) TweetItemRepository
 	}
 )
 

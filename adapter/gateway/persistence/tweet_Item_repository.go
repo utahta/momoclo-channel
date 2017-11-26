@@ -10,7 +10,7 @@ type TweetItemRepository struct {
 }
 
 // NewTweetItemRepository returns the TweetItemRepository
-func NewTweetItemRepository(h model.PersistenceHandler) *TweetItemRepository {
+func NewTweetItemRepository(h model.PersistenceHandler) model.TweetItemRepository {
 	return &TweetItemRepository{h}
 }
 
@@ -29,4 +29,9 @@ func (repo *TweetItemRepository) Find(id string) (*model.TweetItem, error) {
 // Save saves tweet item
 func (repo *TweetItemRepository) Save(item *model.TweetItem) error {
 	return repo.Put(item)
+}
+
+// Tx can be used in RunInTransaction
+func (repo *TweetItemRepository) Tx(h model.PersistenceHandler) model.TweetItemRepository {
+	return NewTweetItemRepository(h)
 }

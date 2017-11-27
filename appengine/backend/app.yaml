@@ -6,7 +6,7 @@ instance_class: F1
 automatic_scaling:
   min_idle_instances: automatic
   max_idle_instances: 1
-  max_concurrent_requests: 80
+  max_concurrent_requests: 50
   min_pending_latency: 3000ms
   max_pending_latency: automatic
 
@@ -20,30 +20,18 @@ handlers:
   static_files: public/favicon.ico
   upload: public/favicon.ico
 
-- url: /cron/crawl
+- url: /line/bot/callback
   script: _go_app
-  login: admin
-
-- url: /cron/ustream
+- url: /line/bot/help
   script: _go_app
-  login: admin
-
-- url: /cron/reminder
-  script: _go_app
-  login: admin
-
-- url: /linebot/callback
-  script: _go_app
-- url: /linebot/help
-  script: _go_app
-- url: /linebot/about
+- url: /line/bot/about
   script: _go_app
 
-- url: /linenotify/on
+- url: /line/notify/on
   script: _go_app
-- url: /linenotify/off
+- url: /line/notify/off
   script: _go_app
-- url: /linenotify/callback
+- url: /line/notify/callback
   script: _go_app
 
 - url: /.*

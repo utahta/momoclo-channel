@@ -26,16 +26,21 @@ func init() {
 		r.Post("/lines", backend.EnqueueLines)
 	})
 
-	router.Route("/linebot", func(r chi.Router) {
-		r.Post("/callback", backend.LineBotCallback)
-		r.Get("/help", backend.LineBotHelp)
-		r.Get("/about", backend.LineBotAbout)
-	})
+	router.Route("/line", func(r chi.Router) {
+		r.Route("/bot", func(r chi.Router) {
+			r.Post("/callback", backend.LineBotCallback)
+			r.Get("/help", backend.LineBotHelp)
+			r.Get("/about", backend.LineBotAbout)
+		})
 
-	router.Route("/linenotify", func(r chi.Router) {
-		r.HandleFunc("/callback", backend.LineNotifyCallback)
-		r.Get("/on", backend.LineNotifyOn)
-		r.Get("/off", backend.LineNotifyOff)
+		r.Route("/notify", func(r chi.Router) {
+			r.HandleFunc("/callback", backend.LineNotifyCallback)
+			r.Get("/on", backend.LineNotifyOn)
+			r.Get("/off", backend.LineNotifyOff)
+
+			r.Post("/broadcast", backend.LineNotifyBroadcast)
+			r.Post("/", backend.LineNotify)
+		})
 	})
 
 	http.Handle("/", router)

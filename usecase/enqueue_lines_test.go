@@ -59,7 +59,7 @@ func TestEnqueueLines_Do(t *testing.T) {
 	if taskQueue.Tasks[0].QueueName != "queue-line" {
 		t.Errorf("Expected queue name queue-line, got %v", taskQueue.Tasks[0].QueueName)
 	}
-	if taskQueue.Tasks[0].Path != "/queue/line/broadcast" {
+	if taskQueue.Tasks[0].Path != "/line/notify/broadcast" {
 		t.Errorf("Expected queue path /queue/line/broadcast, got %v", taskQueue.Tasks[0].Path)
 	}
 }

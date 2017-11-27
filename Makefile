@@ -18,9 +18,9 @@ serve:
 	@goapp serve ./appengine/backend/app.yaml ./appengine/queue/app.yaml
 
 deploy-prod:
-	@make -C appengine/queue deploy-prod
+	@make -C appengine/batch deploy-prod
 	@make -C appengine/backend deploy-prod
 
 deploy-dev:
-	@make -C appengine/queue deploy-dev
+	@make -C appengine/batch deploy-dev
 	@make -C appengine/backend deploy-dev

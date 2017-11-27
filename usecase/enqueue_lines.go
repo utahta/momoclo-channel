@@ -67,7 +67,7 @@ func (use *EnqueueLines) Do(params EnqueueLinesParams) error {
 	messages := feeditem.ToLineNotifyMessages(params.FeedItem)
 	if len(messages) == 0 {
 		use.log.Errorf("%v: invalid enqueue lines feedItem:%v", errTag, params.FeedItem)
-		return errors.New("invalid enqueue line messages")
+		return errors.Errorf("%v: invalid enqueue line messages", errTag)
 	}
 
 	task := eventtask.NewLinesBroadcast(messages)

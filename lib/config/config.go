@@ -56,7 +56,7 @@ var (
 
 // LineNotifyCallbackURL returns LINE Notify callback URL
 func LineNotifyCallbackURL() string {
-	return C.App.BaseURL + "/linenotify/callback"
+	return C.App.BaseURL + "/line/notify/callback"
 }
 
 // MustLoad loads config file

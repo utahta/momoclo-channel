@@ -59,7 +59,7 @@ func TestEnqueueTweets_Do(t *testing.T) {
 	if taskQueue.Tasks[0].QueueName != "queue-tweet" {
 		t.Errorf("Expected queue name queue-tweet, got %v", taskQueue.Tasks[0].QueueName)
 	}
-	if taskQueue.Tasks[0].Path != "/queue/tweet" {
+	if taskQueue.Tasks[0].Path != "/tweet" {
 		t.Errorf("Expected queue path /queue/tweet, got %v", taskQueue.Tasks[0].Path)
 	}
 }

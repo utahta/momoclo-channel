@@ -1,4 +1,4 @@
-service: queue
+service: batch
 version: v3-0-0
 runtime: go
 api_version: go1.8

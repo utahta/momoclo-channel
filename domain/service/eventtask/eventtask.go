@@ -22,7 +22,7 @@ func NewTweet(v model.TweetRequest) event.Task {
 
 // NewTweets returns tweet task
 func NewTweets(v []model.TweetRequest) event.Task {
-	return event.Task{QueueName: "queue-tweet", Path: "/queue/tweet", Object: v}
+	return event.Task{QueueName: "queue-tweet", Path: "/tweet", Object: v}
 }
 
 // NewLineBroadcast returns broadcast line notification task
@@ -32,10 +32,10 @@ func NewLineBroadcast(v model.LineNotifyMessage) event.Task {
 
 // NewLinesBroadcast returns broadcast line notification task
 func NewLinesBroadcast(v []model.LineNotifyMessage) event.Task {
-	return event.Task{QueueName: "queue-line", Path: "/queue/line/broadcast", Object: v}
+	return event.Task{QueueName: "queue-line", Path: "/line/notify/broadcast", Object: v}
 }
 
 // NewLine returns line task
 func NewLine(v model.LineNotifyRequest) event.Task {
-	return event.Task{QueueName: "queue-line", Path: "/queue/line", Object: v}
+	return event.Task{QueueName: "queue-line", Path: "/line/notify", Object: v}
 }

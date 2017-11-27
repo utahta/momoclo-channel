@@ -3,16 +3,18 @@ queue:
   rate: 10/s
   target: default
   retry_parameters:
-    task_retry_limit: 5
-- name: queue-tweet
-  rate: 100/s
-  bucket_size: 20
-  target: queue
-  retry_parameters:
-    task_retry_limit: 5
+    task_retry_limit: 3
 - name: queue-line
-  rate: 100/s
-  bucket_size: 20
-  target: queue
+  rate: 50/s
+  bucket_size: 10
+  target: default
   retry_parameters:
-    task_retry_limit: 5
+    task_retry_limit: 3
+    min_backoff_seconds: 3
+- name: queue-tweet
+  rate: 50/s
+  bucket_size: 10
+  target: batch
+  retry_parameters:
+    task_retry_limit: 3
+    min_backoff_seconds: 3

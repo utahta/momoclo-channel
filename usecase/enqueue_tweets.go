@@ -67,7 +67,7 @@ func (use *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 	requests := feeditem.ToTweetRequests(params.FeedItem)
 	if len(requests) == 0 {
 		use.log.Errorf("%v: invalid enqueue tweets feedItem:%v", errTag, params.FeedItem)
-		return errors.New("invalid enqueue tweets")
+		return errors.Errorf("%v: invalid enqueue tweets", errTag)
 	}
 
 	task := eventtask.NewTweets(requests)

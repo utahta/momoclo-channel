@@ -32,22 +32,34 @@
   version = "v3.2.1"
 
 [[projects]]
+  name = "github.com/go-playground/locales"
+  packages = [".","currency"]
+  revision = "e4cbcb5d0652150d40ad0646651076b6bd2be4f6"
+  version = "v0.11.2"
+
+[[projects]]
+  name = "github.com/go-playground/universal-translator"
+  packages = ["."]
+  revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
+  version = "v0.16.0"
+
+[[projects]]
+  name = "github.com/go-playground/validator"
+  packages = ["."]
+  revision = "61caf9d3038e1af346dbf5c2e16f6678e1548364"
+  version = "v9.9.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "5a0f697c9ed9d68fef0116532c6e05cfeae00e55"
 
 [[projects]]
-  name = "github.com/gorilla/context"
+  branch = "master"
+  name = "github.com/google/uuid"
   packages = ["."]
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/gorilla/mux"
-  packages = ["."]
-  revision = "bcd8bc72b08df0f70df986b97f95590779502d31"
-  version = "v1.4.0"
+  revision = "8c31c18f31ede9fc8eae72290a7e7a8064e9b3e3"
 
 [[projects]]
   branch = "master"
@@ -98,22 +110,16 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/pkg/errors"
   packages = ["."]
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
-
-[[projects]]
-  name = "github.com/urfave/negroni"
-  packages = ["."]
-  revision = "fde5e16d32adc7ad637e9cd9ad21d4ebc6192535"
-  version = "v0.2.0"
+  revision = "f15c970de5b76fac0b59abb32d62c17cc7bed265"
 
 [[projects]]
   name = "github.com/utahta/go-linenotify"
-  packages = ["."]
-  revision = "b8ba6c0ca3a8e80dfad8f6740a865bcc9b7678cc"
-  version = "v0.1.0"
+  packages = [".","auth","token"]
+  revision = "1f9c5d4f257800db7c9f02f94dcd319963e313ec"
+  version = "v0.4.2"
 
 [[projects]]
   branch = "master"
@@ -131,11 +137,17 @@
   branch = "master"
   name = "github.com/utahta/momoclo-crawler"
   packages = ["."]
-  revision = "8cc31543de7b996b47ccc99a2479af7f46e18f4f"
+  revision = "9f39d88f66a76e759348e21798a7affaeed9f3a4"
+
+[[projects]]
+  name = "github.com/utahta/nsync"
+  packages = ["."]
+  revision = "a937157e5c5439a8a7718cf8e88b6585f002931b"
+  version = "v0.1.0"
 
 [[projects]]
   branch = "master"
-  name = "github.com/utahta/uststat"
+  name = "github.com/utahta/ustream-live-status"
   packages = ["."]
   revision = "0b788f8cd554ace1f8e9bbf51453b02796d4889c"
 
@@ -167,11 +179,11 @@
   branch = "master"
   name = "google.golang.org/appengine"
   packages = [".","aetest","datastore","internal","internal/app_identity","internal/base","internal/datastore","internal/log","internal/memcache","internal/modules","internal/remote_api","internal/taskqueue","internal/urlfetch","internal/user","log","memcache","taskqueue","urlfetch","user"]
-  revision = "d9a072cfa7b9736e44311ef77b3e09d804bfa599"
+  revision = "9d8544a6b2c7df9cff240fcf92d7b2f59bc13416"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8cd912f8d9f65f530e2f4fab2d55d5daf54a97e1797e9aa4360ad3373fa8372e"
+  inputs-digest = "84e6fe69fb8bc9732a4c632d0f867f5e6103d26ba51870fade4ce3c98dacb6b9"
   solver-name = "gps-cdcl"
   solver-version = 1

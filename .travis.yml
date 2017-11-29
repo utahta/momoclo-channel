@@ -11,11 +11,11 @@ before_install:
   - curl -fSL https://github.com/golang/dep/releases/download/v0.3.0/dep-linux-amd64.zip -o $GOPATH/shared/dep.zip
   - unzip -q $GOPATH/shared/dep.zip -d $GOPATH/bin
   - curl -fSL https://github.com/haya14busa/reviewdog/releases/download/0.9.7/reviewdog_linux_amd64 -o $GOPATH/bin/reviewdog && chmod +x $GOPATH/bin/reviewdog
-  - curl -fSL https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.57.zip -o $GOPATH/shared/go_appengine_sdk.zip
+  - curl -fSL https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.60.zip -o $GOPATH/shared/go_appengine_sdk.zip
   - unzip -q $GOPATH/shared/go_appengine_sdk.zip -d $GOPATH/shared
   - export PATH=$PATH:$GOPATH/bin:$GOPATH/shared/go_appengine
 install:
   - make install
 script:
   - make test
-  - golint $(go list ./... | grep -v vendor) | reviewdog -f=golint -ci=travis
+  - make lint | reviewdog -f=golint -ci=travis

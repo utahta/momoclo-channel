@@ -1,0 +1,18 @@
+service: batch
+version: v3-0-0
+runtime: go
+api_version: go1.8
+
+instance_class: B2
+basic_scaling:
+  idle_timeout: 1m
+  max_instances: 1
+
+handlers:
+- url: /_ah/start
+  script: _go_app
+  login: admin
+
+- url: /.*
+  script: _go_app
+  login: admin

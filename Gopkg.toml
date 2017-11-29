@@ -87,8 +87,8 @@
   name = "github.com/mjibson/goon"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/pkg/errors"
-  version = "0.8.0"
 
 [[constraint]]
   name = "github.com/urfave/negroni"
@@ -96,7 +96,7 @@
 
 [[constraint]]
   name = "github.com/utahta/go-linenotify"
-  version = "0.1.0"
+  version = "0.4.0"
 
 [[constraint]]
   branch = "master"
@@ -111,7 +111,7 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/utahta/uststat"
+  name = "github.com/utahta/ustream-live-status"
 
 [[constraint]]
   branch = "master"
@@ -139,3 +139,8 @@
 [[constraint]]
   name = "github.com/go-chi/chi"
   version = "^3.2.1"
+
+[[constraint]]
+  name = "github.com/go-playground/validator"
+  version = "^9.9.0"
+

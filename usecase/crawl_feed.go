@@ -50,7 +50,7 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 	}
 	for i := range items {
 		if err := core.Validate(items[i]); err != nil {
-			use.log.Errorf("%v: validate error i:%v items:%v err:%v", i, items, err)
+			use.log.Errorf("%v: validate error i:%v items:%v err:%v", errTag, i, items, err)
 			return errors.Wrap(err, errTag)
 		}
 	}

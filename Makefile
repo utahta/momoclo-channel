@@ -10,7 +10,10 @@ test:
 lint:
 	@golint $$(go list ./... | grep -v vendor) | grep -v ": exported const" | grep -v ": exported var Err"
 
-review: test
+vet:
+	@go vet $$(go list ./... | grep -v vendor) 
+
+review: test vet
 	@make lint | reviewdog -f=golint -diff="git diff master"
 
 serve:

@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
@@ -14,6 +13,7 @@ import (
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/lib/config"
+	"github.com/utahta/nsync"
 	"google.golang.org/appengine/urlfetch"
 )
 
@@ -21,17 +21,11 @@ type (
 	client struct {
 		*linenotify.Client
 	}
-
-	cacheRepository map[string][]byte
 )
 
 var (
-	cachePool = sync.Pool{
-		New: func() interface{} {
-			return cacheRepository{}
-		},
-	}
-	cacheMux sync.Mutex
+	cacheRepo     = newCacheRepository()
+	cacheNamedMux nsync.Mutex
 )
 
 // New returns LineNotify
@@ -74,14 +68,11 @@ func (c *client) notify(accessToken string, msg model.LineNotifyMessage) error {
 }
 
 func (c *client) fetchImage(urlStr string) ([]byte, error) {
-	cacheMux.Lock()
-	defer cacheMux.Unlock()
+	cacheNamedMux.Lock(urlStr)
+	defer cacheNamedMux.Unlock(urlStr)
 
-	cache := cachePool.Get().(cacheRepository)
-	defer cachePool.Put(cache)
-
-	if b, ok := cache[urlStr]; ok {
-		return b, nil
+	if c, ok := cacheRepo.Get(urlStr); ok {
+		return c.Bytes(), nil
 	}
 
 	o, err := openuri.Open(urlStr, openuri.WithHTTPClient(c.HTTPClient))
@@ -98,7 +89,7 @@ func (c *client) fetchImage(urlStr string) ([]byte, error) {
 	if ct := http.DetectContentType(buf.Bytes()); !strings.Contains(ct, "image") {
 		return nil, errors.Errorf("invalid content type. ct:%v", ct)
 	}
-	cache[urlStr] = buf.Bytes()
+	cacheRepo.Set(urlStr, newCache(buf.Bytes()))
 
 	return buf.Bytes(), nil
 }

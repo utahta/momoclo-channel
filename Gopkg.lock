@@ -140,6 +140,12 @@
   revision = "9f39d88f66a76e759348e21798a7affaeed9f3a4"
 
 [[projects]]
+  name = "github.com/utahta/nsync"
+  packages = ["."]
+  revision = "a937157e5c5439a8a7718cf8e88b6585f002931b"
+  version = "v0.1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/utahta/ustream-live-status"
   packages = ["."]
@@ -178,6 +184,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e7f03b1e53300b9cb801f95edfb9e2a148d4c46afc27a9fe1045a4dabf869db0"
+  inputs-digest = "84e6fe69fb8bc9732a4c632d0f867f5e6103d26ba51870fade4ce3c98dacb6b9"
   solver-name = "gps-cdcl"
   solver-version = 1

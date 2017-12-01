@@ -5,8 +5,8 @@ queue:
   retry_parameters:
     task_retry_limit: 3
 - name: queue-line
-  rate: 50/s
-  bucket_size: 10
+  rate: 80/s
+  bucket_size: 80
   target: default
   retry_parameters:
     task_retry_limit: 3

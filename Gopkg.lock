@@ -20,6 +20,12 @@
   revision = "61153c768f31ee5f130071d08fc82b85208528de"
 
 [[projects]]
+  name = "github.com/fukata/golang-stats-api-handler"
+  packages = ["."]
+  revision = "90f0b59102629831cc109845475a8d77043412ec"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/garyburd/go-oauth"
   packages = ["oauth"]
@@ -184,6 +190,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "84e6fe69fb8bc9732a4c632d0f867f5e6103d26ba51870fade4ce3c98dacb6b9"
+  inputs-digest = "f904979574b2bc6cd3d78d70496051ff2907104677c68e8da8ef3920cf1922fb"
   solver-name = "gps-cdcl"
   solver-version = 1

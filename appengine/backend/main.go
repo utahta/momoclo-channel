@@ -3,6 +3,7 @@ package backend
 import (
 	"net/http"
 
+	"github.com/fukata/golang-stats-api-handler"
 	"github.com/go-chi/chi"
 	"github.com/utahta/momoclo-channel/adapter/handler/backend"
 	"github.com/utahta/momoclo-channel/adapter/handler/middleware"
@@ -42,6 +43,8 @@ func init() {
 			r.Post("/", backend.LineNotify)
 		})
 	})
+
+	router.HandleFunc("/api/stats", stats_api.Handler)
 
 	http.Handle("/", router)
 }

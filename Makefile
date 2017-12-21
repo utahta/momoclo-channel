@@ -18,7 +18,7 @@ review: test vet
 
 serve:
 	@make -C appengine/backend prepare-serve
-	@goapp serve ./appengine/backend/app.yaml ./appengine/queue/app.yaml
+	@goapp serve ./appengine/backend/app.yaml ./appengine/batch/app.yaml
 
 deploy-prod:
 	@make -C appengine/batch deploy-prod

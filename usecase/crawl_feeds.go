@@ -33,7 +33,6 @@ func (c *CrawlFeeds) Do() error {
 	now := timeutil.Now()
 	codes := []model.FeedCode{
 		model.FeedCodeMomota,
-		model.FeedCodeAriyasu,
 		model.FeedCodeTamai,
 		model.FeedCodeSasaki,
 		model.FeedCodeTakagi,

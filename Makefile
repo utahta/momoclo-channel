@@ -1,5 +1,5 @@
-install:
-	@dep ensure
+setup:
+	@dep ensure -v
 
 fmt:
 	@goimports -w $$(goapp list -f '{{.Dir}}' ./... | grep -v "vendor")

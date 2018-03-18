@@ -15,7 +15,7 @@ before_install:
   - unzip -q $GOPATH/shared/go_appengine_sdk.zip -d $GOPATH/shared
   - export PATH=$PATH:$GOPATH/bin:$GOPATH/shared/go_appengine
 install:
-  - make install
+  - make setup
 script:
   - make test
   - make lint | reviewdog -f=golint -ci=travis

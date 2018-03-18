@@ -39,7 +39,10 @@
 
 [[projects]]
   name = "github.com/go-playground/locales"
-  packages = [".","currency"]
+  packages = [
+    ".",
+    "currency"
+  ]
   revision = "e4cbcb5d0652150d40ad0646651076b6bd2be4f6"
   version = "v0.11.2"
 
@@ -68,18 +71,6 @@
   revision = "8c31c18f31ede9fc8eae72290a7e7a8064e9b3e3"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/jteeuwen/go-pkg-rss"
-  packages = ["."]
-  revision = "72391e6fd7384785fa3c46a405214a616d6c4a1d"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/jteeuwen/go-pkg-xmlx"
-  packages = ["."]
-  revision = "76f54ee73233b171ca9ee82ef837a1fc4d3809c0"
-
-[[projects]]
   name = "github.com/kennygrant/sanitize"
   packages = ["."]
   revision = "6a0bfdde8629a3a3a7418a7eae45c54154692514"
@@ -90,6 +81,18 @@
   name = "github.com/line/line-bot-sdk-go"
   packages = ["linebot"]
   revision = "ec620b9af9b5ebdba700370820c0b6f657f37a3d"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mattn/go-pkg-rss"
+  packages = ["."]
+  revision = "cb3c88c0b82e6cb1691c2620beda2a44f43d4217"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mattn/go-pkg-xmlx"
+  packages = ["."]
+  revision = "db53493302d1dfcc6b9f16016e3c43cedaf5213d"
 
 [[projects]]
   branch = "master"
@@ -123,7 +126,11 @@
 
 [[projects]]
   name = "github.com/utahta/go-linenotify"
-  packages = [".","auth","token"]
+  packages = [
+    ".",
+    "auth",
+    "token"
+  ]
   revision = "1f9c5d4f257800db7c9f02f94dcd319963e313ec"
   version = "v0.4.2"
 
@@ -135,15 +142,17 @@
 
 [[projects]]
   name = "github.com/utahta/go-twitter"
-  packages = [".","types"]
+  packages = [
+    ".",
+    "types"
+  ]
   revision = "76b6e9de46bc03d708c8f256a7e3319f61ab859e"
   version = "v0.2.2"
 
 [[projects]]
-  branch = "master"
   name = "github.com/utahta/momoclo-crawler"
   packages = ["."]
-  revision = "9f39d88f66a76e759348e21798a7affaeed9f3a4"
+  revision = "9a65828d7369d206d8a45ed6ef36d699149d0469"
 
 [[projects]]
   name = "github.com/utahta/nsync"
@@ -160,7 +169,12 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context","context/ctxhttp","html","html/atom"]
+  packages = [
+    "context",
+    "context/ctxhttp",
+    "html",
+    "html/atom"
+  ]
   revision = "1a68b1313cf4ad7778376e82641197b60c02f65c"
 
 [[projects]]
@@ -172,24 +186,57 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
-  packages = ["encoding","encoding/internal","encoding/internal/identifier","encoding/japanese","internal/gen","transform","unicode/cldr"]
+  packages = [
+    "encoding",
+    "encoding/internal",
+    "encoding/internal/identifier",
+    "encoding/japanese",
+    "internal/gen",
+    "transform",
+    "unicode/cldr"
+  ]
   revision = "210eee5cf7323015d097341bcf7166130d001cd8"
 
 [[projects]]
   branch = "master"
   name = "google.golang.org/api"
-  packages = ["customsearch/v1","gensupport","googleapi","googleapi/internal/uritemplates"]
+  packages = [
+    "customsearch/v1",
+    "gensupport",
+    "googleapi",
+    "googleapi/internal/uritemplates"
+  ]
   revision = "324744a33f1f37e63dd1695cfb3ec9a3e4a1cb05"
 
 [[projects]]
   branch = "master"
   name = "google.golang.org/appengine"
-  packages = [".","aetest","datastore","internal","internal/app_identity","internal/base","internal/datastore","internal/log","internal/memcache","internal/modules","internal/remote_api","internal/taskqueue","internal/urlfetch","internal/user","log","memcache","taskqueue","urlfetch","user"]
+  packages = [
+    ".",
+    "aetest",
+    "datastore",
+    "internal",
+    "internal/app_identity",
+    "internal/base",
+    "internal/datastore",
+    "internal/log",
+    "internal/memcache",
+    "internal/modules",
+    "internal/remote_api",
+    "internal/taskqueue",
+    "internal/urlfetch",
+    "internal/user",
+    "log",
+    "memcache",
+    "taskqueue",
+    "urlfetch",
+    "user"
+  ]
   revision = "9d8544a6b2c7df9cff240fcf92d7b2f59bc13416"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f904979574b2bc6cd3d78d70496051ff2907104677c68e8da8ef3920cf1922fb"
+  inputs-digest = "95616e104c554977056c48369997662d16040b143f92ff2e89b4c370b1d0b242"
   solver-name = "gps-cdcl"
   solver-version = 1

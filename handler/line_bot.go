@@ -1,11 +1,10 @@
-package backend
+package handler
 
 import (
 	"html/template"
 	"net/http"
 
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/linebot"
-	"github.com/utahta/momoclo-channel/adapter/handler"
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/usecase"
@@ -18,16 +17,16 @@ func LineBotCallback(w http.ResponseWriter, req *http.Request) {
 	events, err := linebot.ParseRequest(req)
 	if err != nil {
 		if err == domain.ErrInvalidSignature {
-			handler.Fail(ctx, w, err, http.StatusBadRequest)
+			failResponse(ctx, w, err, http.StatusBadRequest)
 			return
 		}
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 
 	params := usecase.HandleLineBotEventsParams{Events: events}
 	if err := container.Usecase(ctx).HandleLineBotEvents().Do(params); err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -38,7 +37,7 @@ func LineBotHelp(w http.ResponseWriter, req *http.Request) {
 
 	tpl := template.Must(template.ParseFiles("public/templates/linebot/help.html"))
 	if err := tpl.Execute(w, nil); err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -49,7 +48,7 @@ func LineBotAbout(w http.ResponseWriter, req *http.Request) {
 
 	tpl := template.Must(template.ParseFiles("public/templates/linebot/about.html"))
 	if err := tpl.Execute(w, nil); err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }

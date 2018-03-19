@@ -1,11 +1,10 @@
-package backend
+package handler
 
 import (
 	"context"
 	"net/http"
 	"time"
 
-	"github.com/utahta/momoclo-channel/adapter/handler"
 	"github.com/utahta/momoclo-channel/container"
 )
 
@@ -14,7 +13,7 @@ func CronReminder(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	if err := container.Usecase(ctx).Remind().Do(); err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -24,7 +23,7 @@ func CronUstream(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	if err := container.Usecase(ctx).CheckUstream().Do(); err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }
@@ -35,7 +34,7 @@ func CronCrawl(w http.ResponseWriter, req *http.Request) {
 	defer cancel()
 
 	if err := container.Usecase(ctx).CrawlFeeds().Do(); err != nil {
-		handler.Fail(ctx, w, err, http.StatusInternalServerError)
+		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
 }

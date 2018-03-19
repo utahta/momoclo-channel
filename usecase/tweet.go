@@ -6,12 +6,13 @@ import (
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/eventtask"
+	"github.com/utahta/momoclo-channel/log"
 )
 
 type (
 	// Tweet use case
 	Tweet struct {
-		log       core.Logger
+		log       log.Logger
 		taskQueue event.TaskQueue
 		tweeter   model.Tweeter
 	}
@@ -23,7 +24,7 @@ type (
 )
 
 // NewTweet returns Tweet use case
-func NewTweet(log core.Logger, taskQueue event.TaskQueue, tweeter model.Tweeter) *Tweet {
+func NewTweet(log log.Logger, taskQueue event.TaskQueue, tweeter model.Tweeter) *Tweet {
 	return &Tweet{
 		log:       log,
 		taskQueue: taskQueue,

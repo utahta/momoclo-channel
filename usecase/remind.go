@@ -4,17 +4,17 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/eventtask"
+	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
 )
 
 type (
 	// Remind use case
 	Remind struct {
-		log       core.Logger
+		log       log.Logger
 		taskQueue event.TaskQueue
 		repo      model.ReminderRepository
 	}
@@ -22,7 +22,7 @@ type (
 
 // NewRemind returns Remind use case
 func NewRemind(
-	logger core.Logger,
+	logger log.Logger,
 	taskQueue event.TaskQueue,
 	repo model.ReminderRepository) *Remind {
 	return &Remind{

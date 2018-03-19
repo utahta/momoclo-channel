@@ -6,12 +6,13 @@ import (
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/eventtask"
+	"github.com/utahta/momoclo-channel/log"
 )
 
 type (
 	// CrawlFeed use case
 	CrawlFeed struct {
-		log       core.Logger
+		log       log.Logger
 		feed      model.FeedFetcher
 		taskQueue event.TaskQueue
 		repo      model.LatestEntryRepository
@@ -25,7 +26,7 @@ type (
 
 // NewCrawlFeed returns Crawl use case
 func NewCrawlFeed(
-	log core.Logger,
+	log log.Logger,
 	feed model.FeedFetcher,
 	taskQueue event.TaskQueue,
 	repo model.LatestEntryRepository) *CrawlFeed {

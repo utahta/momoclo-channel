@@ -5,17 +5,17 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/eventtask"
+	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
 )
 
 type (
 	// CheckUstream use case
 	CheckUstream struct {
-		log       core.Logger
+		log       log.Logger
 		taskQueue event.TaskQueue
 		checker   model.UstreamStatusChecker
 		repo      model.UstreamStatusRepository
@@ -24,7 +24,7 @@ type (
 
 // NewCheckUstream returns CheckUstream use case
 func NewCheckUstream(
-	logger core.Logger,
+	logger log.Logger,
 	taskQueue event.TaskQueue,
 	checker model.UstreamStatusChecker,
 	repo model.UstreamStatusRepository) *CheckUstream {

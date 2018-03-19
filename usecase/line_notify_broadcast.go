@@ -7,12 +7,13 @@ import (
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/eventtask"
+	"github.com/utahta/momoclo-channel/log"
 )
 
 type (
 	// LineNotifyBroadcast use case
 	LineNotifyBroadcast struct {
-		log       core.Logger
+		log       log.Logger
 		taskQueue event.TaskQueue
 		repo      model.LineNotificationRepository
 	}
@@ -25,7 +26,7 @@ type (
 
 // NewLineNotifyBroadcast returns LineNotifyBroadcast use case
 func NewLineNotifyBroadcast(
-	log core.Logger,
+	log log.Logger,
 	taskQueue event.TaskQueue,
 	repo model.LineNotificationRepository) *LineNotifyBroadcast {
 	return &LineNotifyBroadcast{

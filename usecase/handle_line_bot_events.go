@@ -1,15 +1,15 @@
 package usecase
 
 import (
-	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/linebot"
+	"github.com/utahta/momoclo-channel/log"
 )
 
 type (
 	// HandleLineBotEvents use case
 	HandleLineBotEvents struct {
-		log           core.Logger
+		log           log.Logger
 		lineBot       model.LineBot
 		imageSearcher model.ImageSearcher
 	}
@@ -22,7 +22,7 @@ type (
 
 // NewHandleLineBotEvents returns HandleLineBotEvents use case
 func NewHandleLineBotEvents(
-	logger core.Logger,
+	logger log.Logger,
 	lineBot model.LineBot,
 	imageSearcher model.ImageSearcher) *HandleLineBotEvents {
 	return &HandleLineBotEvents{

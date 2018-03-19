@@ -8,12 +8,13 @@ import (
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/eventtask"
 	"github.com/utahta/momoclo-channel/domain/service/feeditem"
+	"github.com/utahta/momoclo-channel/log"
 )
 
 type (
 	// EnqueueLines use case
 	EnqueueLines struct {
-		log        core.Logger
+		log        log.Logger
 		taskQueue  event.TaskQueue
 		transactor model.Transactor
 		repo       model.LineItemRepository
@@ -27,7 +28,7 @@ type (
 
 // NewEnqueueLines returns EnqueueLines use case
 func NewEnqueueLines(
-	log core.Logger,
+	log log.Logger,
 	taskQueue event.TaskQueue,
 	transactor model.Transactor,
 	repo model.LineItemRepository) *EnqueueLines {

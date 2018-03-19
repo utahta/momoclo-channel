@@ -8,12 +8,13 @@ import (
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/eventtask"
 	"github.com/utahta/momoclo-channel/domain/service/feeditem"
+	"github.com/utahta/momoclo-channel/log"
 )
 
 type (
 	// EnqueueTweets use case
 	EnqueueTweets struct {
-		log        core.Logger
+		log        log.Logger
 		taskQueue  event.TaskQueue
 		transactor model.Transactor
 		repo       model.TweetItemRepository
@@ -27,7 +28,7 @@ type (
 
 // NewEnqueueTweets returns EnqueueTweets use case
 func NewEnqueueTweets(
-	log core.Logger,
+	log log.Logger,
 	taskQueue event.TaskQueue,
 	transactor model.Transactor,
 	repo model.TweetItemRepository) *EnqueueTweets {

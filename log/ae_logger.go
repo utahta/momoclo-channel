@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/utahta/momoclo-channel/domain/core"
 	"google.golang.org/appengine/log"
 )
 
@@ -13,7 +12,7 @@ type aeLogger struct {
 }
 
 // NewAELogger returns appengine logger
-func NewAELogger(ctx context.Context) core.Logger {
+func NewAELogger(ctx context.Context) Logger {
 	return &aeLogger{ctx}
 }
 

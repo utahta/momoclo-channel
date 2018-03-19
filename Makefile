@@ -1,24 +1,47 @@
+## setup
+
 setup:
 	@dep ensure -v
 
-fmt:
-	@goimports -w $$(goapp list -f '{{.Dir}}' ./... | grep -v "vendor")
+setup/tools:
+	go get -u golang.org/x/tools/cmd/goimports
+	go get -u honnef.co/go/tools/cmd/staticcheck
+	go get -u honnef.co/go/tools/cmd/unused
+	go get -u github.com/kisielk/errcheck
+	go get -u golang.org/x/lint/golint
+	go get -u github.com/haya14busa/reviewdog/cmd/reviewdog
+
+## test
+
+TESTPKGS=$(shell go list ./... | grep -v "vendor")
 
 test:
-	@goapp test -v $$(goapp list ./... | grep -v "vendor")
+	@goapp test -v $(TESTPKGS)
 
-lint:
-	@golint $$(go list ./... | grep -v vendor) | grep -v ": exported const" | grep -v ": exported var Err"
+## lint
 
-vet:
-	@go vet $$(go list ./... | grep -v vendor) 
+LINTPKGS=$(shell go list ./... | grep -v "vendor")
 
-review: test vet
-	@make lint | reviewdog -f=golint -diff="git diff master"
+lint: lint/vet
+
+lint/vet:
+	@go vet $(LINTPKGS)
+
+## reviewdog
+
+reviewdog:
+	reviewdog -diff="git diff master"
+
+reviewdog/ci:
+	reviewdog -ci="travis"
+
+## serve
 
 serve:
 	@make -C appengine/backend prepare-serve
 	@goapp serve ./appengine/backend/app.yaml ./appengine/batch/app.yaml
+
+## deploy
 
 deploy-prod:
 	@make -C appengine/batch deploy-prod

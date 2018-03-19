@@ -16,6 +16,8 @@ before_install:
   - export PATH=$PATH:$GOPATH/bin:$GOPATH/shared/go_appengine
 install:
   - make setup
+  - make setup/tools
 script:
   - make test
-  - make lint | reviewdog -f=golint -ci=travis
+  - make lint
+  - make reviewdog/ci

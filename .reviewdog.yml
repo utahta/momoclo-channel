@@ -1,0 +1,22 @@
+runner:
+  golint:
+    cmd: "golint $(go list ./...) | grep -v \": exported const\" | grep -v \": exported var Err\""
+    errorformat:
+      - "%f:%l:%c: %m"
+  govet:
+    cmd: "go vet $(go list ./...)"
+
+  unused:
+    cmd: "unused $(go list ./...)"
+    errorformat:
+      - "%f:%l:%c: %m"
+
+  errcheck:
+    cmd: "errcheck -asserts -ignoretests -blank $(go list ./...)"
+    errorformat:
+      - "%f:%l:%c:%m"
+
+  staticcheck:
+    cmd: "staticcheck $(go list ./...)"
+    errorformat:
+      - "%f:%l:%c: %m"

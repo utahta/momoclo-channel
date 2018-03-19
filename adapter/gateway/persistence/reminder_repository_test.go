@@ -46,6 +46,6 @@ func TestReminderRepository_FindAll(t *testing.T) {
 		t.Fatalf("Expected len 1, got %d", len(reminders))
 	}
 	if reminders[0].Text != "test1" {
-		t.Errorf("Expected text test1, got %d", reminders[0].Text)
+		t.Errorf("Expected text test1, got %v", reminders[0].Text)
 	}
 }

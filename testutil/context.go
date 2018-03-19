@@ -1,4 +1,4 @@
-package aetestutil
+package testutil
 
 import (
 	"context"

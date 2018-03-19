@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/utahta/go-linenotify/token"
+	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/lib/config"
 	"google.golang.org/appengine/urlfetch"
 )
 

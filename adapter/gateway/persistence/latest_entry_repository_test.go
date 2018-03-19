@@ -9,12 +9,12 @@ import (
 	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
-	"github.com/utahta/momoclo-channel/lib/aetestutil"
+	"github.com/utahta/momoclo-channel/testutil"
 	"google.golang.org/appengine/aetest"
 )
 
 func TestLatestEntryRepository_Save(t *testing.T) {
-	ctx, done, err := aetestutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Error(err)
 	}
@@ -72,7 +72,7 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 }
 
 func TestLatestEntryRepository_GetURL(t *testing.T) {
-	ctx, done, err := aetestutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Error(err)
 	}

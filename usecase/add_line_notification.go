@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/lib/config"
 )
 
 type (

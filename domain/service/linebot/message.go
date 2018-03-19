@@ -3,7 +3,7 @@ package linebot
 import (
 	"fmt"
 
-	"github.com/utahta/momoclo-channel/lib/config"
+	"github.com/utahta/momoclo-channel/config"
 )
 
 // FollowMessage returns message on follow

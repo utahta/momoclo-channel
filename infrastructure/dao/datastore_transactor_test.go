@@ -4,12 +4,12 @@ import (
 	"testing"
 
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/lib/aetestutil"
+	"github.com/utahta/momoclo-channel/testutil"
 	"google.golang.org/appengine/aetest"
 )
 
 func TestDatastoreTransactor_RunInTransaction(t *testing.T) {
-	ctx, done, err := aetestutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Fatal(err)
 	}

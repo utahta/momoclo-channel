@@ -9,13 +9,13 @@ import (
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/infrastructure/event/eventtest"
-	"github.com/utahta/momoclo-channel/lib/aetestutil"
+	"github.com/utahta/momoclo-channel/testutil"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
 )
 
 func TestLineNotify_Do(t *testing.T) {
-	ctx, done, err := aetestutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Fatal(err)
 	}

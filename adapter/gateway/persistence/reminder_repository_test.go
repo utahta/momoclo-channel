@@ -6,13 +6,13 @@ import (
 
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
-	"github.com/utahta/momoclo-channel/lib/aetestutil"
+	"github.com/utahta/momoclo-channel/testutil"
 	"google.golang.org/appengine/aetest"
 	"google.golang.org/appengine/datastore"
 )
 
 func TestReminderRepository_FindAll(t *testing.T) {
-	ctx, done, err := aetestutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/lib/config"
 	"google.golang.org/api/customsearch/v1"
 	"google.golang.org/appengine/urlfetch"
 )

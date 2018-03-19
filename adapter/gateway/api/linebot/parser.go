@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/lib/config"
 )
 
 // ParseRequest parses http request

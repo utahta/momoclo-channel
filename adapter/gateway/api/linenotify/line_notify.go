@@ -10,9 +10,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/go-linenotify"
 	"github.com/utahta/go-openuri"
+	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/lib/config"
 	"github.com/utahta/nsync"
 	"google.golang.org/appengine/urlfetch"
 )

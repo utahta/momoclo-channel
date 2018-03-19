@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/utahta/momoclo-channel/adapter/handler/backend"
 	"github.com/utahta/momoclo-channel/adapter/handler/middleware"
-	"github.com/utahta/momoclo-channel/lib/config"
+	"github.com/utahta/momoclo-channel/config"
 )
 
 func init() {

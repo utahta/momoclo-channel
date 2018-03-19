@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/go-twitter"
 	"github.com/utahta/go-twitter/types"
+	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/lib/config"
 	"google.golang.org/appengine/urlfetch"
 )
 

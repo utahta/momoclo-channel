@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/utahta/momoclo-channel/lib/timeutil"
+	"github.com/utahta/momoclo-channel/timeutil"
 )
 
 type (

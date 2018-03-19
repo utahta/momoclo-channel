@@ -8,7 +8,7 @@ import (
 	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/eventtask"
-	"github.com/utahta/momoclo-channel/lib/timeutil"
+	"github.com/utahta/momoclo-channel/timeutil"
 )
 
 type (

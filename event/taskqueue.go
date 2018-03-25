@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/event"
 	"google.golang.org/appengine/taskqueue"
 )
 
@@ -13,11 +12,11 @@ type taskQueue struct {
 }
 
 // NewTaskQueue returns event.TaskQueue that wraps appengine/taskqueue
-func NewTaskQueue(ctx context.Context) event.TaskQueue {
+func NewTaskQueue(ctx context.Context) TaskQueue {
 	return &taskQueue{ctx}
 }
 
-func (t *taskQueue) Push(task event.Task) error {
+func (t *taskQueue) Push(task Task) error {
 	const errTag = "taskQueue.Push failed"
 
 	req, err := t.newPOSTTask(task)
@@ -31,7 +30,7 @@ func (t *taskQueue) Push(task event.Task) error {
 	return nil
 }
 
-func (t *taskQueue) PushMulti(tasks []event.Task) error {
+func (t *taskQueue) PushMulti(tasks []Task) error {
 	const errTag = "taskQueue.PushMulti failed"
 
 	if len(tasks) == 0 {
@@ -65,7 +64,7 @@ func (t *taskQueue) PushMulti(tasks []event.Task) error {
 	return nil
 }
 
-func (t *taskQueue) newPOSTTask(task event.Task) (*taskqueue.Task, error) {
+func (t *taskQueue) newPOSTTask(task Task) (*taskqueue.Task, error) {
 	v, err := task.Params()
 	if err != nil {
 		return nil, errors.Wrapf(err, "taskQueue.newPOSTTask failed: task:%v", task)

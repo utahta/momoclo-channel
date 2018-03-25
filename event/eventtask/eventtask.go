@@ -1,8 +1,8 @@
 package eventtask
 
 import (
-	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/event"
 )
 
 // NewEnqueueTweets returns enqueue tweets task

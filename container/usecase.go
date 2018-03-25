@@ -9,8 +9,8 @@ import (
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/ustream"
 	"github.com/utahta/momoclo-channel/adapter/gateway/crawler"
+	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/infrastructure/dao"
-	"github.com/utahta/momoclo-channel/infrastructure/event"
 	"github.com/utahta/momoclo-channel/usecase"
 )
 

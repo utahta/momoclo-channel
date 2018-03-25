@@ -1,7 +1,7 @@
 package eventtest
 
 import (
-	"github.com/utahta/momoclo-channel/domain/event"
+	"github.com/utahta/momoclo-channel/event"
 )
 
 // TaskQueue presents mock

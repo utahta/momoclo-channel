@@ -10,8 +10,8 @@ import (
 	"github.com/utahta/go-linenotify/auth"
 	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/container"
-	"github.com/utahta/momoclo-channel/domain/event"
 	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/usecase"
 )
 

@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/validator"
 )
 
 type (
@@ -36,7 +36,7 @@ func NewTweet(log log.Logger, taskQueue event.TaskQueue, tweeter model.Tweeter) 
 func (use *Tweet) Do(params TweetParams) error {
 	const errTag = "Tweet.Do failed"
 
-	if err := core.Validate(params); err != nil {
+	if err := validator.Validate(params); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 

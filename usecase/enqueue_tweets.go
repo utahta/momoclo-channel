@@ -3,12 +3,12 @@ package usecase
 import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/feeditem"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/validator"
 )
 
 type (
@@ -44,7 +44,7 @@ func NewEnqueueTweets(
 func (use *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 	const errTag = "EnqueueTweets.Do failed"
 
-	if err := core.Validate(params); err != nil {
+	if err := validator.Validate(params); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 

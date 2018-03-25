@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/core"
 	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/validator"
 )
 
 type (
@@ -50,7 +50,7 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 		return nil
 	}
 	for i := range items {
-		if err := core.Validate(items[i]); err != nil {
+		if err := validator.Validate(items[i]); err != nil {
 			use.log.Errorf("%v: validate error i:%v items:%v err:%v", errTag, i, items, err)
 			return errors.Wrap(err, errTag)
 		}

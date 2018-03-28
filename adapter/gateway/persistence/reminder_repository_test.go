@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/utahta/momoclo-channel/dao"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/testutil"
+	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/aetest"
 	"google.golang.org/appengine/datastore"
 )
@@ -19,9 +19,9 @@ func TestReminderRepository_FindAll(t *testing.T) {
 	defer done()
 
 	repo := NewReminderRepository(dao.NewDatastoreHandler(ctx))
-	reminders := []*model.Reminder{
-		model.NewReminderOnce("test1", time.Now()),
-		model.NewReminderOnce("test2", time.Now()),
+	reminders := []*types.Reminder{
+		types.NewReminderOnce("test1", time.Now()),
+		types.NewReminderOnce("test2", time.Now()),
 	}
 	reminders[1].Enabled = false
 	for _, reminder := range reminders {

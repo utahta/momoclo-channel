@@ -2,12 +2,11 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/feeditem"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
 )
 
@@ -16,13 +15,13 @@ type (
 	EnqueueLines struct {
 		log        log.Logger
 		taskQueue  event.TaskQueue
-		transactor model.Transactor
-		repo       model.LineItemRepository
+		transactor types.Transactor
+		repo       types.LineItemRepository
 	}
 
 	// EnqueueLinesParams input parameters
 	EnqueueLinesParams struct {
-		FeedItem model.FeedItem
+		FeedItem types.FeedItem
 	}
 )
 
@@ -30,8 +29,8 @@ type (
 func NewEnqueueLines(
 	log log.Logger,
 	taskQueue event.TaskQueue,
-	transactor model.Transactor,
-	repo model.LineItemRepository) *EnqueueLines {
+	transactor types.Transactor,
+	repo types.LineItemRepository) *EnqueueLines {
 	return &EnqueueLines{
 		log:        log,
 		taskQueue:  taskQueue,
@@ -48,14 +47,14 @@ func (use *EnqueueLines) Do(params EnqueueLinesParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	item := model.NewLineItem(params.FeedItem)
+	item := types.NewLineItem(params.FeedItem)
 	if use.repo.Exists(item.ID) {
 		return nil // already enqueued
 	}
 
-	err := use.transactor.RunInTransaction(func(h model.PersistenceHandler) error {
+	err := use.transactor.RunInTransaction(func(h types.PersistenceHandler) error {
 		repo := use.repo.Tx(h)
-		if _, err := repo.Find(item.ID); err != domain.ErrNoSuchEntity {
+		if _, err := repo.Find(item.ID); err != types.ErrNoSuchEntity {
 			return err
 		}
 		return repo.Save(item)

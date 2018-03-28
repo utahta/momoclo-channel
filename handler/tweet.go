@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/utahta/momoclo-channel/container"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 )
 
@@ -21,7 +21,7 @@ func Tweet(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var requests []model.TweetRequest
+	var requests []types.TweetRequest
 	if err := event.ParseTask(req.Form, &requests); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return

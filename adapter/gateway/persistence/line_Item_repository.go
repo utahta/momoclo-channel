@@ -1,16 +1,16 @@
 package persistence
 
 import (
-	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/types"
 )
 
 // LineItemRepository operates LineItem entity
 type LineItemRepository struct {
-	model.PersistenceHandler
+	types.PersistenceHandler
 }
 
 // NewLineItemRepository returns the LineItemRepository
-func NewLineItemRepository(h model.PersistenceHandler) *LineItemRepository {
+func NewLineItemRepository(h types.PersistenceHandler) *LineItemRepository {
 	return &LineItemRepository{h}
 }
 
@@ -21,17 +21,17 @@ func (repo *LineItemRepository) Exists(id string) bool {
 }
 
 // Find finds line item given id
-func (repo *LineItemRepository) Find(id string) (*model.LineItem, error) {
-	item := &model.LineItem{ID: id}
+func (repo *LineItemRepository) Find(id string) (*types.LineItem, error) {
+	item := &types.LineItem{ID: id}
 	return item, repo.Get(item)
 }
 
 // Save saves line item
-func (repo *LineItemRepository) Save(item *model.LineItem) error {
+func (repo *LineItemRepository) Save(item *types.LineItem) error {
 	return repo.Put(item)
 }
 
 // Tx can be used in RunInTransaction
-func (repo *LineItemRepository) Tx(h model.PersistenceHandler) model.LineItemRepository {
+func (repo *LineItemRepository) Tx(h types.PersistenceHandler) types.LineItemRepository {
 	return NewLineItemRepository(h)
 }

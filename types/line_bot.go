@@ -1,4 +1,4 @@
-package model
+package types
 
 type (
 	// LineBotEventType represents line bot event type

@@ -5,7 +5,7 @@ import (
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/urlfetch"
 )
 
@@ -16,7 +16,7 @@ type (
 )
 
 // New returns LineBot
-func New(ctx context.Context) model.LineBot {
+func New(ctx context.Context) types.LineBot {
 	c, _ := linebot.New(
 		config.C.LineBot.ChannelSecret,
 		config.C.LineBot.ChannelToken,

@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
 )
 
@@ -14,17 +14,17 @@ type (
 	Tweet struct {
 		log       log.Logger
 		taskQueue event.TaskQueue
-		tweeter   model.Tweeter
+		tweeter   types.Tweeter
 	}
 
 	// TweetParams input parameters
 	TweetParams struct {
-		Requests []model.TweetRequest `validate:"min=1,dive"`
+		Requests []types.TweetRequest `validate:"min=1,dive"`
 	}
 )
 
 // NewTweet returns Tweet use case
-func NewTweet(log log.Logger, taskQueue event.TaskQueue, tweeter model.Tweeter) *Tweet {
+func NewTweet(log log.Logger, taskQueue event.TaskQueue, tweeter types.Tweeter) *Tweet {
 	return &Tweet{
 		log:       log,
 		taskQueue: taskQueue,

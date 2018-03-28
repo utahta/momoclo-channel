@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
+	"github.com/utahta/momoclo-channel/types"
 )
 
 type (
@@ -16,7 +16,7 @@ type (
 	Remind struct {
 		log       log.Logger
 		taskQueue event.TaskQueue
-		repo      model.ReminderRepository
+		repo      types.ReminderRepository
 	}
 )
 
@@ -24,7 +24,7 @@ type (
 func NewRemind(
 	logger log.Logger,
 	taskQueue event.TaskQueue,
-	repo model.ReminderRepository) *Remind {
+	repo types.ReminderRepository) *Remind {
 	return &Remind{
 		log:       logger,
 		taskQueue: taskQueue,
@@ -59,8 +59,8 @@ func (r *Remind) Do() error {
 		}
 
 		r.taskQueue.PushMulti([]event.Task{
-			eventtask.NewTweet(model.TweetRequest{Text: reminder.Text}),
-			eventtask.NewLineBroadcast(model.LineNotifyMessage{Text: fmt.Sprintf("\n%s", reminder.Text)}),
+			eventtask.NewTweet(types.TweetRequest{Text: reminder.Text}),
+			eventtask.NewLineBroadcast(types.LineNotifyMessage{Text: fmt.Sprintf("\n%s", reminder.Text)}),
 		})
 		r.log.Infof("remind: %#v", reminder)
 	}

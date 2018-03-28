@@ -5,35 +5,34 @@ import (
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/types"
 )
 
 // ParseRequest parses http request
-func ParseRequest(r *http.Request) ([]model.LineBotEvent, error) {
+func ParseRequest(r *http.Request) ([]types.LineBotEvent, error) {
 	events, err := linebot.ParseRequest(config.C.LineBot.ChannelSecret, r)
 	if err == linebot.ErrInvalidSignature {
-		return nil, domain.ErrInvalidSignature
+		return nil, types.ErrInvalidSignature
 	} else if err != nil {
 		return nil, err
 	}
 
-	results := make([]model.LineBotEvent, len(events))
+	results := make([]types.LineBotEvent, len(events))
 	for i, event := range events {
 		results[i].ReplyToken = event.ReplyToken
 
 		switch event.Type {
 		case linebot.EventTypeMessage:
-			results[i].Type = model.LineBotEventTypeMessage
+			results[i].Type = types.LineBotEventTypeMessage
 			switch message := event.Message.(type) {
 			case *linebot.TextMessage:
-				results[i].TextMessage = model.LineBotTextMessage{ID: message.ID, Text: message.Text}
-				results[i].MessageType = model.LineBotMessageTypeText
+				results[i].TextMessage = types.LineBotTextMessage{ID: message.ID, Text: message.Text}
+				results[i].MessageType = types.LineBotMessageTypeText
 			}
 		case linebot.EventTypeFollow:
-			results[i].Type = model.LineBotEventTypeFollow
+			results[i].Type = types.LineBotEventTypeFollow
 		case linebot.EventTypeUnfollow:
-			results[i].Type = model.LineBotEventTypeUnfollow
+			results[i].Type = types.LineBotEventTypeUnfollow
 		}
 	}
 	return results, nil

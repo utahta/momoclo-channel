@@ -7,8 +7,7 @@ import (
 	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/dao/hook"
-	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/datastore"
 )
 
@@ -20,7 +19,7 @@ type (
 )
 
 // NewDatastoreHandler returns PersistenceHandler
-func NewDatastoreHandler(ctx context.Context) model.PersistenceHandler {
+func NewDatastoreHandler(ctx context.Context) types.PersistenceHandler {
 	return &datastoreHandler{
 		goon.FromContext(ctx),
 	}
@@ -64,7 +63,7 @@ func (h *datastoreHandler) PutMulti(src interface{}) error {
 func (h *datastoreHandler) Get(dst interface{}) error {
 	err := h.Goon.Get(dst)
 	if err == datastore.ErrNoSuchEntity {
-		return domain.ErrNoSuchEntity
+		return types.ErrNoSuchEntity
 	}
 	return err
 }
@@ -97,12 +96,12 @@ func (h *datastoreHandler) DeleteMulti(src interface{}) error {
 }
 
 // Query returns PersistenceQuery that wraps datastore query
-func (h *datastoreHandler) NewQuery(kind string) model.PersistenceQuery {
+func (h *datastoreHandler) NewQuery(kind string) types.PersistenceQuery {
 	return NewQuery(kind)
 }
 
 // GetAll runs the query and returns all matches entities
-func (h *datastoreHandler) GetAll(q model.PersistenceQuery, dst interface{}) error {
+func (h *datastoreHandler) GetAll(q types.PersistenceQuery, dst interface{}) error {
 	v, ok := q.(*datastoreQuery)
 	if !ok {
 		return errors.New("required datastoreQuery")

@@ -8,7 +8,7 @@ import (
 	"github.com/utahta/go-twitter"
 	"github.com/utahta/go-twitter/types"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/domain/model"
+	mctypes "github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/urlfetch"
 )
 
@@ -17,7 +17,7 @@ type tweeter struct {
 }
 
 // NewTweeter returns model.Tweeter that wraps go-twitter
-func NewTweeter(ctx context.Context) model.Tweeter {
+func NewTweeter(ctx context.Context) mctypes.Tweeter {
 	if config.C.Twitter.Disabled {
 		return NewNopTweeter()
 	}
@@ -35,7 +35,7 @@ func NewTweeter(ctx context.Context) model.Tweeter {
 }
 
 // Tweet tweets given request
-func (c *tweeter) Tweet(req model.TweetRequest) (model.TweetResponse, error) {
+func (c *tweeter) Tweet(req mctypes.TweetRequest) (mctypes.TweetResponse, error) {
 	const errTag = "tweeter.Tweet failed"
 
 	var (
@@ -63,7 +63,7 @@ func (c *tweeter) Tweet(req model.TweetRequest) (model.TweetResponse, error) {
 	}
 
 	if err != nil {
-		return model.TweetResponse{}, errors.Wrap(err, errTag)
+		return mctypes.TweetResponse{}, errors.Wrap(err, errTag)
 	}
-	return model.TweetResponse{IDStr: tweets.IDStr}, nil
+	return mctypes.TweetResponse{IDStr: tweets.IDStr}, nil
 }

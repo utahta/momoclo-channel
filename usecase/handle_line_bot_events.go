@@ -1,30 +1,30 @@
 package usecase
 
 import (
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/domain/service/linebot"
 	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/types"
 )
 
 type (
 	// HandleLineBotEvents use case
 	HandleLineBotEvents struct {
 		log           log.Logger
-		lineBot       model.LineBot
-		imageSearcher model.ImageSearcher
+		lineBot       types.LineBot
+		imageSearcher types.ImageSearcher
 	}
 
 	// HandleLineBotEventsParams use case params
 	HandleLineBotEventsParams struct {
-		Events []model.LineBotEvent
+		Events []types.LineBotEvent
 	}
 )
 
 // NewHandleLineBotEvents returns HandleLineBotEvents use case
 func NewHandleLineBotEvents(
 	logger log.Logger,
-	lineBot model.LineBot,
-	imageSearcher model.ImageSearcher) *HandleLineBotEvents {
+	lineBot types.LineBot,
+	imageSearcher types.ImageSearcher) *HandleLineBotEvents {
 	return &HandleLineBotEvents{
 		log:           logger,
 		lineBot:       lineBot,
@@ -40,9 +40,9 @@ func (use *HandleLineBotEvents) Do(params HandleLineBotEventsParams) error {
 		use.log.Infof("handle event:%v", event)
 
 		switch event.Type {
-		case model.LineBotEventTypeMessage:
+		case types.LineBotEventTypeMessage:
 			switch event.MessageType {
-			case model.LineBotMessageTypeText:
+			case types.LineBotMessageTypeText:
 				if linebot.MatchOn(event.TextMessage.Text) {
 					use.lineBot.ReplyText(event.ReplyToken, linebot.OnMessage())
 					continue
@@ -68,10 +68,10 @@ func (use *HandleLineBotEvents) Do(params HandleLineBotEventsParams) error {
 			default:
 				use.log.Infof("not handle message type:%v", event.MessageType)
 			}
-		case model.LineBotEventTypeFollow:
+		case types.LineBotEventTypeFollow:
 			use.log.Info("follow event")
 			use.lineBot.ReplyText(event.ReplyToken, linebot.FollowMessage())
-		case model.LineBotEventTypeUnfollow:
+		case types.LineBotEventTypeUnfollow:
 			use.log.Info("unfollow event")
 		default:
 			use.log.Info("not handle event type:%v", event.Type)

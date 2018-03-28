@@ -9,9 +9,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/container"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event/eventtest"
 	"github.com/utahta/momoclo-channel/testutil"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
 )
@@ -31,10 +31,10 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 		params usecase.LineNotifyBroadcastParams
 	}{
 		{usecase.LineNotifyBroadcastParams{Messages: nil}},
-		{usecase.LineNotifyBroadcastParams{Messages: []model.LineNotifyMessage{
+		{usecase.LineNotifyBroadcastParams{Messages: []types.LineNotifyMessage{
 			{Text: ""},
 		}}},
-		{usecase.LineNotifyBroadcastParams{Messages: []model.LineNotifyMessage{
+		{usecase.LineNotifyBroadcastParams{Messages: []types.LineNotifyMessage{
 			{Text: "hello", ImageURL: "unknown"},
 		}}},
 	}
@@ -48,14 +48,14 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 
 	config.C = config.Config{LineNotify: config.LineNotify{TokenKey: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
 	for i := 0; i < 10; i++ {
-		l, err := model.NewLineNotification(config.C.LineNotify.TokenKey, fmt.Sprintf("token-%v", i))
+		l, err := types.NewLineNotification(config.C.LineNotify.TokenKey, fmt.Sprintf("token-%v", i))
 		if err != nil {
 			t.Fatal(err)
 		}
 		repo.Save(l)
 	}
 
-	err = u.Do(usecase.LineNotifyBroadcastParams{Messages: []model.LineNotifyMessage{
+	err = u.Do(usecase.LineNotifyBroadcastParams{Messages: []types.LineNotifyMessage{
 		{Text: "hello"},
 		{Text: " ", ImageURL: "http://localhost/a"},
 	},

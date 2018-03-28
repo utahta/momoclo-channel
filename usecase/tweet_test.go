@@ -7,9 +7,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
 	"github.com/utahta/momoclo-channel/container"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event/eventtest"
 	"github.com/utahta/momoclo-channel/testutil"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
 )
@@ -28,10 +28,10 @@ func TestTweet_Do(t *testing.T) {
 		params usecase.TweetParams
 	}{
 		{},
-		{usecase.TweetParams{Requests: []model.TweetRequest{
+		{usecase.TweetParams{Requests: []types.TweetRequest{
 			{ImageURLs: []string{"a"}},
 		}}},
-		{usecase.TweetParams{Requests: []model.TweetRequest{
+		{usecase.TweetParams{Requests: []types.TweetRequest{
 			{VideoURL: "a"},
 		}}},
 	}
@@ -43,7 +43,7 @@ func TestTweet_Do(t *testing.T) {
 		}
 	}
 
-	err = u.Do(usecase.TweetParams{Requests: []model.TweetRequest{
+	err = u.Do(usecase.TweetParams{Requests: []types.TweetRequest{
 		{Text: "test", ImageURLs: []string{"http://localhost/a", "http://localhost/b"}},
 		{ImageURLs: []string{"http://localhost/c"}},
 		{VideoURL: "http://localhost/d"},

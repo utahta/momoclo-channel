@@ -3,10 +3,10 @@ package usecase
 import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
 )
 
@@ -15,12 +15,12 @@ type (
 	LineNotifyBroadcast struct {
 		log       log.Logger
 		taskQueue event.TaskQueue
-		repo      model.LineNotificationRepository
+		repo      types.LineNotificationRepository
 	}
 
 	// LineNotifyBroadcastParams input parameters
 	LineNotifyBroadcastParams struct {
-		Messages []model.LineNotifyMessage `validate:"min=1,dive"`
+		Messages []types.LineNotifyMessage `validate:"min=1,dive"`
 	}
 )
 
@@ -28,7 +28,7 @@ type (
 func NewLineNotifyBroadcast(
 	log log.Logger,
 	taskQueue event.TaskQueue,
-	repo model.LineNotificationRepository) *LineNotifyBroadcast {
+	repo types.LineNotificationRepository) *LineNotifyBroadcast {
 	return &LineNotifyBroadcast{
 		log:       log,
 		taskQueue: taskQueue,
@@ -57,7 +57,7 @@ func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
 			use.log.Errorf("%v: get access token err:%v", errTag, err)
 			continue
 		}
-		tasks = append(tasks, eventtask.NewLine(model.LineNotifyRequest{
+		tasks = append(tasks, eventtask.NewLine(types.LineNotifyRequest{
 			ID:          n.ID,
 			AccessToken: accessToken,
 			Messages:    params.Messages,

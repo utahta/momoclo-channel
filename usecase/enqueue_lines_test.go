@@ -8,9 +8,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/dao"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event/eventtest"
 	"github.com/utahta/momoclo-channel/testutil"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
 )
@@ -26,7 +26,7 @@ func TestEnqueueLines_Do(t *testing.T) {
 	repo := container.Repository(ctx).LineItemRepository()
 	u := usecase.NewEnqueueLines(container.Logger(ctx).AE(), taskQueue, dao.NewDatastoreTransactor(ctx), repo)
 	publishedAt, _ := time.Parse("2006-01-02 15:04:05", "2008-05-17 00:00:00")
-	feedItem := model.FeedItem{
+	feedItem := types.FeedItem{
 		Title:       "title",
 		URL:         "http://localhost",
 		EntryTitle:  "entry_title",
@@ -35,12 +35,12 @@ func TestEnqueueLines_Do(t *testing.T) {
 		VideoURLs:   []string{"http://localhost/mp4_1"},
 		PublishedAt: publishedAt,
 	}
-	item := model.NewLineItem(feedItem)
+	item := types.NewLineItem(feedItem)
 	if repo.Exists(item.ID) {
 		t.Errorf("Expected line item not found, but exists. feedItem:%v", feedItem)
 	}
 
-	err = u.Do(usecase.EnqueueLinesParams{FeedItem: model.FeedItem{}})
+	err = u.Do(usecase.EnqueueLinesParams{FeedItem: types.FeedItem{}})
 	if errs, ok := errors.Cause(err).(validator.ValidationErrors); !ok {
 		t.Errorf("Expected validation errors, got %v", errs)
 	}

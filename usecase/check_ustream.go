@@ -4,12 +4,11 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
+	"github.com/utahta/momoclo-channel/types"
 )
 
 type (
@@ -17,8 +16,8 @@ type (
 	CheckUstream struct {
 		log       log.Logger
 		taskQueue event.TaskQueue
-		checker   model.UstreamStatusChecker
-		repo      model.UstreamStatusRepository
+		checker   types.UstreamStatusChecker
+		repo      types.UstreamStatusRepository
 	}
 )
 
@@ -26,8 +25,8 @@ type (
 func NewCheckUstream(
 	logger log.Logger,
 	taskQueue event.TaskQueue,
-	checker model.UstreamStatusChecker,
-	repo model.UstreamStatusRepository) *CheckUstream {
+	checker types.UstreamStatusChecker,
+	repo types.UstreamStatusRepository) *CheckUstream {
 	return &CheckUstream{
 		log:       logger,
 		taskQueue: taskQueue,
@@ -45,8 +44,8 @@ func (u *CheckUstream) Do() error {
 		return errors.Wrap(err, errTag)
 	}
 
-	status, err := u.repo.Find(model.UstreamStatusID)
-	if err != nil && err != domain.ErrNoSuchEntity {
+	status, err := u.repo.Find(types.UstreamStatusID)
+	if err != nil && err != types.ErrNoSuchEntity {
 		return errors.Wrap(err, errTag)
 	}
 	if status.IsLive == isLive {
@@ -62,9 +61,9 @@ func (u *CheckUstream) Do() error {
 		t := timeutil.Now()
 		u.taskQueue.PushMulti([]event.Task{
 			eventtask.NewTweet(
-				model.TweetRequest{Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))},
+				types.TweetRequest{Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))},
 			),
-			eventtask.NewLineBroadcast(model.LineNotifyMessage{Text: "\nmomocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"}),
+			eventtask.NewLineBroadcast(types.LineNotifyMessage{Text: "\nmomocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"}),
 		})
 	}
 	return nil

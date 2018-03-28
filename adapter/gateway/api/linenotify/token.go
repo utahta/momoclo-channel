@@ -5,7 +5,7 @@ import (
 
 	"github.com/utahta/go-linenotify/token"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/urlfetch"
 )
 
@@ -16,7 +16,7 @@ type (
 )
 
 // NewToken returns LineNotifyToken
-func NewToken(ctx context.Context) model.LineNotifyToken {
+func NewToken(ctx context.Context) types.LineNotifyToken {
 	return &tokenClient{
 		token.New(
 			config.LineNotifyCallbackURL(),

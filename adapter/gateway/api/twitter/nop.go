@@ -1,16 +1,16 @@
 package twitter
 
 import (
-	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/types"
 )
 
 type nop struct{}
 
 // NewNopTweeter returns no operation tweeter
-func NewNopTweeter() model.Tweeter {
+func NewNopTweeter() types.Tweeter {
 	return &nop{}
 }
 
-func (c *nop) Tweet(req model.TweetRequest) (model.TweetResponse, error) {
-	return model.TweetResponse{}, nil
+func (c *nop) Tweet(req types.TweetRequest) (types.TweetResponse, error) {
+	return types.TweetResponse{}, nil
 }

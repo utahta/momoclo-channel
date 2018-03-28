@@ -6,8 +6,8 @@ import (
 
 	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
 	"github.com/utahta/momoclo-channel/dao"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/testutil"
+	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/aetest"
 )
 
@@ -18,7 +18,7 @@ func TestLineItemRepository_Tx(t *testing.T) {
 	}
 	defer done()
 
-	item := model.NewLineItem(model.FeedItem{
+	item := types.NewLineItem(types.FeedItem{
 		EntryTitle:  "entry title",
 		EntryURL:    "http://localhost/1",
 		PublishedAt: time.Now(),
@@ -29,7 +29,7 @@ func TestLineItemRepository_Tx(t *testing.T) {
 	}
 
 	tran := dao.NewDatastoreTransactor(ctx)
-	tran.RunInTransaction(func(h model.PersistenceHandler) error {
+	tran.RunInTransaction(func(h types.PersistenceHandler) error {
 		repo := repo.Tx(h)
 
 		item.Title = "entry title z"

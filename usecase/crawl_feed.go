@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
 )
 
@@ -13,23 +13,23 @@ type (
 	// CrawlFeed use case
 	CrawlFeed struct {
 		log       log.Logger
-		feed      model.FeedFetcher
+		feed      types.FeedFetcher
 		taskQueue event.TaskQueue
-		repo      model.LatestEntryRepository
+		repo      types.LatestEntryRepository
 	}
 
 	// CrawlFeedParams input parameters
 	CrawlFeedParams struct {
-		Code model.FeedCode // target identify code
+		Code types.FeedCode // target identify code
 	}
 )
 
 // NewCrawlFeed returns Crawl use case
 func NewCrawlFeed(
 	log log.Logger,
-	feed model.FeedFetcher,
+	feed types.FeedFetcher,
 	taskQueue event.TaskQueue,
-	repo model.LatestEntryRepository) *CrawlFeed {
+	repo types.LatestEntryRepository) *CrawlFeed {
 	return &CrawlFeed{
 		log:       log,
 		feed:      feed,

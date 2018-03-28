@@ -7,9 +7,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/adapter/gateway/api/linenotify"
 	"github.com/utahta/momoclo-channel/container"
-	"github.com/utahta/momoclo-channel/domain/model"
 	"github.com/utahta/momoclo-channel/event/eventtest"
 	"github.com/utahta/momoclo-channel/testutil"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
 )
@@ -28,18 +28,18 @@ func TestLineNotify_Do(t *testing.T) {
 	validationTests := []struct {
 		params usecase.LineNotifyParams
 	}{
-		{usecase.LineNotifyParams{Request: model.LineNotifyRequest{ID: "id-1"}}},
-		{usecase.LineNotifyParams{Request: model.LineNotifyRequest{AccessToken: "token"}}},
-		{usecase.LineNotifyParams{Request: model.LineNotifyRequest{
+		{usecase.LineNotifyParams{Request: types.LineNotifyRequest{ID: "id-1"}}},
+		{usecase.LineNotifyParams{Request: types.LineNotifyRequest{AccessToken: "token"}}},
+		{usecase.LineNotifyParams{Request: types.LineNotifyRequest{
 			ID: "id-2", AccessToken: "token",
 		}}},
-		{usecase.LineNotifyParams{Request: model.LineNotifyRequest{
-			ID: "id-3", AccessToken: "token", Messages: []model.LineNotifyMessage{
+		{usecase.LineNotifyParams{Request: types.LineNotifyRequest{
+			ID: "id-3", AccessToken: "token", Messages: []types.LineNotifyMessage{
 				{Text: ""},
 			},
 		}}},
-		{usecase.LineNotifyParams{Request: model.LineNotifyRequest{
-			ID: "id-4", AccessToken: "token", Messages: []model.LineNotifyMessage{
+		{usecase.LineNotifyParams{Request: types.LineNotifyRequest{
+			ID: "id-4", AccessToken: "token", Messages: []types.LineNotifyMessage{
 				{Text: "hello", ImageURL: "unknown"},
 			},
 		}}},
@@ -52,8 +52,8 @@ func TestLineNotify_Do(t *testing.T) {
 		}
 	}
 
-	err = u.Do(usecase.LineNotifyParams{Request: model.LineNotifyRequest{
-		ID: "id-1", AccessToken: "token", Messages: []model.LineNotifyMessage{
+	err = u.Do(usecase.LineNotifyParams{Request: types.LineNotifyRequest{
+		ID: "id-1", AccessToken: "token", Messages: []types.LineNotifyMessage{
 			{Text: "hello"},
 			{Text: " ", ImageURL: "http://localhost/a"},
 		},

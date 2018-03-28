@@ -5,7 +5,7 @@ import (
 
 	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
 	"github.com/utahta/momoclo-channel/dao"
-	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/types"
 )
 
 // RepositoryContainer dependency injection
@@ -19,31 +19,31 @@ func Repository(ctx context.Context) *RepositoryContainer {
 }
 
 // LatestEntryRepository returns LatestEntry repository
-func (c *RepositoryContainer) LatestEntryRepository() model.LatestEntryRepository {
+func (c *RepositoryContainer) LatestEntryRepository() types.LatestEntryRepository {
 	return persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(c.ctx))
 }
 
 // TweetItemRepository returns TweetItem repository
-func (c *RepositoryContainer) TweetItemRepository() model.TweetItemRepository {
+func (c *RepositoryContainer) TweetItemRepository() types.TweetItemRepository {
 	return persistence.NewTweetItemRepository(dao.NewDatastoreHandler(c.ctx))
 }
 
 // LineItemRepository returns LineItem repository
-func (c *RepositoryContainer) LineItemRepository() model.LineItemRepository {
+func (c *RepositoryContainer) LineItemRepository() types.LineItemRepository {
 	return persistence.NewLineItemRepository(dao.NewDatastoreHandler(c.ctx))
 }
 
 // ReminderRepository returns Reminder repository
-func (c *RepositoryContainer) ReminderRepository() model.ReminderRepository {
+func (c *RepositoryContainer) ReminderRepository() types.ReminderRepository {
 	return persistence.NewReminderRepository(dao.NewDatastoreHandler(c.ctx))
 }
 
 // UstreamStatusRepository returns UstreamStatus repository
-func (c *RepositoryContainer) UstreamStatusRepository() model.UstreamStatusRepository {
+func (c *RepositoryContainer) UstreamStatusRepository() types.UstreamStatusRepository {
 	return persistence.NewUstreamStatusRepository(dao.NewDatastoreHandler(c.ctx))
 }
 
 // LineNotificationRepository returns LineNotification repository
-func (c *RepositoryContainer) LineNotificationRepository() model.LineNotificationRepository {
+func (c *RepositoryContainer) LineNotificationRepository() types.LineNotificationRepository {
 	return persistence.NewLineNotificationRepository(dao.NewDatastoreHandler(c.ctx))
 }

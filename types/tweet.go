@@ -1,4 +1,4 @@
-package model
+package types
 
 type (
 	// TweetRequest represents request that tweet message, img urls and video url data

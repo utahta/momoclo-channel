@@ -1,29 +1,29 @@
 package persistence
 
 import (
-	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/types"
 )
 
 // ReminderRepository operates Reminder entity
 type ReminderRepository struct {
-	model.PersistenceHandler
+	types.PersistenceHandler
 }
 
 // NewReminderRepository returns the ReminderRepository
-func NewReminderRepository(h model.PersistenceHandler) model.ReminderRepository {
+func NewReminderRepository(h types.PersistenceHandler) types.ReminderRepository {
 	return &ReminderRepository{h}
 }
 
 // FindAll finds all reminder entities
-func (repo *ReminderRepository) FindAll() ([]*model.Reminder, error) {
-	kind := repo.Kind(&model.Reminder{})
+func (repo *ReminderRepository) FindAll() ([]*types.Reminder, error) {
+	kind := repo.Kind(&types.Reminder{})
 	q := repo.NewQuery(kind).Filter("Enabled =", true)
 
-	var dst []*model.Reminder
+	var dst []*types.Reminder
 	return dst, repo.GetAll(q, &dst)
 }
 
 // Save saves reminder entity
-func (repo *ReminderRepository) Save(item *model.Reminder) error {
+func (repo *ReminderRepository) Save(item *types.Reminder) error {
 	return repo.Put(item)
 }

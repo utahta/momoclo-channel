@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/model"
+	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-crawler"
 	"google.golang.org/appengine/urlfetch"
 )
@@ -14,11 +14,11 @@ type handler struct {
 }
 
 // New returns model.FeedFetcher that wraps momoclo-crawler
-func New(ctx context.Context) model.FeedFetcher {
+func New(ctx context.Context) types.FeedFetcher {
 	return &handler{ctx}
 }
 
-func (c *handler) Fetch(code model.FeedCode, maxItemNum int, latestURL string) ([]model.FeedItem, error) {
+func (c *handler) Fetch(code types.FeedCode, maxItemNum int, latestURL string) ([]types.FeedItem, error) {
 	const errTag = "client.Fetch failed"
 	var (
 		cli  *crawler.ChannelClient
@@ -27,21 +27,21 @@ func (c *handler) Fetch(code model.FeedCode, maxItemNum int, latestURL string) (
 	)
 
 	switch code {
-	case model.FeedCodeTamai:
+	case types.FeedCodeTamai:
 		cli, err = crawler.NewTamaiBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.FeedCodeMomota:
+	case types.FeedCodeMomota:
 		cli, err = crawler.NewMomotaBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.FeedCodeAriyasu:
+	case types.FeedCodeAriyasu:
 		cli, err = crawler.NewAriyasuBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.FeedCodeSasaki:
+	case types.FeedCodeSasaki:
 		cli, err = crawler.NewSasakiBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.FeedCodeTakagi:
+	case types.FeedCodeTakagi:
 		cli, err = crawler.NewTakagiBlogChannelClient(maxItemNum, latestURL, opts)
-	case model.FeedCodeHappyclo:
+	case types.FeedCodeHappyclo:
 		cli, err = crawler.NewHappycloChannelClient(latestURL, opts)
-	case model.FeedCodeAeNews:
+	case types.FeedCodeAeNews:
 		cli, err = crawler.NewAeNewsChannelClient(opts)
-	case model.FeedCodeYoutube:
+	case types.FeedCodeYoutube:
 		cli, err = crawler.NewYoutubeChannelClient(opts)
 	default:
 		err = errors.Errorf("code:%s did not support", code)
@@ -56,9 +56,9 @@ func (c *handler) Fetch(code model.FeedCode, maxItemNum int, latestURL string) (
 		return nil, errors.Wrap(err, errTag)
 	}
 
-	var items = make([]model.FeedItem, len(channel.Items))
+	var items = make([]types.FeedItem, len(channel.Items))
 	for i, feed := range channel.Items {
-		item := model.FeedItem{
+		item := types.FeedItem{
 			Title:       channel.Title,
 			URL:         channel.URL,
 			EntryTitle:  feed.Title,

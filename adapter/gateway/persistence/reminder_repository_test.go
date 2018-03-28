@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/infrastructure/dao"
 	"github.com/utahta/momoclo-channel/testutil"
 	"google.golang.org/appengine/aetest"
 	"google.golang.org/appengine/datastore"

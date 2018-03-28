@@ -6,9 +6,9 @@ import (
 
 	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/dao/hook"
 	"github.com/utahta/momoclo-channel/domain"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/infrastructure/dao/hook"
 	"google.golang.org/appengine/datastore"
 )
 

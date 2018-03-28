@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
+	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/infrastructure/dao"
 )
 
 // RepositoryContainer dependency injection

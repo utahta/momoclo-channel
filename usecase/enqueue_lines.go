@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/service/feeditem"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
@@ -64,7 +63,7 @@ func (use *EnqueueLines) Do(params EnqueueLinesParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	messages := feeditem.ToLineNotifyMessages(params.FeedItem)
+	messages := params.FeedItem.ToLineNotifyMessages()
 	if len(messages) == 0 {
 		use.log.Errorf("%v: invalid enqueue lines feedItem:%v", errTag, params.FeedItem)
 		return errors.Errorf("%v: invalid enqueue line messages", errTag)

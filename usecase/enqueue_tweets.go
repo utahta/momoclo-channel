@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/service/feeditem"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
@@ -64,7 +63,7 @@ func (use *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	requests := feeditem.ToTweetRequests(params.FeedItem)
+	requests := params.FeedItem.ToTweetRequests()
 	if len(requests) == 0 {
 		use.log.Errorf("%v: invalid enqueue tweets feedItem:%v", errTag, params.FeedItem)
 		return errors.Errorf("%v: invalid enqueue tweets", errTag)

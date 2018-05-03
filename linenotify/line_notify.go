@@ -17,6 +17,24 @@ import (
 )
 
 type (
+	// Message represents text message and image
+	Message struct {
+		Text     string `validate:"required"`
+		ImageURL string `validate:"omitempty,url"`
+	}
+
+	// Request represents request that notification message
+	Request struct {
+		ID          string    `validate:"required"`
+		AccessToken string    `validate:"required"`
+		Messages    []Message `validate:"min=1,dive"`
+	}
+
+	// Client interface
+	Client interface {
+		Notify(string, Message) error
+	}
+
 	client struct {
 		*linenotify.Client
 	}
@@ -28,7 +46,7 @@ var (
 )
 
 // New returns LineNotify
-func New(ctx context.Context) types.LineNotify {
+func New(ctx context.Context) Client {
 	if config.C.LineNotify.Disabled {
 		return NewNop()
 	}
@@ -39,7 +57,7 @@ func New(ctx context.Context) types.LineNotify {
 }
 
 // Notify sends message to given token
-func (c *client) Notify(accessToken string, msg types.LineNotifyMessage) error {
+func (c *client) Notify(accessToken string, msg Message) error {
 	if err := c.notify(accessToken, msg); err != nil {
 		if err == linenotify.ErrNotifyInvalidAccessToken {
 			return types.ErrInvalidAccessToken
@@ -49,7 +67,7 @@ func (c *client) Notify(accessToken string, msg types.LineNotifyMessage) error {
 	return nil
 }
 
-func (c *client) notify(accessToken string, msg types.LineNotifyMessage) error {
+func (c *client) notify(accessToken string, msg Message) error {
 	if msg.ImageURL != "" {
 		b, err := c.fetchImage(msg.ImageURL)
 		if err != nil {

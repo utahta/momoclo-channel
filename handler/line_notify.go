@@ -11,7 +11,7 @@ import (
 	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/event"
-	"github.com/utahta/momoclo-channel/types"
+	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/usecase"
 )
 
@@ -92,7 +92,7 @@ func LineNotifyBroadcast(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var messages []types.LineNotifyMessage
+	var messages []linenotify.Message
 	if err := event.ParseTask(req.Form, &messages); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
@@ -115,7 +115,7 @@ func LineNotify(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var request types.LineNotifyRequest
+	var request linenotify.Request
 	if err := event.ParseTask(req.Form, &request); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return

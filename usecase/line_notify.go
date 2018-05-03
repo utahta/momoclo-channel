@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
+	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
@@ -14,13 +15,13 @@ type (
 	LineNotify struct {
 		log       log.Logger
 		taskQueue event.TaskQueue
-		notify    types.LineNotify
+		notify    linenotify.Client
 		repo      types.LineNotificationRepository
 	}
 
 	// LineNotifyParams input parameters
 	LineNotifyParams struct {
-		Request types.LineNotifyRequest
+		Request linenotify.Request
 	}
 )
 
@@ -28,7 +29,7 @@ type (
 func NewLineNotify(
 	log log.Logger,
 	taskQueue event.TaskQueue,
-	notify types.LineNotify,
+	notify linenotify.Client,
 	repo types.LineNotificationRepository) *LineNotify {
 	return &LineNotify{
 		log:       log,

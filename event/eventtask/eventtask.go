@@ -3,8 +3,8 @@ package eventtask
 import (
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/event"
+	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/twitter"
-	"github.com/utahta/momoclo-channel/types"
 )
 
 // NewEnqueueTweets returns enqueue tweets task
@@ -28,16 +28,16 @@ func NewTweets(v []twitter.TweetRequest) event.Task {
 }
 
 // NewLineBroadcast returns broadcast line notification task
-func NewLineBroadcast(v types.LineNotifyMessage) event.Task {
-	return NewLinesBroadcast([]types.LineNotifyMessage{v})
+func NewLineBroadcast(v linenotify.Message) event.Task {
+	return NewLinesBroadcast([]linenotify.Message{v})
 }
 
 // NewLinesBroadcast returns broadcast line notification task
-func NewLinesBroadcast(v []types.LineNotifyMessage) event.Task {
+func NewLinesBroadcast(v []linenotify.Message) event.Task {
 	return event.Task{QueueName: "queue-line", Path: "/line/notify/broadcast", Object: v}
 }
 
 // NewLine returns line task
-func NewLine(v types.LineNotifyRequest) event.Task {
+func NewLine(v linenotify.Request) event.Task {
 	return event.Task{QueueName: "queue-line", Path: "/line/notify", Object: v}
 }

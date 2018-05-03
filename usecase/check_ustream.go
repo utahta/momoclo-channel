@@ -7,6 +7,7 @@ import (
 	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
+	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
 	"github.com/utahta/momoclo-channel/twitter"
@@ -66,7 +67,7 @@ func (u *CheckUstream) Do() error {
 			eventtask.NewTweet(
 				twitter.TweetRequest{Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))},
 			),
-			eventtask.NewLineBroadcast(types.LineNotifyMessage{Text: "\nmomocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"}),
+			eventtask.NewLineBroadcast(linenotify.Message{Text: "\nmomocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"}),
 		})
 	}
 	return nil

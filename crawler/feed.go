@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/twitter"
-	"github.com/utahta/momoclo-channel/types"
 )
 
 const (
@@ -79,20 +79,20 @@ func (i FeedItem) FeedCode() FeedCode {
 	return code
 }
 
-// ToLineNotifyMessages converts FeedItem to []LineNotifyMessage
-func (i FeedItem) ToLineNotifyMessages() []types.LineNotifyMessage {
-	var messages []types.LineNotifyMessage
+// ToLineNotifyMessages converts FeedItem to []linenotify.Message
+func (i FeedItem) ToLineNotifyMessages() []linenotify.Message {
+	var messages []linenotify.Message
 
 	text := fmt.Sprintf("\n%s\n%s\n%s", i.Title, i.EntryTitle, i.EntryURL)
 	if len(i.ImageURLs) > 0 {
-		messages = append(messages, types.LineNotifyMessage{Text: text, ImageURL: i.ImageURLs[0]})
+		messages = append(messages, linenotify.Message{Text: text, ImageURL: i.ImageURLs[0]})
 		i.ImageURLs = i.ImageURLs[1:]
 	} else {
-		messages = append(messages, types.LineNotifyMessage{Text: text})
+		messages = append(messages, linenotify.Message{Text: text})
 	}
 
 	for _, imageURL := range i.ImageURLs {
-		messages = append(messages, types.LineNotifyMessage{Text: " ", ImageURL: imageURL}) // need space
+		messages = append(messages, linenotify.Message{Text: " ", ImageURL: imageURL}) // need space
 	}
 	return messages
 }

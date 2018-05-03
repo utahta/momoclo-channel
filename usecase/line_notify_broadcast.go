@@ -5,6 +5,7 @@ import (
 	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
+	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
@@ -20,7 +21,7 @@ type (
 
 	// LineNotifyBroadcastParams input parameters
 	LineNotifyBroadcastParams struct {
-		Messages []types.LineNotifyMessage `validate:"min=1,dive"`
+		Messages []linenotify.Message `validate:"min=1,dive"`
 	}
 )
 
@@ -57,7 +58,7 @@ func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
 			use.log.Errorf("%v: get access token err:%v", errTag, err)
 			continue
 		}
-		tasks = append(tasks, eventtask.NewLine(types.LineNotifyRequest{
+		tasks = append(tasks, eventtask.NewLine(linenotify.Request{
 			ID:          n.ID,
 			AccessToken: accessToken,
 			Messages:    params.Messages,

@@ -3,12 +3,12 @@ package container
 import (
 	"context"
 
-	"github.com/utahta/momoclo-channel/adapter/gateway/api/linenotify"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/customsearch"
 	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/linebot"
+	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/usecase"
 	"github.com/utahta/momoclo-channel/ustream"

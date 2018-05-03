@@ -10,6 +10,7 @@ import (
 	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/event/eventtest"
+	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/testutil"
 	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
@@ -31,10 +32,10 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 		params usecase.LineNotifyBroadcastParams
 	}{
 		{usecase.LineNotifyBroadcastParams{Messages: nil}},
-		{usecase.LineNotifyBroadcastParams{Messages: []types.LineNotifyMessage{
+		{usecase.LineNotifyBroadcastParams{Messages: []linenotify.Message{
 			{Text: ""},
 		}}},
-		{usecase.LineNotifyBroadcastParams{Messages: []types.LineNotifyMessage{
+		{usecase.LineNotifyBroadcastParams{Messages: []linenotify.Message{
 			{Text: "hello", ImageURL: "unknown"},
 		}}},
 	}
@@ -55,7 +56,7 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 		repo.Save(l)
 	}
 
-	err = u.Do(usecase.LineNotifyBroadcastParams{Messages: []types.LineNotifyMessage{
+	err = u.Do(usecase.LineNotifyBroadcastParams{Messages: []linenotify.Message{
 		{Text: "hello"},
 		{Text: " ", ImageURL: "http://localhost/a"},
 	},

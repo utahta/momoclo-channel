@@ -4,11 +4,13 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
 	"github.com/utahta/momoclo-channel/types"
+	"github.com/utahta/momoclo-channel/ustream"
 )
 
 type (
@@ -16,8 +18,8 @@ type (
 	CheckUstream struct {
 		log       log.Logger
 		taskQueue event.TaskQueue
-		checker   types.UstreamStatusChecker
-		repo      types.UstreamStatusRepository
+		checker   ustream.StatusChecker
+		repo      entity.UstreamStatusRepository
 	}
 )
 
@@ -25,8 +27,8 @@ type (
 func NewCheckUstream(
 	logger log.Logger,
 	taskQueue event.TaskQueue,
-	checker types.UstreamStatusChecker,
-	repo types.UstreamStatusRepository) *CheckUstream {
+	checker ustream.StatusChecker,
+	repo entity.UstreamStatusRepository) *CheckUstream {
 	return &CheckUstream{
 		log:       logger,
 		taskQueue: taskQueue,
@@ -44,7 +46,7 @@ func (u *CheckUstream) Do() error {
 		return errors.Wrap(err, errTag)
 	}
 
-	status, err := u.repo.Find(types.UstreamStatusID)
+	status, err := u.repo.Find(entity.UstreamStatusID)
 	if err != nil && err != types.ErrNoSuchEntity {
 		return errors.Wrap(err, errTag)
 	}

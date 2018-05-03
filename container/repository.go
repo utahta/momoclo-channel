@@ -5,6 +5,7 @@ import (
 
 	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
 	"github.com/utahta/momoclo-channel/dao"
+	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/types"
 )
 
@@ -39,8 +40,8 @@ func (c *RepositoryContainer) ReminderRepository() types.ReminderRepository {
 }
 
 // UstreamStatusRepository returns UstreamStatus repository
-func (c *RepositoryContainer) UstreamStatusRepository() types.UstreamStatusRepository {
-	return persistence.NewUstreamStatusRepository(dao.NewDatastoreHandler(c.ctx))
+func (c *RepositoryContainer) UstreamStatusRepository() entity.UstreamStatusRepository {
+	return entity.NewUstreamStatusRepository(dao.NewDatastoreHandler(c.ctx))
 }
 
 // LineNotificationRepository returns LineNotification repository

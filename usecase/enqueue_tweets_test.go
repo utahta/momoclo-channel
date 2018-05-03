@@ -9,9 +9,9 @@ import (
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/dao"
+	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event/eventtest"
 	"github.com/utahta/momoclo-channel/testutil"
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
 )
@@ -36,7 +36,7 @@ func TestEnqueueTweets_Do(t *testing.T) {
 		VideoURLs:   []string{"http://localhost/mp4_1"},
 		PublishedAt: publishedAt,
 	}
-	item := types.NewTweetItem(
+	item := entity.NewTweetItem(
 		feedItem.UniqueURL(),
 		feedItem.EntryTitle,
 		feedItem.EntryURL,

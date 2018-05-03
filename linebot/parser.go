@@ -5,7 +5,6 @@ import (
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/types"
 )
 
 type (
@@ -42,7 +41,7 @@ const (
 func ParseRequest(r *http.Request) ([]Event, error) {
 	events, err := linebot.ParseRequest(config.C.LineBot.ChannelSecret, r)
 	if err == linebot.ErrInvalidSignature {
-		return nil, types.ErrInvalidSignature
+		return nil, ErrInvalidSignature
 	} else if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,4 @@
-package types
+package entity
 
 import (
 	"strings"
@@ -15,14 +15,6 @@ type (
 		ImageURLs   string    `datastore:",noindex"`
 		VideoURLs   string    `datastore:",noindex"`
 		CreatedAt   time.Time `validate:"required"`
-	}
-
-	// LineItemRepository interface
-	LineItemRepository interface {
-		Exists(string) bool
-		Find(string) (*LineItem, error)
-		Save(*LineItem) error
-		Tx(PersistenceHandler) LineItemRepository
 	}
 )
 

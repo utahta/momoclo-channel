@@ -3,9 +3,9 @@ package usecase
 import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
+	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/log"
-	"github.com/utahta/momoclo-channel/types"
 )
 
 type (
@@ -13,7 +13,7 @@ type (
 	AddLineNotification struct {
 		log   log.Logger
 		token linenotify.Token
-		repo  types.LineNotificationRepository
+		repo  entity.LineNotificationRepository
 	}
 
 	// AddLineNotificationParams use case params
@@ -26,7 +26,7 @@ type (
 func NewAddLineNotification(
 	logger log.Logger,
 	token linenotify.Token,
-	repo types.LineNotificationRepository) *AddLineNotification {
+	repo entity.LineNotificationRepository) *AddLineNotification {
 	return &AddLineNotification{
 		log:   logger,
 		token: token,
@@ -43,7 +43,7 @@ func (use *AddLineNotification) Do(params AddLineNotificationParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	ln, err := types.NewLineNotification(config.C.LineNotify.TokenKey, token)
+	ln, err := entity.NewLineNotification(config.C.LineNotify.TokenKey, token)
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}

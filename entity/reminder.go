@@ -1,4 +1,4 @@
-package types
+package entity
 
 import (
 	"time"
@@ -24,12 +24,6 @@ type (
 		Weekday time.Weekday `datastore:",noindex"`
 		Hour    int          `datastore:",noindex"`
 		Minute  int          `datastore:",noindex"`
-	}
-
-	// ReminderRepository interface
-	ReminderRepository interface {
-		FindAll() ([]*Reminder, error)
-		Save(*Reminder) error
 	}
 )
 

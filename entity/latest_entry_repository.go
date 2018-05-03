@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"github.com/utahta/momoclo-channel/types"
+	"github.com/utahta/momoclo-channel/dao"
 )
 
 type (
@@ -13,12 +13,12 @@ type (
 	}
 
 	latestEntryRepository struct {
-		types.PersistenceHandler
+		dao.PersistenceHandler
 	}
 )
 
 // NewLatestEntryRepository returns the LatestEntryRepository
-func NewLatestEntryRepository(h types.PersistenceHandler) LatestEntryRepository {
+func NewLatestEntryRepository(h dao.PersistenceHandler) LatestEntryRepository {
 	return &latestEntryRepository{h}
 }
 
@@ -36,7 +36,7 @@ func (repo *latestEntryRepository) FindOrNewByURL(code, urlStr string) (*LatestE
 	}
 
 	err = repo.Get(l)
-	if err == types.ErrNoSuchEntity {
+	if err == dao.ErrNoSuchEntity {
 		return l, nil
 	}
 	if err != nil {

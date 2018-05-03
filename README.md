@@ -7,7 +7,3 @@ This is a notification tool that gives you any information about Momoiro Clover 
 
 - [LINE](https://momoclo-channel.com/line/bot/about)
 - [@botnofu](https://twitter.com/botnofu)
-
-## Structure
-
-To respect the Flat package.

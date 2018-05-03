@@ -7,11 +7,40 @@ import (
 	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/dao/hook"
-	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/datastore"
 )
 
 type (
+	// PersistenceHandler represents persist operations
+	PersistenceHandler interface {
+		Kind(interface{}) string
+		Put(interface{}) error
+		PutMulti(interface{}) error
+		Get(interface{}) error
+		GetMulti(interface{}) error
+		Delete(interface{}) error
+		DeleteMulti(interface{}) error
+		NewQuery(string) PersistenceQuery
+		GetAll(PersistenceQuery, interface{}) error
+		FlushLocalCache()
+	}
+
+	// PersistenceQuery interface
+	PersistenceQuery interface {
+		Filter(string, interface{}) PersistenceQuery
+	}
+
+	// TransactionOptions represents transaction options (TODO: datastore dependencies should be eliminated, but there is no idea)
+	TransactionOptions struct {
+		XG       bool
+		Attempts int
+	}
+
+	// Transactor provides transaction across entities
+	Transactor interface {
+		RunInTransaction(func(PersistenceHandler) error, *TransactionOptions) error
+	}
+
 	// datastoreHandler implements PersistenceHandler interface using goon
 	datastoreHandler struct {
 		*goon.Goon
@@ -19,7 +48,7 @@ type (
 )
 
 // NewDatastoreHandler returns PersistenceHandler
-func NewDatastoreHandler(ctx context.Context) types.PersistenceHandler {
+func NewDatastoreHandler(ctx context.Context) PersistenceHandler {
 	return &datastoreHandler{
 		goon.FromContext(ctx),
 	}
@@ -63,7 +92,7 @@ func (h *datastoreHandler) PutMulti(src interface{}) error {
 func (h *datastoreHandler) Get(dst interface{}) error {
 	err := h.Goon.Get(dst)
 	if err == datastore.ErrNoSuchEntity {
-		return types.ErrNoSuchEntity
+		return ErrNoSuchEntity
 	}
 	return err
 }
@@ -96,12 +125,12 @@ func (h *datastoreHandler) DeleteMulti(src interface{}) error {
 }
 
 // Query returns PersistenceQuery that wraps datastore query
-func (h *datastoreHandler) NewQuery(kind string) types.PersistenceQuery {
+func (h *datastoreHandler) NewQuery(kind string) PersistenceQuery {
 	return NewQuery(kind)
 }
 
 // GetAll runs the query and returns all matches entities
-func (h *datastoreHandler) GetAll(q types.PersistenceQuery, dst interface{}) error {
+func (h *datastoreHandler) GetAll(q PersistenceQuery, dst interface{}) error {
 	v, ok := q.(*datastoreQuery)
 	if !ok {
 		return errors.New("required datastoreQuery")

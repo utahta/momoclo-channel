@@ -11,7 +11,6 @@ import (
 	"github.com/utahta/go-linenotify"
 	"github.com/utahta/go-openuri"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/nsync"
 	"google.golang.org/appengine/urlfetch"
 )
@@ -60,7 +59,7 @@ func New(ctx context.Context) Client {
 func (c *client) Notify(accessToken string, msg Message) error {
 	if err := c.notify(accessToken, msg); err != nil {
 		if err == linenotify.ErrNotifyInvalidAccessToken {
-			return types.ErrInvalidAccessToken
+			return ErrInvalidAccessToken
 		}
 		return err
 	}

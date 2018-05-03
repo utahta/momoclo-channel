@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/api/customsearch/v1"
 	"google.golang.org/appengine/urlfetch"
 )
@@ -55,5 +55,5 @@ func (c *imageSearcher) Search(word string) (ImageSearchResult, error) {
 		}
 		return ImageSearchResult{URL: item.Link, ThumbnailURL: item.Image.ThumbnailLink}, nil
 	}
-	return ImageSearchResult{}, types.ErrNoSuchEntity
+	return ImageSearchResult{}, errors.New("image not found")
 }

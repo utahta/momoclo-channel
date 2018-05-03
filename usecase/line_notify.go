@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/log"
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
 )
 
@@ -16,7 +16,7 @@ type (
 		log       log.Logger
 		taskQueue event.TaskQueue
 		notify    linenotify.Client
-		repo      types.LineNotificationRepository
+		repo      entity.LineNotificationRepository
 	}
 
 	// LineNotifyParams input parameters
@@ -30,7 +30,7 @@ func NewLineNotify(
 	log log.Logger,
 	taskQueue event.TaskQueue,
 	notify linenotify.Client,
-	repo types.LineNotificationRepository) *LineNotify {
+	repo entity.LineNotificationRepository) *LineNotify {
 	return &LineNotify{
 		log:       log,
 		taskQueue: taskQueue,
@@ -50,7 +50,7 @@ func (use *LineNotify) Do(params LineNotifyParams) error {
 	request := params.Request
 	err := use.notify.Notify(request.AccessToken, request.Messages[0])
 	if err != nil {
-		if err == types.ErrInvalidAccessToken {
+		if err == linenotify.ErrInvalidAccessToken {
 			err = use.repo.Delete(request.ID)
 			use.log.Infof("delete id:%v err:%v", request.ID, err)
 		}

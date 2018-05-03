@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/utahta/momoclo-channel/testutil"
-	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/aetest"
 )
 
@@ -22,7 +21,7 @@ func TestDatastoreTransactor_RunInTransaction(t *testing.T) {
 	}
 
 	tran := NewDatastoreTransactor(ctx)
-	err = tran.RunInTransaction(func(p types.PersistenceHandler) error {
+	err = tran.RunInTransaction(func(p PersistenceHandler) error {
 		e.Name = "taroimo_z"
 		if err := p.Put(e); err != nil {
 			return err

@@ -3,10 +3,11 @@ package usecase
 import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-channel/dao"
+	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
 )
 
@@ -15,8 +16,8 @@ type (
 	EnqueueTweets struct {
 		log        log.Logger
 		taskQueue  event.TaskQueue
-		transactor types.Transactor
-		repo       types.TweetItemRepository
+		transactor dao.Transactor
+		repo       entity.TweetItemRepository
 	}
 
 	// EnqueueTweetsParams input parameters
@@ -29,8 +30,8 @@ type (
 func NewEnqueueTweets(
 	log log.Logger,
 	taskQueue event.TaskQueue,
-	transactor types.Transactor,
-	repo types.TweetItemRepository) *EnqueueTweets {
+	transactor dao.Transactor,
+	repo entity.TweetItemRepository) *EnqueueTweets {
 	return &EnqueueTweets{
 		log:        log,
 		taskQueue:  taskQueue,
@@ -47,7 +48,7 @@ func (use *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	item := types.NewTweetItem(
+	item := entity.NewTweetItem(
 		params.FeedItem.UniqueURL(),
 		params.FeedItem.EntryTitle,
 		params.FeedItem.EntryURL,
@@ -59,9 +60,9 @@ func (use *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 		return nil // already enqueued
 	}
 
-	err := use.transactor.RunInTransaction(func(h types.PersistenceHandler) error {
+	err := use.transactor.RunInTransaction(func(h dao.PersistenceHandler) error {
 		repo := use.repo.Tx(h)
-		if _, err := repo.Find(item.ID); err != types.ErrNoSuchEntity {
+		if _, err := repo.Find(item.ID); err != dao.ErrNoSuchEntity {
 			return err
 		}
 		return repo.Save(item)

@@ -1,4 +1,4 @@
-package persistence
+package entity
 
 import (
 	"testing"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/testutil"
-	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/aetest"
 	"google.golang.org/appengine/datastore"
 )
@@ -19,9 +18,9 @@ func TestReminderRepository_FindAll(t *testing.T) {
 	defer done()
 
 	repo := NewReminderRepository(dao.NewDatastoreHandler(ctx))
-	reminders := []*types.Reminder{
-		types.NewReminderOnce("test1", time.Now()),
-		types.NewReminderOnce("test2", time.Now()),
+	reminders := []*Reminder{
+		NewReminderOnce("test1", time.Now()),
+		NewReminderOnce("test2", time.Now()),
 	}
 	reminders[1].Enabled = false
 	for _, reminder := range reminders {

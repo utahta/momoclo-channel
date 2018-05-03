@@ -4,13 +4,13 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
 	"github.com/utahta/momoclo-channel/twitter"
-	"github.com/utahta/momoclo-channel/types"
 )
 
 type (
@@ -18,7 +18,7 @@ type (
 	Remind struct {
 		log       log.Logger
 		taskQueue event.TaskQueue
-		repo      types.ReminderRepository
+		repo      entity.ReminderRepository
 	}
 )
 
@@ -26,7 +26,7 @@ type (
 func NewRemind(
 	logger log.Logger,
 	taskQueue event.TaskQueue,
-	repo types.ReminderRepository) *Remind {
+	repo entity.ReminderRepository) *Remind {
 	return &Remind{
 		log:       logger,
 		taskQueue: taskQueue,

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
@@ -11,7 +12,6 @@ import (
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
 	"github.com/utahta/momoclo-channel/twitter"
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/ustream"
 )
 
@@ -49,7 +49,7 @@ func (u *CheckUstream) Do() error {
 	}
 
 	status, err := u.repo.Find(entity.UstreamStatusID)
-	if err != nil && err != types.ErrNoSuchEntity {
+	if err != nil && err != dao.ErrNoSuchEntity {
 		return errors.Wrap(err, errTag)
 	}
 	if status.IsLive == isLive {

@@ -1,13 +1,19 @@
 package hook
 
 import (
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
+)
+
+type (
+	// PersistenceBeforeSaver hook
+	PersistenceBeforeSaver interface {
+		BeforeSave()
+	}
 )
 
 // BeforeSave hook
 func BeforeSave(src interface{}) {
-	if p, ok := src.(types.PersistenceBeforeSaver); ok {
+	if p, ok := src.(PersistenceBeforeSaver); ok {
 		p.BeforeSave()
 	}
 }

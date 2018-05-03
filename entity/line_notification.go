@@ -1,4 +1,4 @@
-package types
+package entity
 
 import (
 	"crypto/aes"
@@ -17,13 +17,6 @@ type (
 		TokenCrypt string `datastore:",noindex" validate:"required"`
 		Admin      bool
 		CreatedAt  time.Time `validate:"required"`
-	}
-
-	// LineNotificationRepository interface
-	LineNotificationRepository interface {
-		FindAll() ([]*LineNotification, error)
-		Save(*LineNotification) error
-		Delete(string) error
 	}
 )
 

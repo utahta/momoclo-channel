@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/mjibson/goon"
-	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/datastore"
 )
 
@@ -16,14 +15,14 @@ type (
 )
 
 // NewDatastoreTransactor wraps datastore transaction
-func NewDatastoreTransactor(ctx context.Context) types.Transactor {
+func NewDatastoreTransactor(ctx context.Context) Transactor {
 	return &datastoreTransactor{
 		goon.FromContext(ctx),
 	}
 }
 
 // RunInTransaction represents datastore transaction
-func (t *datastoreTransactor) RunInTransaction(fn func(h types.PersistenceHandler) error, opts *types.TransactionOptions) error {
+func (t *datastoreTransactor) RunInTransaction(fn func(h PersistenceHandler) error, opts *TransactionOptions) error {
 	o := &datastore.TransactionOptions{XG: true}
 	if opts != nil {
 		o = &datastore.TransactionOptions{

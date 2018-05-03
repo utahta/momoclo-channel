@@ -1,14 +1,12 @@
-package persistence_test
+package entity
 
 import (
 	"testing"
 	"time"
 
-	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/testutil"
-	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/aetest"
 )
 
@@ -24,7 +22,7 @@ func TestLineItemRepository_Tx(t *testing.T) {
 		EntryURL:    "http://localhost/1",
 		PublishedAt: time.Now(),
 	}
-	item := types.NewLineItem(
+	item := NewLineItem(
 		feedItem.UniqueURL(),
 		feedItem.EntryTitle,
 		feedItem.EntryURL,
@@ -32,13 +30,13 @@ func TestLineItemRepository_Tx(t *testing.T) {
 		feedItem.ImageURLs,
 		feedItem.VideoURLs,
 	)
-	repo := persistence.NewLineItemRepository(dao.NewDatastoreHandler(ctx))
+	repo := NewLineItemRepository(dao.NewDatastoreHandler(ctx))
 	if err := repo.Save(item); err != nil {
 		t.Fatal(err)
 	}
 
 	tran := dao.NewDatastoreTransactor(ctx)
-	tran.RunInTransaction(func(h types.PersistenceHandler) error {
+	tran.RunInTransaction(func(h dao.PersistenceHandler) error {
 		repo := repo.Tx(h)
 
 		item.Title = "entry title z"

@@ -9,10 +9,10 @@ import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/container"
+	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event/eventtest"
 	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/testutil"
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
 )
@@ -49,7 +49,7 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 
 	config.C = config.Config{LineNotify: config.LineNotify{TokenKey: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
 	for i := 0; i < 10; i++ {
-		l, err := types.NewLineNotification(config.C.LineNotify.TokenKey, fmt.Sprintf("token-%v", i))
+		l, err := entity.NewLineNotification(config.C.LineNotify.TokenKey, fmt.Sprintf("token-%v", i))
 		if err != nil {
 			t.Fatal(err)
 		}

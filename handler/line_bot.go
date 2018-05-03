@@ -6,7 +6,6 @@ import (
 
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/linebot"
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 )
 
@@ -16,7 +15,7 @@ func LineBotCallback(w http.ResponseWriter, req *http.Request) {
 
 	events, err := linebot.ParseRequest(req)
 	if err != nil {
-		if err == types.ErrInvalidSignature {
+		if err == linebot.ErrInvalidSignature {
 			failResponse(ctx, w, err, http.StatusBadRequest)
 			return
 		}

@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/utahta/momoclo-channel/types"
+import "github.com/utahta/momoclo-channel/dao"
 
 type (
 	// UstreamStatusRepository operates UstreamStatus entity
@@ -10,12 +10,12 @@ type (
 	}
 
 	ustreamStatusRepository struct {
-		types.PersistenceHandler
+		dao.PersistenceHandler
 	}
 )
 
 // NewUstreamStatusRepository returns the UstreamStatusRepository
-func NewUstreamStatusRepository(h types.PersistenceHandler) UstreamStatusRepository {
+func NewUstreamStatusRepository(h dao.PersistenceHandler) UstreamStatusRepository {
 	return &ustreamStatusRepository{h}
 }
 

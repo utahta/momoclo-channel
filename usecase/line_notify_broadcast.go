@@ -3,11 +3,11 @@ package usecase
 import (
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
+	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/linenotify"
 	"github.com/utahta/momoclo-channel/log"
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/validator"
 )
 
@@ -16,7 +16,7 @@ type (
 	LineNotifyBroadcast struct {
 		log       log.Logger
 		taskQueue event.TaskQueue
-		repo      types.LineNotificationRepository
+		repo      entity.LineNotificationRepository
 	}
 
 	// LineNotifyBroadcastParams input parameters
@@ -29,7 +29,7 @@ type (
 func NewLineNotifyBroadcast(
 	log log.Logger,
 	taskQueue event.TaskQueue,
-	repo types.LineNotificationRepository) *LineNotifyBroadcast {
+	repo entity.LineNotificationRepository) *LineNotifyBroadcast {
 	return &LineNotifyBroadcast{
 		log:       log,
 		taskQueue: taskQueue,

@@ -5,18 +5,24 @@ import (
 
 	"github.com/line/line-bot-sdk-go/linebot"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/urlfetch"
 )
 
 type (
+	// Client represents line bot client interface
+	Client interface {
+		ReplyText(string, string) error
+		ReplyImage(string, string, string) error
+	}
+
+	// client represents line bot client
 	client struct {
 		*linebot.Client
 	}
 )
 
-// New returns LineBot
-func New(ctx context.Context) types.LineBot {
+// New returns Client
+func New(ctx context.Context) Client {
 	c, _ := linebot.New(
 		config.C.LineBot.ChannelSecret,
 		config.C.LineBot.ChannelToken,

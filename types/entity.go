@@ -42,7 +42,7 @@ type (
 		Filter(string, interface{}) PersistenceQuery
 	}
 
-	// TransactionOptions represents transaction options (TODO: want to eliminate datastore dependence but no ideas)
+	// TransactionOptions represents transaction options (TODO: datastore dependencies should be eliminated, but there is no idea)
 	TransactionOptions struct {
 		XG       bool
 		Attempts int

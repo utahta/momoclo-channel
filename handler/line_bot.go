@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/utahta/momoclo-channel/adapter/gateway/api/linebot"
 	"github.com/utahta/momoclo-channel/container"
+	"github.com/utahta/momoclo-channel/linebot"
 	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 )

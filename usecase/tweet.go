@@ -5,7 +5,7 @@ import (
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
-	"github.com/utahta/momoclo-channel/types"
+	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/validator"
 )
 
@@ -14,17 +14,17 @@ type (
 	Tweet struct {
 		log       log.Logger
 		taskQueue event.TaskQueue
-		tweeter   types.Tweeter
+		tweeter   twitter.Tweeter
 	}
 
 	// TweetParams input parameters
 	TweetParams struct {
-		Requests []types.TweetRequest `validate:"min=1,dive"`
+		Requests []twitter.TweetRequest `validate:"min=1,dive"`
 	}
 )
 
 // NewTweet returns Tweet use case
-func NewTweet(log log.Logger, taskQueue event.TaskQueue, tweeter types.Tweeter) *Tweet {
+func NewTweet(log log.Logger, taskQueue event.TaskQueue, tweeter twitter.Tweeter) *Tweet {
 	return &Tweet{
 		log:       log,
 		taskQueue: taskQueue,

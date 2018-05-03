@@ -12,7 +12,7 @@ import (
 )
 
 func TestReminderRepository_FindAll(t *testing.T) {
-	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContext(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Fatal(err)
 	}

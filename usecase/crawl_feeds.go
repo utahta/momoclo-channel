@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
-	"github.com/utahta/momoclo-channel/types"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -31,16 +31,16 @@ func (c *CrawlFeeds) Do() error {
 	const errTag = "CrawlFeeds.Do failed"
 
 	now := timeutil.Now()
-	codes := []types.FeedCode{
-		types.FeedCodeMomota,
-		types.FeedCodeTamai,
-		types.FeedCodeSasaki,
-		types.FeedCodeTakagi,
-		types.FeedCodeAeNews,
-		types.FeedCodeYoutube,
+	codes := []crawler.FeedCode{
+		crawler.FeedCodeMomota,
+		crawler.FeedCodeTamai,
+		crawler.FeedCodeSasaki,
+		crawler.FeedCodeTakagi,
+		crawler.FeedCodeAeNews,
+		crawler.FeedCodeYoutube,
 	}
 	if now.Weekday() == time.Sunday {
-		codes = append(codes, types.FeedCodeHappyclo)
+		codes = append(codes, crawler.FeedCodeHappyclo)
 	}
 
 	eg := &errgroup.Group{}

@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/utahta/momoclo-channel/container"
+	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/event"
-	"github.com/utahta/momoclo-channel/types"
 	"github.com/utahta/momoclo-channel/usecase"
 )
 
@@ -21,7 +21,7 @@ func EnqueueTweets(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	item := types.FeedItem{}
+	item := crawler.FeedItem{}
 	if err := event.ParseTask(req.Form, &item); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
@@ -44,7 +44,7 @@ func EnqueueLines(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	item := types.FeedItem{}
+	item := crawler.FeedItem{}
 	if err := event.ParseTask(req.Form, &item); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return

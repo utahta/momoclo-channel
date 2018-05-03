@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
@@ -20,7 +21,7 @@ type (
 
 	// EnqueueLinesParams input parameters
 	EnqueueLinesParams struct {
-		FeedItem types.FeedItem
+		FeedItem crawler.FeedItem
 	}
 )
 
@@ -46,7 +47,14 @@ func (use *EnqueueLines) Do(params EnqueueLinesParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	item := types.NewLineItem(params.FeedItem)
+	item := types.NewLineItem(
+		params.FeedItem.UniqueURL(),
+		params.FeedItem.EntryTitle,
+		params.FeedItem.EntryURL,
+		params.FeedItem.PublishedAt,
+		params.FeedItem.ImageURLs,
+		params.FeedItem.VideoURLs,
+	)
 	if use.repo.Exists(item.ID) {
 		return nil // already enqueued
 	}

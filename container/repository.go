@@ -20,8 +20,8 @@ func Repository(ctx context.Context) *RepositoryContainer {
 }
 
 // LatestEntryRepository returns LatestEntry repository
-func (c *RepositoryContainer) LatestEntryRepository() types.LatestEntryRepository {
-	return persistence.NewLatestEntryRepository(dao.NewDatastoreHandler(c.ctx))
+func (c *RepositoryContainer) LatestEntryRepository() entity.LatestEntryRepository {
+	return entity.NewLatestEntryRepository(dao.NewDatastoreHandler(c.ctx))
 }
 
 // TweetItemRepository returns TweetItem repository

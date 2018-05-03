@@ -27,14 +27,14 @@ type (
 )
 
 // NewTweetItem returns TweetItem given FeedItem
-func NewTweetItem(params FeedItem) *TweetItem {
+func NewTweetItem(id string, title string, url string, publishedAt time.Time, imageURLs []string, videoURLs []string) *TweetItem {
 	return &TweetItem{
-		ID:          params.UniqueURL(),
-		Title:       params.EntryTitle,
-		URL:         params.EntryURL,
-		PublishedAt: params.PublishedAt,
-		ImageURLs:   strings.Join(params.ImageURLs, ","),
-		VideoURLs:   strings.Join(params.VideoURLs, ","),
+		ID:          id,
+		Title:       title,
+		URL:         url,
+		PublishedAt: publishedAt,
+		ImageURLs:   strings.Join(imageURLs, ","),
+		VideoURLs:   strings.Join(videoURLs, ","),
 	}
 }
 

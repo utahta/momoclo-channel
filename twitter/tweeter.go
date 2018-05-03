@@ -8,16 +8,35 @@ import (
 	"github.com/utahta/go-twitter"
 	"github.com/utahta/go-twitter/types"
 	"github.com/utahta/momoclo-channel/config"
-	mctypes "github.com/utahta/momoclo-channel/types"
 	"google.golang.org/appengine/urlfetch"
 )
 
-type tweeter struct {
-	*twitter.Client
-}
+type (
+	// TweetRequest represents request that tweet message, img urls and video url data
+	TweetRequest struct {
+		InReplyToStatusID string
+		Text              string
+		ImageURLs         []string `validate:"dive,omitempty,url"`
+		VideoURL          string   `validate:"omitempty,url"`
+	}
+
+	// TweetResponse represents response tweet data
+	TweetResponse struct {
+		IDStr string
+	}
+
+	// Tweeter interface
+	Tweeter interface {
+		Tweet(TweetRequest) (TweetResponse, error)
+	}
+
+	tweeter struct {
+		*twitter.Client
+	}
+)
 
 // NewTweeter returns model.Tweeter that wraps go-twitter
-func NewTweeter(ctx context.Context) mctypes.Tweeter {
+func NewTweeter(ctx context.Context) Tweeter {
 	if config.C.Twitter.Disabled {
 		return NewNopTweeter()
 	}
@@ -35,7 +54,7 @@ func NewTweeter(ctx context.Context) mctypes.Tweeter {
 }
 
 // Tweet tweets given request
-func (c *tweeter) Tweet(req mctypes.TweetRequest) (mctypes.TweetResponse, error) {
+func (c *tweeter) Tweet(req TweetRequest) (TweetResponse, error) {
 	const errTag = "tweeter.Tweet failed"
 
 	var (
@@ -63,7 +82,7 @@ func (c *tweeter) Tweet(req mctypes.TweetRequest) (mctypes.TweetResponse, error)
 	}
 
 	if err != nil {
-		return mctypes.TweetResponse{}, errors.Wrap(err, errTag)
+		return TweetResponse{}, errors.Wrap(err, errTag)
 	}
-	return mctypes.TweetResponse{IDStr: tweets.IDStr}, nil
+	return TweetResponse{IDStr: tweets.IDStr}, nil
 }

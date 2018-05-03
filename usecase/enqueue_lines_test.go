@@ -7,6 +7,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/container"
+	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/event/eventtest"
 	"github.com/utahta/momoclo-channel/testutil"
@@ -16,7 +17,7 @@ import (
 )
 
 func TestEnqueueLines_Do(t *testing.T) {
-	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContext(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,7 +27,7 @@ func TestEnqueueLines_Do(t *testing.T) {
 	repo := container.Repository(ctx).LineItemRepository()
 	u := usecase.NewEnqueueLines(container.Logger(ctx).AE(), taskQueue, dao.NewDatastoreTransactor(ctx), repo)
 	publishedAt, _ := time.Parse("2006-01-02 15:04:05", "2008-05-17 00:00:00")
-	feedItem := types.FeedItem{
+	feedItem := crawler.FeedItem{
 		Title:       "title",
 		URL:         "http://localhost",
 		EntryTitle:  "entry_title",
@@ -35,12 +36,19 @@ func TestEnqueueLines_Do(t *testing.T) {
 		VideoURLs:   []string{"http://localhost/mp4_1"},
 		PublishedAt: publishedAt,
 	}
-	item := types.NewLineItem(feedItem)
+	item := types.NewLineItem(
+		feedItem.UniqueURL(),
+		feedItem.EntryTitle,
+		feedItem.EntryURL,
+		feedItem.PublishedAt,
+		feedItem.ImageURLs,
+		feedItem.VideoURLs,
+	)
 	if repo.Exists(item.ID) {
 		t.Errorf("Expected line item not found, but exists. feedItem:%v", feedItem)
 	}
 
-	err = u.Do(usecase.EnqueueLinesParams{FeedItem: types.FeedItem{}})
+	err = u.Do(usecase.EnqueueLinesParams{FeedItem: crawler.FeedItem{}})
 	if errs, ok := errors.Cause(err).(validator.ValidationErrors); !ok {
 		t.Errorf("Expected validation errors, got %v", errs)
 	}

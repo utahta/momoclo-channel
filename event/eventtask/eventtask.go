@@ -1,27 +1,29 @@
 package eventtask
 
 import (
+	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/event"
+	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/types"
 )
 
 // NewEnqueueTweets returns enqueue tweets task
-func NewEnqueueTweets(v types.FeedItem) event.Task {
+func NewEnqueueTweets(v crawler.FeedItem) event.Task {
 	return event.Task{QueueName: "enqueue", Path: "/enqueue/tweets", Object: v}
 }
 
 // NewEnqueueLines returns enqueue lines task
-func NewEnqueueLines(v types.FeedItem) event.Task {
+func NewEnqueueLines(v crawler.FeedItem) event.Task {
 	return event.Task{QueueName: "enqueue", Path: "/enqueue/lines", Object: v}
 }
 
 // NewTweet returns tweet task
-func NewTweet(v types.TweetRequest) event.Task {
-	return NewTweets([]types.TweetRequest{v})
+func NewTweet(v twitter.TweetRequest) event.Task {
+	return NewTweets([]twitter.TweetRequest{v})
 }
 
 // NewTweets returns tweet task
-func NewTweets(v []types.TweetRequest) event.Task {
+func NewTweets(v []twitter.TweetRequest) event.Task {
 	return event.Task{QueueName: "queue-tweet", Path: "/tweet", Object: v}
 }
 

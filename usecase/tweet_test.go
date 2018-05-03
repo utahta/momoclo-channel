@@ -5,17 +5,16 @@ import (
 
 	"github.com/go-playground/validator"
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/adapter/gateway/api/twitter"
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/event/eventtest"
 	"github.com/utahta/momoclo-channel/testutil"
-	"github.com/utahta/momoclo-channel/types"
+	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
 )
 
 func TestTweet_Do(t *testing.T) {
-	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContext(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,10 +27,10 @@ func TestTweet_Do(t *testing.T) {
 		params usecase.TweetParams
 	}{
 		{},
-		{usecase.TweetParams{Requests: []types.TweetRequest{
+		{usecase.TweetParams{Requests: []twitter.TweetRequest{
 			{ImageURLs: []string{"a"}},
 		}}},
-		{usecase.TweetParams{Requests: []types.TweetRequest{
+		{usecase.TweetParams{Requests: []twitter.TweetRequest{
 			{VideoURL: "a"},
 		}}},
 	}
@@ -43,7 +42,7 @@ func TestTweet_Do(t *testing.T) {
 		}
 	}
 
-	err = u.Do(usecase.TweetParams{Requests: []types.TweetRequest{
+	err = u.Do(usecase.TweetParams{Requests: []twitter.TweetRequest{
 		{Text: "test", ImageURLs: []string{"http://localhost/a", "http://localhost/b"}},
 		{ImageURLs: []string{"http://localhost/c"}},
 		{VideoURL: "http://localhost/d"},

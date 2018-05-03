@@ -7,8 +7,8 @@ import (
 	"google.golang.org/appengine/aetest"
 )
 
-// NewContex extends aetest.NewContext
-func NewContex(opts *aetest.Options) (context.Context, func(), error) {
+// NewContext extends aetest.NewContext
+func NewContext(opts *aetest.Options) (context.Context, func(), error) {
 	inst, err := aetest.NewInstance(opts)
 	if err != nil {
 		return nil, nil, err

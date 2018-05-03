@@ -8,6 +8,7 @@ import (
 	"github.com/utahta/momoclo-channel/event/eventtask"
 	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/timeutil"
+	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/types"
 )
 
@@ -59,7 +60,7 @@ func (r *Remind) Do() error {
 		}
 
 		r.taskQueue.PushMulti([]event.Task{
-			eventtask.NewTweet(types.TweetRequest{Text: reminder.Text}),
+			eventtask.NewTweet(twitter.TweetRequest{Text: reminder.Text}),
 			eventtask.NewLineBroadcast(types.LineNotifyMessage{Text: fmt.Sprintf("\n%s", reminder.Text)}),
 		})
 		r.log.Infof("remind: %#v", reminder)

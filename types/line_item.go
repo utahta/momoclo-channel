@@ -27,14 +27,14 @@ type (
 )
 
 // NewLineItem returns LineItem given FeedItem
-func NewLineItem(params FeedItem) *LineItem {
+func NewLineItem(id string, title string, url string, publishedAt time.Time, imageURLs []string, videoURLs []string) *LineItem {
 	return &LineItem{
-		ID:          params.UniqueURL(),
-		Title:       params.EntryTitle,
-		URL:         params.EntryURL,
-		PublishedAt: params.PublishedAt,
-		ImageURLs:   strings.Join(params.ImageURLs, ","),
-		VideoURLs:   strings.Join(params.VideoURLs, ","),
+		ID:          id,
+		Title:       title,
+		URL:         url,
+		PublishedAt: publishedAt,
+		ImageURLs:   strings.Join(imageURLs, ","),
+		VideoURLs:   strings.Join(videoURLs, ","),
 	}
 }
 

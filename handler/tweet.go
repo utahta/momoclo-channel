@@ -7,7 +7,7 @@ import (
 
 	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/event"
-	"github.com/utahta/momoclo-channel/types"
+	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/usecase"
 )
 
@@ -21,7 +21,7 @@ func Tweet(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var requests []types.TweetRequest
+	var requests []twitter.TweetRequest
 	if err := event.ParseTask(req.Form, &requests); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return

@@ -20,7 +20,7 @@ func (e *TestEntity) BeforeSave() {
 }
 
 func TestDatastoreHandler_Put(t *testing.T) {
-	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContext(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +51,7 @@ func TestDatastoreHandler_Put(t *testing.T) {
 }
 
 func TestDatastoreHandler_PutMulti(t *testing.T) {
-	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContext(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Fatal(err)
 	}

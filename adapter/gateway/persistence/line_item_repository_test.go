@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/utahta/momoclo-channel/adapter/gateway/persistence"
+	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/testutil"
 	"github.com/utahta/momoclo-channel/types"
@@ -12,17 +13,25 @@ import (
 )
 
 func TestLineItemRepository_Tx(t *testing.T) {
-	ctx, done, err := testutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContext(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Error(err)
 	}
 	defer done()
 
-	item := types.NewLineItem(types.FeedItem{
+	feedItem := crawler.FeedItem{
 		EntryTitle:  "entry title",
 		EntryURL:    "http://localhost/1",
 		PublishedAt: time.Now(),
-	})
+	}
+	item := types.NewLineItem(
+		feedItem.UniqueURL(),
+		feedItem.EntryTitle,
+		feedItem.EntryURL,
+		feedItem.PublishedAt,
+		feedItem.ImageURLs,
+		feedItem.VideoURLs,
+	)
 	repo := persistence.NewLineItemRepository(dao.NewDatastoreHandler(ctx))
 	if err := repo.Save(item); err != nil {
 		t.Fatal(err)

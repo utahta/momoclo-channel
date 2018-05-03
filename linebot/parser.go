@@ -39,7 +39,7 @@ const (
 
 // ParseRequest parses http request
 func ParseRequest(r *http.Request) ([]Event, error) {
-	events, err := linebot.ParseRequest(config.C.LineBot.ChannelSecret, r)
+	events, err := linebot.ParseRequest(config.C().LineBot.ChannelSecret, r)
 	if err == linebot.ErrInvalidSignature {
 		return nil, ErrInvalidSignature
 	} else if err != nil {

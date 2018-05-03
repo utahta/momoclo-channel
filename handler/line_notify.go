@@ -19,7 +19,7 @@ import (
 func LineNotifyOn(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	c, err := auth.New(config.C.LineNotify.ClientID, config.LineNotifyCallbackURL())
+	c, err := auth.New(config.C().LineNotify.ClientID, linenotify.CallbackURL())
 	if err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return

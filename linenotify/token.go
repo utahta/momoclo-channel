@@ -23,9 +23,9 @@ type (
 func NewToken(ctx context.Context) Token {
 	return &tokenClient{
 		token.New(
-			config.LineNotifyCallbackURL(),
-			config.C.LineNotify.ClientID,
-			config.C.LineNotify.ClientSecret,
+			CallbackURL(),
+			config.C().LineNotify.ClientID,
+			config.C().LineNotify.ClientSecret,
 			token.WithHTTPClient(urlfetch.Client(ctx)),
 		),
 	}

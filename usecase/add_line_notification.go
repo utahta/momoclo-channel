@@ -43,7 +43,7 @@ func (use *AddLineNotification) Do(params AddLineNotificationParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	ln, err := entity.NewLineNotification(config.C.LineNotify.TokenKey, token)
+	ln, err := entity.NewLineNotification(config.C().LineNotify.TokenKey, token)
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}

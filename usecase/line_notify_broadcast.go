@@ -53,7 +53,7 @@ func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
 
 	tasks := make([]event.Task, 0, len(ns))
 	for _, n := range ns {
-		accessToken, err := n.Token(config.C.LineNotify.TokenKey)
+		accessToken, err := n.Token(config.C().LineNotify.TokenKey)
 		if err != nil {
 			use.log.Errorf("%v: get access token err:%v", errTag, err)
 			continue

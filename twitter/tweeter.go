@@ -37,17 +37,17 @@ type (
 
 // NewTweeter returns model.Tweeter that wraps go-twitter
 func NewTweeter(ctx context.Context) Tweeter {
-	if config.C.Twitter.Disabled {
+	if config.C().Twitter.Disabled {
 		return NewNopTweeter()
 	}
 
 	twitter.SetConsumerCredentials(
-		config.C.Twitter.ConsumerKey,
-		config.C.Twitter.ConsumerSecret,
+		config.C().Twitter.ConsumerKey,
+		config.C().Twitter.ConsumerSecret,
 	)
 	c, _ := twitter.New(
-		config.C.Twitter.AccessToken,
-		config.C.Twitter.AccessTokenSecret,
+		config.C().Twitter.AccessToken,
+		config.C().Twitter.AccessTokenSecret,
 		twitter.WithHTTPClient(urlfetch.Client(ctx)),
 	)
 	return &tweeter{c}

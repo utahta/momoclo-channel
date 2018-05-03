@@ -24,8 +24,8 @@ type (
 // New returns Client
 func New(ctx context.Context) Client {
 	c, _ := linebot.New(
-		config.C.LineBot.ChannelSecret,
-		config.C.LineBot.ChannelToken,
+		config.C().LineBot.ChannelSecret,
+		config.C().LineBot.ChannelToken,
 		linebot.WithHTTPClient(urlfetch.Client(ctx)),
 	)
 	return &client{c}

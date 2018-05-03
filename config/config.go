@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/pelletier/go-toml"
+	"github.com/utahta/momoclo-channel/timeutil"
 )
 
 // Config represents all settings
@@ -50,13 +51,12 @@ type LineNotify struct {
 }
 
 var (
-	C   Config
-	JST = time.FixedZone("Asia/Tokyo", 9*60*60)
+	c *Config
 )
 
-// LineNotifyCallbackURL returns LINE Notify callback URL
-func LineNotifyCallbackURL() string {
-	return C.App.BaseURL + "/line/notify/callback"
+// C returns Config
+func C() *Config {
+	return c
 }
 
 // MustLoad loads config file
@@ -74,10 +74,11 @@ func Load(path string) error {
 		return err
 	}
 
-	if err := t.Unmarshal(&C); err != nil {
+	c = &Config{}
+	if err := t.Unmarshal(c); err != nil {
 		return err
 	}
 
-	time.Local = JST
+	time.Local = timeutil.JST()
 	return nil
 }

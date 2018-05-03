@@ -47,9 +47,9 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 		}
 	}
 
-	config.C = config.Config{LineNotify: config.LineNotify{TokenKey: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+	testutil.MustConfigLoad()
 	for i := 0; i < 10; i++ {
-		l, err := entity.NewLineNotification(config.C.LineNotify.TokenKey, fmt.Sprintf("token-%v", i))
+		l, err := entity.NewLineNotification(config.C().LineNotify.TokenKey, fmt.Sprintf("token-%v", i))
 		if err != nil {
 			t.Fatal(err)
 		}

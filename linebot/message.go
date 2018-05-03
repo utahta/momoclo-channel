@@ -19,13 +19,13 @@ func FollowMessage() string {
 
 // HelpMessage returns help message
 func HelpMessage() string {
-	urlStr := fmt.Sprintf("%s%s", config.C.App.BaseURL, "/line/bot/help")
+	urlStr := fmt.Sprintf("%s%s", config.C().App.BaseURL, "/line/bot/help")
 	return fmt.Sprintf("ヘルプ（・Θ・）\n%s", urlStr)
 }
 
 // OnMessage returns line notification on message
 func OnMessage() string {
-	urlStr := fmt.Sprintf("%s%s", config.C.App.BaseURL, "/line/notify/on")
+	urlStr := fmt.Sprintf("%s%s", config.C().App.BaseURL, "/line/notify/on")
 	return fmt.Sprintf("通知機能を有効にする場合は、下記URLをクリックしてください（・Θ・）\n%s", urlStr)
 }
 

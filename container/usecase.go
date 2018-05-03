@@ -106,7 +106,7 @@ func (c *UsecaseContainer) HandleLineBotEvents() *usecase.HandleLineBotEvents {
 	return usecase.NewHandleLineBotEvents(
 		c.logger.AE(),
 		linebot.New(c.ctx),
-		customsearch.NewImageSearcher(c.ctx),
+		customsearch.MustNewImageSearcher(c.ctx),
 	)
 }
 

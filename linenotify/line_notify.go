@@ -46,7 +46,7 @@ var (
 
 // New returns LineNotify
 func New(ctx context.Context) Client {
-	if config.C.LineNotify.Disabled {
+	if config.C().LineNotify.Disabled {
 		return NewNop()
 	}
 

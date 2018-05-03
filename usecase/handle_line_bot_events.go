@@ -1,9 +1,9 @@
 package usecase
 
 import (
+	"github.com/utahta/momoclo-channel/customsearch"
 	"github.com/utahta/momoclo-channel/linebot"
 	"github.com/utahta/momoclo-channel/log"
-	"github.com/utahta/momoclo-channel/types"
 )
 
 type (
@@ -11,7 +11,7 @@ type (
 	HandleLineBotEvents struct {
 		log           log.Logger
 		lineBot       linebot.Client
-		imageSearcher types.ImageSearcher
+		imageSearcher customsearch.ImageSearcher
 	}
 
 	// HandleLineBotEventsParams use case params
@@ -24,7 +24,7 @@ type (
 func NewHandleLineBotEvents(
 	logger log.Logger,
 	lineBot linebot.Client,
-	imageSearcher types.ImageSearcher) *HandleLineBotEvents {
+	imageSearcher customsearch.ImageSearcher) *HandleLineBotEvents {
 	return &HandleLineBotEvents{
 		log:           logger,
 		lineBot:       lineBot,

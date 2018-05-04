@@ -4,27 +4,29 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/core"
-	"github.com/utahta/momoclo-channel/domain/event"
-	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/eventtask"
-	"github.com/utahta/momoclo-channel/lib/timeutil"
+	"github.com/utahta/momoclo-channel/entity"
+	"github.com/utahta/momoclo-channel/event"
+	"github.com/utahta/momoclo-channel/event/eventtask"
+	"github.com/utahta/momoclo-channel/linenotify"
+	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/timeutil"
+	"github.com/utahta/momoclo-channel/twitter"
 )
 
 type (
 	// Remind use case
 	Remind struct {
-		log       core.Logger
+		log       log.Logger
 		taskQueue event.TaskQueue
-		repo      model.ReminderRepository
+		repo      entity.ReminderRepository
 	}
 )
 
 // NewRemind returns Remind use case
 func NewRemind(
-	logger core.Logger,
+	logger log.Logger,
 	taskQueue event.TaskQueue,
-	repo model.ReminderRepository) *Remind {
+	repo entity.ReminderRepository) *Remind {
 	return &Remind{
 		log:       logger,
 		taskQueue: taskQueue,
@@ -59,8 +61,8 @@ func (r *Remind) Do() error {
 		}
 
 		r.taskQueue.PushMulti([]event.Task{
-			eventtask.NewTweet(model.TweetRequest{Text: reminder.Text}),
-			eventtask.NewLineBroadcast(model.LineNotifyMessage{Text: fmt.Sprintf("\n%s", reminder.Text)}),
+			eventtask.NewTweet(twitter.TweetRequest{Text: reminder.Text}),
+			eventtask.NewLineBroadcast(linenotify.Message{Text: fmt.Sprintf("\n%s", reminder.Text)}),
 		})
 		r.log.Infof("remind: %#v", reminder)
 	}

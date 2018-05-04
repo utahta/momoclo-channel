@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/utahta/momoclo-channel/adapter/handler/batch"
-	"github.com/utahta/momoclo-channel/adapter/handler/middleware"
-	"github.com/utahta/momoclo-channel/lib/config"
+	"github.com/utahta/momoclo-channel/config"
+	"github.com/utahta/momoclo-channel/handler"
+	"github.com/utahta/momoclo-channel/handler/middleware"
 )
 
 func init() {
@@ -16,7 +16,7 @@ func init() {
 	router.Use(middleware.AEContext)
 
 	router.Get("/_ah/start", func(w http.ResponseWriter, req *http.Request) {})
-	router.Post("/tweet", batch.Tweet)
+	router.Post("/tweet", handler.Tweet)
 
 	http.Handle("/", router)
 }

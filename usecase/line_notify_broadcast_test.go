@@ -7,17 +7,18 @@ import (
 
 	"github.com/go-playground/validator"
 	"github.com/pkg/errors"
+	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/container"
-	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/infrastructure/event/eventtest"
-	"github.com/utahta/momoclo-channel/lib/aetestutil"
-	"github.com/utahta/momoclo-channel/lib/config"
+	"github.com/utahta/momoclo-channel/entity"
+	"github.com/utahta/momoclo-channel/event/eventtest"
+	"github.com/utahta/momoclo-channel/linenotify"
+	"github.com/utahta/momoclo-channel/testutil"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
 )
 
 func TestLineNotifyBroadcast_Do(t *testing.T) {
-	ctx, done, err := aetestutil.NewContex(&aetest.Options{StronglyConsistentDatastore: true})
+	ctx, done, err := testutil.NewContext(&aetest.Options{StronglyConsistentDatastore: true})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,10 +32,10 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 		params usecase.LineNotifyBroadcastParams
 	}{
 		{usecase.LineNotifyBroadcastParams{Messages: nil}},
-		{usecase.LineNotifyBroadcastParams{Messages: []model.LineNotifyMessage{
+		{usecase.LineNotifyBroadcastParams{Messages: []linenotify.Message{
 			{Text: ""},
 		}}},
-		{usecase.LineNotifyBroadcastParams{Messages: []model.LineNotifyMessage{
+		{usecase.LineNotifyBroadcastParams{Messages: []linenotify.Message{
 			{Text: "hello", ImageURL: "unknown"},
 		}}},
 	}
@@ -46,16 +47,16 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 		}
 	}
 
-	config.C = config.Config{LineNotify: config.LineNotify{TokenKey: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}
+	testutil.MustConfigLoad()
 	for i := 0; i < 10; i++ {
-		l, err := model.NewLineNotification(config.C.LineNotify.TokenKey, fmt.Sprintf("token-%v", i))
+		l, err := entity.NewLineNotification(config.C().LineNotify.TokenKey, fmt.Sprintf("token-%v", i))
 		if err != nil {
 			t.Fatal(err)
 		}
 		repo.Save(l)
 	}
 
-	err = u.Do(usecase.LineNotifyBroadcastParams{Messages: []model.LineNotifyMessage{
+	err = u.Do(usecase.LineNotifyBroadcastParams{Messages: []linenotify.Message{
 		{Text: "hello"},
 		{Text: " ", ImageURL: "http://localhost/a"},
 	},

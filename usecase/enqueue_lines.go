@@ -2,35 +2,36 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/core"
-	"github.com/utahta/momoclo-channel/domain/event"
-	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/eventtask"
-	"github.com/utahta/momoclo-channel/domain/service/feeditem"
+	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-channel/dao"
+	"github.com/utahta/momoclo-channel/entity"
+	"github.com/utahta/momoclo-channel/event"
+	"github.com/utahta/momoclo-channel/event/eventtask"
+	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/validator"
 )
 
 type (
 	// EnqueueLines use case
 	EnqueueLines struct {
-		log        core.Logger
+		log        log.Logger
 		taskQueue  event.TaskQueue
-		transactor model.Transactor
-		repo       model.LineItemRepository
+		transactor dao.Transactor
+		repo       entity.LineItemRepository
 	}
 
 	// EnqueueLinesParams input parameters
 	EnqueueLinesParams struct {
-		FeedItem model.FeedItem
+		FeedItem crawler.FeedItem
 	}
 )
 
 // NewEnqueueLines returns EnqueueLines use case
 func NewEnqueueLines(
-	log core.Logger,
+	log log.Logger,
 	taskQueue event.TaskQueue,
-	transactor model.Transactor,
-	repo model.LineItemRepository) *EnqueueLines {
+	transactor dao.Transactor,
+	repo entity.LineItemRepository) *EnqueueLines {
 	return &EnqueueLines{
 		log:        log,
 		taskQueue:  taskQueue,
@@ -43,18 +44,25 @@ func NewEnqueueLines(
 func (use *EnqueueLines) Do(params EnqueueLinesParams) error {
 	const errTag = "EnqueueLines.Do failed"
 
-	if err := core.Validate(params); err != nil {
+	if err := validator.Validate(params); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 
-	item := model.NewLineItem(params.FeedItem)
+	item := entity.NewLineItem(
+		params.FeedItem.UniqueURL(),
+		params.FeedItem.EntryTitle,
+		params.FeedItem.EntryURL,
+		params.FeedItem.PublishedAt,
+		params.FeedItem.ImageURLs,
+		params.FeedItem.VideoURLs,
+	)
 	if use.repo.Exists(item.ID) {
 		return nil // already enqueued
 	}
 
-	err := use.transactor.RunInTransaction(func(h model.PersistenceHandler) error {
+	err := use.transactor.RunInTransaction(func(h dao.PersistenceHandler) error {
 		repo := use.repo.Tx(h)
-		if _, err := repo.Find(item.ID); err != domain.ErrNoSuchEntity {
+		if _, err := repo.Find(item.ID); err != dao.ErrNoSuchEntity {
 			return err
 		}
 		return repo.Save(item)
@@ -64,7 +72,7 @@ func (use *EnqueueLines) Do(params EnqueueLinesParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	messages := feeditem.ToLineNotifyMessages(params.FeedItem)
+	messages := params.FeedItem.ToLineNotifyMessages()
 	if len(messages) == 0 {
 		use.log.Errorf("%v: invalid enqueue lines feedItem:%v", errTag, params.FeedItem)
 		return errors.Errorf("%v: invalid enqueue line messages", errTag)

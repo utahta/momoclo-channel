@@ -1,5 +1,5 @@
 service: batch
-version: v3-0-0
+version: v4-0-0
 runtime: go
 api_version: go1.8
 

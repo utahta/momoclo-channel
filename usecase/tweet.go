@@ -2,28 +2,29 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/core"
-	"github.com/utahta/momoclo-channel/domain/event"
-	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/eventtask"
+	"github.com/utahta/momoclo-channel/event"
+	"github.com/utahta/momoclo-channel/event/eventtask"
+	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/twitter"
+	"github.com/utahta/momoclo-channel/validator"
 )
 
 type (
 	// Tweet use case
 	Tweet struct {
-		log       core.Logger
+		log       log.Logger
 		taskQueue event.TaskQueue
-		tweeter   model.Tweeter
+		tweeter   twitter.Tweeter
 	}
 
 	// TweetParams input parameters
 	TweetParams struct {
-		Requests []model.TweetRequest `validate:"min=1,dive"`
+		Requests []twitter.TweetRequest `validate:"min=1,dive"`
 	}
 )
 
 // NewTweet returns Tweet use case
-func NewTweet(log core.Logger, taskQueue event.TaskQueue, tweeter model.Tweeter) *Tweet {
+func NewTweet(log log.Logger, taskQueue event.TaskQueue, tweeter twitter.Tweeter) *Tweet {
 	return &Tweet{
 		log:       log,
 		taskQueue: taskQueue,
@@ -35,7 +36,7 @@ func NewTweet(log core.Logger, taskQueue event.TaskQueue, tweeter model.Tweeter)
 func (use *Tweet) Do(params TweetParams) error {
 	const errTag = "Tweet.Do failed"
 
-	if err := core.Validate(params); err != nil {
+	if err := validator.Validate(params); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 

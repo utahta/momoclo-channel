@@ -1,30 +1,30 @@
 package usecase
 
 import (
-	"github.com/utahta/momoclo-channel/domain/core"
-	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/linebot"
+	"github.com/utahta/momoclo-channel/customsearch"
+	"github.com/utahta/momoclo-channel/linebot"
+	"github.com/utahta/momoclo-channel/log"
 )
 
 type (
 	// HandleLineBotEvents use case
 	HandleLineBotEvents struct {
-		log           core.Logger
-		lineBot       model.LineBot
-		imageSearcher model.ImageSearcher
+		log           log.Logger
+		lineBot       linebot.Client
+		imageSearcher customsearch.ImageSearcher
 	}
 
 	// HandleLineBotEventsParams use case params
 	HandleLineBotEventsParams struct {
-		Events []model.LineBotEvent
+		Events []linebot.Event
 	}
 )
 
 // NewHandleLineBotEvents returns HandleLineBotEvents use case
 func NewHandleLineBotEvents(
-	logger core.Logger,
-	lineBot model.LineBot,
-	imageSearcher model.ImageSearcher) *HandleLineBotEvents {
+	logger log.Logger,
+	lineBot linebot.Client,
+	imageSearcher customsearch.ImageSearcher) *HandleLineBotEvents {
 	return &HandleLineBotEvents{
 		log:           logger,
 		lineBot:       lineBot,
@@ -40,9 +40,9 @@ func (use *HandleLineBotEvents) Do(params HandleLineBotEventsParams) error {
 		use.log.Infof("handle event:%v", event)
 
 		switch event.Type {
-		case model.LineBotEventTypeMessage:
+		case linebot.EventTypeMessage:
 			switch event.MessageType {
-			case model.LineBotMessageTypeText:
+			case linebot.MessageTypeText:
 				if linebot.MatchOn(event.TextMessage.Text) {
 					use.lineBot.ReplyText(event.ReplyToken, linebot.OnMessage())
 					continue
@@ -68,10 +68,10 @@ func (use *HandleLineBotEvents) Do(params HandleLineBotEventsParams) error {
 			default:
 				use.log.Infof("not handle message type:%v", event.MessageType)
 			}
-		case model.LineBotEventTypeFollow:
+		case linebot.EventTypeFollow:
 			use.log.Info("follow event")
 			use.lineBot.ReplyText(event.ReplyToken, linebot.FollowMessage())
-		case model.LineBotEventTypeUnfollow:
+		case linebot.EventTypeUnfollow:
 			use.log.Info("unfollow event")
 		default:
 			use.log.Info("not handle event type:%v", event.Type)

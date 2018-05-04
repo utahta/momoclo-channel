@@ -3,8 +3,7 @@ package container
 import (
 	"context"
 
-	"github.com/utahta/momoclo-channel/domain/core"
-	"github.com/utahta/momoclo-channel/infrastructure/log"
+	"github.com/utahta/momoclo-channel/log"
 )
 
 // LoggerContainer dependency injection
@@ -18,6 +17,6 @@ func Logger(ctx context.Context) *LoggerContainer {
 }
 
 // AE returns app engine logger
-func (c *LoggerContainer) AE() core.Logger {
+func (c *LoggerContainer) AE() log.Logger {
 	return log.NewAELogger(c.ctx)
 }

@@ -5,9 +5,9 @@ import (
 
 	"github.com/fukata/golang-stats-api-handler"
 	"github.com/go-chi/chi"
-	"github.com/utahta/momoclo-channel/adapter/handler/backend"
-	"github.com/utahta/momoclo-channel/adapter/handler/middleware"
-	"github.com/utahta/momoclo-channel/lib/config"
+	"github.com/utahta/momoclo-channel/config"
+	"github.com/utahta/momoclo-channel/handler"
+	"github.com/utahta/momoclo-channel/handler/middleware"
 )
 
 func init() {
@@ -17,30 +17,30 @@ func init() {
 	router.Use(middleware.AEContext)
 
 	router.Route("/cron", func(r chi.Router) {
-		r.Get("/crawl", backend.CronCrawl)
-		r.Get("/ustream", backend.CronUstream)
-		r.Get("/reminder", backend.CronReminder)
+		r.Get("/crawl", handler.CronCrawl)
+		r.Get("/ustream", handler.CronUstream)
+		r.Get("/reminder", handler.CronReminder)
 	})
 
 	router.Route("/enqueue", func(r chi.Router) {
-		r.Post("/tweets", backend.EnqueueTweets)
-		r.Post("/lines", backend.EnqueueLines)
+		r.Post("/tweets", handler.EnqueueTweets)
+		r.Post("/lines", handler.EnqueueLines)
 	})
 
 	router.Route("/line", func(r chi.Router) {
 		r.Route("/bot", func(r chi.Router) {
-			r.Post("/callback", backend.LineBotCallback)
-			r.Get("/help", backend.LineBotHelp)
-			r.Get("/about", backend.LineBotAbout)
+			r.Post("/callback", handler.LineBotCallback)
+			r.Get("/help", handler.LineBotHelp)
+			r.Get("/about", handler.LineBotAbout)
 		})
 
 		r.Route("/notify", func(r chi.Router) {
-			r.HandleFunc("/callback", backend.LineNotifyCallback)
-			r.Get("/on", backend.LineNotifyOn)
-			r.Get("/off", backend.LineNotifyOff)
+			r.HandleFunc("/callback", handler.LineNotifyCallback)
+			r.Get("/on", handler.LineNotifyOn)
+			r.Get("/off", handler.LineNotifyOff)
 
-			r.Post("/broadcast", backend.LineNotifyBroadcast)
-			r.Post("/", backend.LineNotify)
+			r.Post("/broadcast", handler.LineNotifyBroadcast)
+			r.Post("/", handler.LineNotify)
 		})
 	})
 

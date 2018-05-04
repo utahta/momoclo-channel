@@ -2,34 +2,35 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/core"
-	"github.com/utahta/momoclo-channel/domain/event"
-	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/eventtask"
+	"github.com/utahta/momoclo-channel/entity"
+	"github.com/utahta/momoclo-channel/event"
+	"github.com/utahta/momoclo-channel/event/eventtask"
+	"github.com/utahta/momoclo-channel/linenotify"
+	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/validator"
 )
 
 type (
 	// LineNotify use case
 	LineNotify struct {
-		log       core.Logger
+		log       log.Logger
 		taskQueue event.TaskQueue
-		notify    model.LineNotify
-		repo      model.LineNotificationRepository
+		notify    linenotify.Client
+		repo      entity.LineNotificationRepository
 	}
 
 	// LineNotifyParams input parameters
 	LineNotifyParams struct {
-		Request model.LineNotifyRequest
+		Request linenotify.Request
 	}
 )
 
 // NewLineNotify returns LineNotify use case
 func NewLineNotify(
-	log core.Logger,
+	log log.Logger,
 	taskQueue event.TaskQueue,
-	notify model.LineNotify,
-	repo model.LineNotificationRepository) *LineNotify {
+	notify linenotify.Client,
+	repo entity.LineNotificationRepository) *LineNotify {
 	return &LineNotify{
 		log:       log,
 		taskQueue: taskQueue,
@@ -42,14 +43,14 @@ func NewLineNotify(
 func (use *LineNotify) Do(params LineNotifyParams) error {
 	const errTag = "LineNotify.Do failed"
 
-	if err := core.Validate(params); err != nil {
+	if err := validator.Validate(params); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 
 	request := params.Request
 	err := use.notify.Notify(request.AccessToken, request.Messages[0])
 	if err != nil {
-		if err == domain.ErrInvalidAccessToken {
+		if err == linenotify.ErrInvalidAccessToken {
 			err = use.repo.Delete(request.ID)
 			use.log.Infof("delete id:%v err:%v", request.ID, err)
 		}

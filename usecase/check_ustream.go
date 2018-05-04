@@ -4,30 +4,33 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain"
-	"github.com/utahta/momoclo-channel/domain/core"
-	"github.com/utahta/momoclo-channel/domain/event"
-	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/eventtask"
-	"github.com/utahta/momoclo-channel/lib/timeutil"
+	"github.com/utahta/momoclo-channel/dao"
+	"github.com/utahta/momoclo-channel/entity"
+	"github.com/utahta/momoclo-channel/event"
+	"github.com/utahta/momoclo-channel/event/eventtask"
+	"github.com/utahta/momoclo-channel/linenotify"
+	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/timeutil"
+	"github.com/utahta/momoclo-channel/twitter"
+	"github.com/utahta/momoclo-channel/ustream"
 )
 
 type (
 	// CheckUstream use case
 	CheckUstream struct {
-		log       core.Logger
+		log       log.Logger
 		taskQueue event.TaskQueue
-		checker   model.UstreamStatusChecker
-		repo      model.UstreamStatusRepository
+		checker   ustream.StatusChecker
+		repo      entity.UstreamStatusRepository
 	}
 )
 
 // NewCheckUstream returns CheckUstream use case
 func NewCheckUstream(
-	logger core.Logger,
+	logger log.Logger,
 	taskQueue event.TaskQueue,
-	checker model.UstreamStatusChecker,
-	repo model.UstreamStatusRepository) *CheckUstream {
+	checker ustream.StatusChecker,
+	repo entity.UstreamStatusRepository) *CheckUstream {
 	return &CheckUstream{
 		log:       logger,
 		taskQueue: taskQueue,
@@ -45,8 +48,8 @@ func (u *CheckUstream) Do() error {
 		return errors.Wrap(err, errTag)
 	}
 
-	status, err := u.repo.Find(model.UstreamStatusID)
-	if err != nil && err != domain.ErrNoSuchEntity {
+	status, err := u.repo.Find(entity.UstreamStatusID)
+	if err != nil && err != dao.ErrNoSuchEntity {
 		return errors.Wrap(err, errTag)
 	}
 	if status.IsLive == isLive {
@@ -62,9 +65,9 @@ func (u *CheckUstream) Do() error {
 		t := timeutil.Now()
 		u.taskQueue.PushMulti([]event.Task{
 			eventtask.NewTweet(
-				model.TweetRequest{Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))},
+				twitter.TweetRequest{Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))},
 			),
-			eventtask.NewLineBroadcast(model.LineNotifyMessage{Text: "\nmomocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"}),
+			eventtask.NewLineBroadcast(linenotify.Message{Text: "\nmomocloTV が配信を開始しました\nhttp://www.ustream.tv/channel/momoclotv"}),
 		})
 	}
 	return nil

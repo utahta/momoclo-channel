@@ -2,33 +2,35 @@ package usecase
 
 import (
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/domain/core"
-	"github.com/utahta/momoclo-channel/domain/event"
-	"github.com/utahta/momoclo-channel/domain/model"
-	"github.com/utahta/momoclo-channel/domain/service/eventtask"
+	"github.com/utahta/momoclo-channel/crawler"
+	"github.com/utahta/momoclo-channel/entity"
+	"github.com/utahta/momoclo-channel/event"
+	"github.com/utahta/momoclo-channel/event/eventtask"
+	"github.com/utahta/momoclo-channel/log"
+	"github.com/utahta/momoclo-channel/validator"
 )
 
 type (
 	// CrawlFeed use case
 	CrawlFeed struct {
-		log       core.Logger
-		feed      model.FeedFetcher
+		log       log.Logger
+		feed      crawler.FeedFetcher
 		taskQueue event.TaskQueue
-		repo      model.LatestEntryRepository
+		repo      entity.LatestEntryRepository
 	}
 
 	// CrawlFeedParams input parameters
 	CrawlFeedParams struct {
-		Code model.FeedCode // target identify code
+		Code crawler.FeedCode // target identify code
 	}
 )
 
 // NewCrawlFeed returns Crawl use case
 func NewCrawlFeed(
-	log core.Logger,
-	feed model.FeedFetcher,
+	log log.Logger,
+	feed crawler.FeedFetcher,
 	taskQueue event.TaskQueue,
-	repo model.LatestEntryRepository) *CrawlFeed {
+	repo entity.LatestEntryRepository) *CrawlFeed {
 	return &CrawlFeed{
 		log:       log,
 		feed:      feed,
@@ -49,7 +51,7 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 		return nil
 	}
 	for i := range items {
-		if err := core.Validate(items[i]); err != nil {
+		if err := validator.Validate(items[i]); err != nil {
 			use.log.Errorf("%v: validate error i:%v items:%v err:%v", errTag, i, items, err)
 			return errors.Wrap(err, errTag)
 		}
@@ -57,7 +59,7 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 
 	// update latest entry
 	item := items[0] // first item is the latest entry
-	l, err := use.repo.FindOrNewByURL(item.EntryURL)
+	l, err := use.repo.FindOrNewByURL(item.FeedCode().String(), item.EntryURL)
 	if err != nil {
 		return errors.Wrapf(err, "%v: url:%v", errTag, item.EntryURL)
 	}

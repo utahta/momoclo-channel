@@ -33,11 +33,6 @@ type (
 		VideoURLs   []string
 		PublishedAt time.Time `validate:"required"`
 	}
-
-	// FeedFetcher interface
-	FeedFetcher interface {
-		Fetch(code FeedCode, maxItemNum int, latestURL string) ([]FeedItem, error)
-	}
 )
 
 // String returns string representation of FeedCode
@@ -54,7 +49,7 @@ func (i FeedItem) UniqueURL() string {
 	return id
 }
 
-// FeedCode returns FeedCode based on EntryURL
+// FeedCode returns identify code based on entry url
 func (i FeedItem) FeedCode() FeedCode {
 	var code FeedCode
 	blogCodes := []FeedCode{
@@ -97,7 +92,7 @@ func (i FeedItem) ToLineNotifyMessages() []linenotify.Message {
 	return messages
 }
 
-// ToTweetRequests converts FeedItem to []TweetRequest
+// ToTweetRequests converts FeedItem to []twitter.TweetRequest
 func (i FeedItem) ToTweetRequests() []twitter.TweetRequest {
 	var requests []twitter.TweetRequest
 

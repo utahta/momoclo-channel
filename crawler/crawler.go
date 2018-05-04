@@ -8,16 +8,23 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
-type handler struct {
-	ctx context.Context
-}
+type (
+	// FeedFetcher interface
+	FeedFetcher interface {
+		Fetch(code FeedCode, maxItemNum int, latestURL string) ([]FeedItem, error)
+	}
 
-// New returns model.FeedFetcher that wraps momoclo-crawler
+	client struct {
+		ctx context.Context
+	}
+)
+
+// New returns FeedFetcher that wraps momoclo-crawler
 func New(ctx context.Context) FeedFetcher {
-	return &handler{ctx}
+	return &client{ctx}
 }
 
-func (c *handler) Fetch(code FeedCode, maxItemNum int, latestURL string) ([]FeedItem, error) {
+func (c *client) Fetch(code FeedCode, maxItemNum int, latestURL string) ([]FeedItem, error) {
 	const errTag = "crawler Fetch failed"
 	var (
 		cli  *crawler.ChannelClient

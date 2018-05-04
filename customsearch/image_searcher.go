@@ -13,13 +13,13 @@ import (
 )
 
 type (
-	// ImageSearchResult represents custom search image result
+	// ImageSearchResult represents the result of image search
 	ImageSearchResult struct {
 		URL          string
 		ThumbnailURL string
 	}
 
-	// ImageSearcher represents google custom search image api
+	// ImageSearcher represents image search that uses google custom search api
 	ImageSearcher interface {
 		Search(string) (ImageSearchResult, error)
 	}

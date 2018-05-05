@@ -21,7 +21,7 @@ func TestTweet_Do(t *testing.T) {
 	defer done()
 
 	taskQueue := eventtest.NewTaskQueue()
-	u := usecase.NewTweet(container.Logger(ctx).AE(), taskQueue, twitter.NewNopTweeter())
+	u := usecase.NewTweet(container.Logger().AE(ctx), taskQueue, twitter.NewNopTweeter())
 
 	validationTests := []struct {
 		params usecase.TweetParams

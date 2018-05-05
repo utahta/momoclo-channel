@@ -25,7 +25,7 @@ func TestEnqueueTweets_Do(t *testing.T) {
 
 	taskQueue := eventtest.NewTaskQueue()
 	repo := container.Repository().TweetItemRepository()
-	u := usecase.NewEnqueueTweets(container.Logger(ctx).AE(), taskQueue, dao.NewDatastoreTransactor(), repo)
+	u := usecase.NewEnqueueTweets(container.Logger().AE(ctx), taskQueue, dao.NewDatastoreTransactor(), repo)
 	publishedAt, _ := time.Parse("2006-01-02 15:04:05", "2008-05-17 00:00:00")
 	feedItem := crawler.FeedItem{
 		Title:       "title",

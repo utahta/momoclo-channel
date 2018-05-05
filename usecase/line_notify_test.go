@@ -22,7 +22,7 @@ func TestLineNotify_Do(t *testing.T) {
 
 	taskQueue := eventtest.NewTaskQueue()
 	repo := container.Repository().LineNotificationRepository()
-	u := usecase.NewLineNotify(container.Logger(ctx).AE(), taskQueue, linenotify.NewNop(), repo)
+	u := usecase.NewLineNotify(container.Logger().AE(ctx), taskQueue, linenotify.NewNop(), repo)
 
 	validationTests := []struct {
 		params usecase.LineNotifyParams

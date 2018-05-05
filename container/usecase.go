@@ -23,13 +23,13 @@ type UsecaseContainer struct {
 
 // Usecase returns container of use case
 func Usecase(ctx context.Context) *UsecaseContainer {
-	return &UsecaseContainer{ctx, Repository(), Logger(ctx)}
+	return &UsecaseContainer{ctx, Repository(), Logger()}
 }
 
 // CrawlFeeds use case
 func (c *UsecaseContainer) CrawlFeeds() *usecase.CrawlFeeds {
 	return usecase.NewCrawlFeeds(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		c.CrawlFeed(),
 	)
 }
@@ -37,7 +37,7 @@ func (c *UsecaseContainer) CrawlFeeds() *usecase.CrawlFeeds {
 // CrawlFeed use case
 func (c *UsecaseContainer) CrawlFeed() *usecase.CrawlFeed {
 	return usecase.NewCrawlFeed(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		crawler.New(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		c.repo.LatestEntryRepository(),
@@ -47,7 +47,7 @@ func (c *UsecaseContainer) CrawlFeed() *usecase.CrawlFeed {
 // EnqueueTweets use case
 func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
 	return usecase.NewEnqueueTweets(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		dao.NewDatastoreTransactor(),
 		c.repo.TweetItemRepository(),
@@ -57,7 +57,7 @@ func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
 // EnqueueLines use case
 func (c *UsecaseContainer) EnqueueLines() *usecase.EnqueueLines {
 	return usecase.NewEnqueueLines(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		dao.NewDatastoreTransactor(),
 		c.repo.LineItemRepository(),
@@ -67,7 +67,7 @@ func (c *UsecaseContainer) EnqueueLines() *usecase.EnqueueLines {
 // Tweet use case
 func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 	return usecase.NewTweet(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		twitter.NewTweeter(c.ctx),
 	)
@@ -76,7 +76,7 @@ func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 // Remind use case
 func (c *UsecaseContainer) Remind() *usecase.Remind {
 	return usecase.NewRemind(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		c.repo.ReminderRepository(),
 	)
@@ -85,7 +85,7 @@ func (c *UsecaseContainer) Remind() *usecase.Remind {
 // CheckUstream use case
 func (c *UsecaseContainer) CheckUstream() *usecase.CheckUstream {
 	return usecase.NewCheckUstream(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		ustream.NewStatusChecker(c.ctx),
 		c.repo.UstreamStatusRepository(),
@@ -95,7 +95,7 @@ func (c *UsecaseContainer) CheckUstream() *usecase.CheckUstream {
 // AddLineNotification use case
 func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 	return usecase.NewAddLineNotification(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		linenotify.NewToken(c.ctx),
 		c.repo.LineNotificationRepository(),
 	)
@@ -104,7 +104,7 @@ func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 // HandleLineBotEvents use case
 func (c *UsecaseContainer) HandleLineBotEvents() *usecase.HandleLineBotEvents {
 	return usecase.NewHandleLineBotEvents(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		linebot.New(c.ctx),
 		customsearch.MustNewImageSearcher(c.ctx),
 	)
@@ -113,7 +113,7 @@ func (c *UsecaseContainer) HandleLineBotEvents() *usecase.HandleLineBotEvents {
 // LineNotifyBroadcast use case
 func (c *UsecaseContainer) LineNotifyBroadcast() *usecase.LineNotifyBroadcast {
 	return usecase.NewLineNotifyBroadcast(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		c.repo.LineNotificationRepository(),
 	)
@@ -122,7 +122,7 @@ func (c *UsecaseContainer) LineNotifyBroadcast() *usecase.LineNotifyBroadcast {
 // LineNotify use case
 func (c *UsecaseContainer) LineNotify() *usecase.LineNotify {
 	return usecase.NewLineNotify(
-		c.logger.AE(),
+		c.logger.AE(c.ctx),
 		event.NewTaskQueue(c.ctx),
 		linenotify.New(c.ctx),
 		c.repo.LineNotificationRepository(),

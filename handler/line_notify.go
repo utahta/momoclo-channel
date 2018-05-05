@@ -26,7 +26,7 @@ func LineNotifyOn(w http.ResponseWriter, req *http.Request) {
 	}
 	http.SetCookie(w, &http.Cookie{Name: "state", Value: c.State, Expires: time.Now().Add(300 * time.Second), Secure: true})
 
-	container.Logger(ctx).AE().Info("Redirect to LINE Notify connection page")
+	container.Logger().AE(ctx).Info("Redirect to LINE Notify connection page")
 
 	err = c.Redirect(w, req)
 	if err != nil {
@@ -39,7 +39,7 @@ func LineNotifyOn(w http.ResponseWriter, req *http.Request) {
 func LineNotifyOff(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	container.Logger(ctx).AE().Info("Redirect to LINE Notify revoking page")
+	container.Logger().AE(ctx).Info("Redirect to LINE Notify revoking page")
 
 	// official url
 	http.Redirect(w, req, "https://notify-bot.line.me/my/", http.StatusFound)

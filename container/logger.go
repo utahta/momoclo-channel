@@ -8,15 +8,14 @@ import (
 
 // LoggerContainer dependency injection
 type LoggerContainer struct {
-	ctx context.Context
 }
 
 // Logger returns container of logger
-func Logger(ctx context.Context) *LoggerContainer {
-	return &LoggerContainer{ctx}
+func Logger() *LoggerContainer {
+	return &LoggerContainer{}
 }
 
 // AE returns app engine logger
-func (c *LoggerContainer) AE() log.Logger {
-	return log.NewAELogger(c.ctx)
+func (c *LoggerContainer) AE(ctx context.Context) log.Logger {
+	return log.NewAELogger(ctx)
 }

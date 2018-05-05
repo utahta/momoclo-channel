@@ -69,7 +69,7 @@ func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 	return usecase.NewTweet(
 		c.logger.AE(c.ctx),
 		event.NewTaskQueue(),
-		twitter.NewTweeter(c.ctx),
+		twitter.NewTweeter(),
 	)
 }
 
@@ -87,7 +87,7 @@ func (c *UsecaseContainer) CheckUstream() *usecase.CheckUstream {
 	return usecase.NewCheckUstream(
 		c.logger.AE(c.ctx),
 		event.NewTaskQueue(),
-		ustream.NewStatusChecker(c.ctx),
+		ustream.NewStatusChecker(),
 		c.repo.UstreamStatusRepository(),
 	)
 }
@@ -96,7 +96,7 @@ func (c *UsecaseContainer) CheckUstream() *usecase.CheckUstream {
 func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 	return usecase.NewAddLineNotification(
 		c.logger.AE(c.ctx),
-		linenotify.NewToken(c.ctx),
+		linenotify.NewToken(),
 		c.repo.LineNotificationRepository(),
 	)
 }
@@ -105,7 +105,7 @@ func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 func (c *UsecaseContainer) HandleLineBotEvents() *usecase.HandleLineBotEvents {
 	return usecase.NewHandleLineBotEvents(
 		c.logger.AE(c.ctx),
-		linebot.New(c.ctx),
+		linebot.New(),
 		customsearch.MustNewImageSearcher(c.ctx),
 	)
 }
@@ -124,7 +124,7 @@ func (c *UsecaseContainer) LineNotify() *usecase.LineNotify {
 	return usecase.NewLineNotify(
 		c.logger.AE(c.ctx),
 		event.NewTaskQueue(),
-		linenotify.New(c.ctx),
+		linenotify.New(),
 		c.repo.LineNotificationRepository(),
 	)
 }

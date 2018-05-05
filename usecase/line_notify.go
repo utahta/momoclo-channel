@@ -50,7 +50,7 @@ func (use *LineNotify) Do(ctx context.Context, params LineNotifyParams) error {
 	}
 
 	request := params.Request
-	err := use.notify.Notify(request.AccessToken, request.Messages[0])
+	err := use.notify.Notify(ctx, request.AccessToken, request.Messages[0])
 	if err != nil {
 		if err == linenotify.ErrInvalidAccessToken {
 			err = use.repo.Delete(ctx, request.ID)

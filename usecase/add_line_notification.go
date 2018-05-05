@@ -40,7 +40,7 @@ func NewAddLineNotification(
 func (use *AddLineNotification) Do(ctx context.Context, params AddLineNotificationParams) error {
 	const errTag = "AddLineNotification.Do failed"
 
-	token, err := use.token.GetAccessToken(params.Code)
+	token, err := use.token.GetAccessToken(ctx, params.Code)
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}

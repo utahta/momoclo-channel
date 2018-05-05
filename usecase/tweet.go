@@ -42,7 +42,7 @@ func (use *Tweet) Do(ctx context.Context, params TweetParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	res, err := use.tweeter.Tweet(params.Requests[0])
+	res, err := use.tweeter.Tweet(ctx, params.Requests[0])
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}

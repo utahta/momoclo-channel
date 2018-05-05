@@ -46,33 +46,33 @@ func (use *HandleLineBotEvents) Do(ctx context.Context, params HandleLineBotEven
 			switch event.MessageType {
 			case linebot.MessageTypeText:
 				if linebot.MatchOn(event.TextMessage.Text) {
-					use.lineBot.ReplyText(event.ReplyToken, linebot.OnMessage())
+					use.lineBot.ReplyText(ctx, event.ReplyToken, linebot.OnMessage())
 					continue
 				} else if linebot.MatchOff(event.TextMessage.Text) {
-					use.lineBot.ReplyText(event.ReplyToken, linebot.OffMessage())
+					use.lineBot.ReplyText(ctx, event.ReplyToken, linebot.OffMessage())
 					continue
 				}
 
 				memberName := linebot.FindMemberName(event.TextMessage.Text)
 				if memberName == "" {
-					use.lineBot.ReplyText(event.ReplyToken, linebot.HelpMessage())
+					use.lineBot.ReplyText(ctx, event.ReplyToken, linebot.HelpMessage())
 					continue
 				}
 
 				img, err := use.imageSearcher.Search(memberName)
 				if err != nil {
 					use.log.Warningf("%v: image not found word:%v err:%v", errTag, memberName, err)
-					use.lineBot.ReplyText(event.ReplyToken, linebot.ImageNotFoundMessage())
+					use.lineBot.ReplyText(ctx, event.ReplyToken, linebot.ImageNotFoundMessage())
 					continue
 				}
-				use.lineBot.ReplyImage(event.ReplyToken, img.URL, img.ThumbnailURL)
+				use.lineBot.ReplyImage(ctx, event.ReplyToken, img.URL, img.ThumbnailURL)
 
 			default:
 				use.log.Infof("not handle message type:%v", event.MessageType)
 			}
 		case linebot.EventTypeFollow:
 			use.log.Info("follow event")
-			use.lineBot.ReplyText(event.ReplyToken, linebot.FollowMessage())
+			use.lineBot.ReplyText(ctx, event.ReplyToken, linebot.FollowMessage())
 		case linebot.EventTypeUnfollow:
 			use.log.Info("unfollow event")
 		default:

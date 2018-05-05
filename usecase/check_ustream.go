@@ -45,7 +45,7 @@ func NewCheckUstream(
 func (u *CheckUstream) Do(ctx context.Context) error {
 	const errTag = "CheckUstream.Do failed"
 
-	isLive, err := u.checker.IsLive()
+	isLive, err := u.checker.IsLive(ctx)
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}

@@ -82,7 +82,7 @@ func (use *CrawlFeed) Do(ctx context.Context, params CrawlFeedParams) error {
 			eventtask.NewEnqueueLines(item),
 		)
 	}
-	if err := use.taskQueue.PushMulti(tasks); err != nil {
+	if err := use.taskQueue.PushMulti(ctx, tasks); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 	use.log.Infof("crawl feed items:%v", items)

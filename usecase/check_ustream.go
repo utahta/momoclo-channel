@@ -65,7 +65,7 @@ func (u *CheckUstream) Do(ctx context.Context) error {
 
 	if isLive {
 		t := timeutil.Now()
-		u.taskQueue.PushMulti([]event.Task{
+		u.taskQueue.PushMulti(ctx, []event.Task{
 			eventtask.NewTweet(
 				twitter.TweetRequest{Text: fmt.Sprintf("momocloTV が配信を開始しました\n%s\nhttp://www.ustream.tv/channel/momoclotv", t.Format("from 2006/01/02 15:04:05"))},
 			),

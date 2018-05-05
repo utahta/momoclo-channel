@@ -8,15 +8,14 @@ import (
 )
 
 type taskQueue struct {
-	ctx context.Context
 }
 
 // NewTaskQueue returns event.TaskQueue that wraps appengine/taskqueue
-func NewTaskQueue(ctx context.Context) TaskQueue {
-	return &taskQueue{ctx}
+func NewTaskQueue() TaskQueue {
+	return &taskQueue{}
 }
 
-func (t *taskQueue) Push(task Task) error {
+func (t *taskQueue) Push(ctx context.Context, task Task) error {
 	const errTag = "taskQueue.Push failed"
 
 	req, err := t.newPOSTTask(task)
@@ -24,13 +23,13 @@ func (t *taskQueue) Push(task Task) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	if _, err := taskqueue.Add(t.ctx, req, task.QueueName); err != nil {
+	if _, err := taskqueue.Add(ctx, req, task.QueueName); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 	return nil
 }
 
-func (t *taskQueue) PushMulti(tasks []Task) error {
+func (t *taskQueue) PushMulti(ctx context.Context, tasks []Task) error {
 	const errTag = "taskQueue.PushMulti failed"
 
 	if len(tasks) == 0 {
@@ -55,7 +54,7 @@ func (t *taskQueue) PushMulti(tasks []Task) error {
 				last = len(reqs)
 			}
 
-			_, err := taskqueue.AddMulti(t.ctx, reqs[i:last], queueName)
+			_, err := taskqueue.AddMulti(ctx, reqs[i:last], queueName)
 			if err != nil {
 				return errors.Wrap(err, errTag)
 			}

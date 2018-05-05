@@ -80,7 +80,7 @@ func (use *EnqueueLines) Do(ctx context.Context, params EnqueueLinesParams) erro
 	}
 
 	task := eventtask.NewLinesBroadcast(messages)
-	if err := use.taskQueue.Push(task); err != nil {
+	if err := use.taskQueue.Push(ctx, task); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 	use.log.Infof("enqueue line messages:%#v", messages)

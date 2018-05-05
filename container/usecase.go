@@ -39,7 +39,7 @@ func (c *UsecaseContainer) CrawlFeed() *usecase.CrawlFeed {
 	return usecase.NewCrawlFeed(
 		c.logger.AE(c.ctx),
 		crawler.New(),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		c.repo.LatestEntryRepository(),
 	)
 }
@@ -48,7 +48,7 @@ func (c *UsecaseContainer) CrawlFeed() *usecase.CrawlFeed {
 func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
 	return usecase.NewEnqueueTweets(
 		c.logger.AE(c.ctx),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		dao.NewDatastoreTransactor(),
 		c.repo.TweetItemRepository(),
 	)
@@ -58,7 +58,7 @@ func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
 func (c *UsecaseContainer) EnqueueLines() *usecase.EnqueueLines {
 	return usecase.NewEnqueueLines(
 		c.logger.AE(c.ctx),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		dao.NewDatastoreTransactor(),
 		c.repo.LineItemRepository(),
 	)
@@ -68,7 +68,7 @@ func (c *UsecaseContainer) EnqueueLines() *usecase.EnqueueLines {
 func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 	return usecase.NewTweet(
 		c.logger.AE(c.ctx),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		twitter.NewTweeter(c.ctx),
 	)
 }
@@ -77,7 +77,7 @@ func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 func (c *UsecaseContainer) Remind() *usecase.Remind {
 	return usecase.NewRemind(
 		c.logger.AE(c.ctx),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		c.repo.ReminderRepository(),
 	)
 }
@@ -86,7 +86,7 @@ func (c *UsecaseContainer) Remind() *usecase.Remind {
 func (c *UsecaseContainer) CheckUstream() *usecase.CheckUstream {
 	return usecase.NewCheckUstream(
 		c.logger.AE(c.ctx),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		ustream.NewStatusChecker(c.ctx),
 		c.repo.UstreamStatusRepository(),
 	)
@@ -114,7 +114,7 @@ func (c *UsecaseContainer) HandleLineBotEvents() *usecase.HandleLineBotEvents {
 func (c *UsecaseContainer) LineNotifyBroadcast() *usecase.LineNotifyBroadcast {
 	return usecase.NewLineNotifyBroadcast(
 		c.logger.AE(c.ctx),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		c.repo.LineNotificationRepository(),
 	)
 }
@@ -123,7 +123,7 @@ func (c *UsecaseContainer) LineNotifyBroadcast() *usecase.LineNotifyBroadcast {
 func (c *UsecaseContainer) LineNotify() *usecase.LineNotify {
 	return usecase.NewLineNotify(
 		c.logger.AE(c.ctx),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		linenotify.New(c.ctx),
 		c.repo.LineNotificationRepository(),
 	)

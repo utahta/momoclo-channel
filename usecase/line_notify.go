@@ -66,7 +66,7 @@ func (use *LineNotify) Do(ctx context.Context, params LineNotifyParams) error {
 		return nil
 	}
 
-	if err := use.taskQueue.Push(eventtask.NewLine(request)); err != nil {
+	if err := use.taskQueue.Push(ctx, eventtask.NewLine(request)); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 	return nil

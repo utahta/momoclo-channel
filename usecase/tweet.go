@@ -56,7 +56,7 @@ func (use *Tweet) Do(ctx context.Context, params TweetParams) error {
 	requests[0].InReplyToStatusID = res.IDStr
 
 	task := eventtask.NewTweets(requests)
-	if err := use.taskQueue.Push(task); err != nil {
+	if err := use.taskQueue.Push(ctx, task); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 	return nil

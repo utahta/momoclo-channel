@@ -80,7 +80,7 @@ func (use *EnqueueTweets) Do(ctx context.Context, params EnqueueTweetsParams) er
 	}
 
 	task := eventtask.NewTweets(requests)
-	if err := use.taskQueue.Push(task); err != nil {
+	if err := use.taskQueue.Push(ctx, task); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 	use.log.Infof("enqueue tweet requests:%#v", requests)

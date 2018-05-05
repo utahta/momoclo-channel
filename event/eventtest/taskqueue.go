@@ -1,6 +1,8 @@
 package eventtest
 
 import (
+	"context"
+
 	"github.com/utahta/momoclo-channel/event"
 )
 
@@ -15,13 +17,13 @@ func NewTaskQueue() *TaskQueue {
 }
 
 // Push add task
-func (t *TaskQueue) Push(task event.Task) error {
+func (t *TaskQueue) Push(_ context.Context, task event.Task) error {
 	t.Tasks = append(t.Tasks, task)
 	return nil
 }
 
 // PushMulti add tasks
-func (t *TaskQueue) PushMulti(tasks []event.Task) error {
+func (t *TaskQueue) PushMulti(_ context.Context, tasks []event.Task) error {
 	t.Tasks = append(t.Tasks, tasks...)
 	return nil
 }

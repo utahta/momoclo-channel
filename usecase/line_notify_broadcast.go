@@ -67,7 +67,7 @@ func (use *LineNotifyBroadcast) Do(ctx context.Context, params LineNotifyBroadca
 		}))
 	}
 
-	if err := use.taskQueue.PushMulti(tasks); err != nil {
+	if err := use.taskQueue.PushMulti(ctx, tasks); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 	use.log.Infof("broadcast line tasks len:%v", len(tasks))

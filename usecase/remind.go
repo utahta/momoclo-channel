@@ -62,7 +62,7 @@ func (r *Remind) Do(ctx context.Context) error {
 			}
 		}
 
-		r.taskQueue.PushMulti([]event.Task{
+		r.taskQueue.PushMulti(ctx, []event.Task{
 			eventtask.NewTweet(twitter.TweetRequest{Text: reminder.Text}),
 			eventtask.NewLineBroadcast(linenotify.Message{Text: fmt.Sprintf("\n%s", reminder.Text)}),
 		})

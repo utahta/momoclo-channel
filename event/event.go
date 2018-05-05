@@ -1,6 +1,7 @@
 package event
 
 import (
+	"context"
 	"encoding/json"
 	"net/url"
 	"time"
@@ -9,8 +10,8 @@ import (
 type (
 	// TaskQueue interface
 	TaskQueue interface {
-		Push(Task) error
-		PushMulti([]Task) error
+		Push(context.Context, Task) error
+		PushMulti(context.Context, []Task) error
 	}
 
 	// Task event

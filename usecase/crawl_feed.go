@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/entity"
@@ -40,10 +42,10 @@ func NewCrawlFeed(
 }
 
 // Do crawls a site and invokes tweet and line event
-func (use *CrawlFeed) Do(params CrawlFeedParams) error {
+func (use *CrawlFeed) Do(ctx context.Context, params CrawlFeedParams) error {
 	const errTag = "CrawlFeed.Do failed"
 
-	items, err := use.feed.Fetch(params.Code, 1, use.repo.GetURL(params.Code.String()))
+	items, err := use.feed.Fetch(params.Code, 1, use.repo.GetURL(ctx, params.Code.String()))
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
@@ -59,7 +61,7 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 
 	// update latest entry
 	item := items[0] // first item is the latest entry
-	l, err := use.repo.FindOrNewByURL(item.FeedCode().String(), item.EntryURL)
+	l, err := use.repo.FindOrNewByURL(ctx, item.FeedCode().String(), item.EntryURL)
 	if err != nil {
 		return errors.Wrapf(err, "%v: url:%v", errTag, item.EntryURL)
 	}
@@ -68,7 +70,7 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 	}
 	l.URL = item.EntryURL
 	l.PublishedAt = item.PublishedAt
-	if err := use.repo.Save(l); err != nil {
+	if err := use.repo.Save(ctx, l); err != nil {
 		return errors.Wrapf(err, errTag)
 	}
 

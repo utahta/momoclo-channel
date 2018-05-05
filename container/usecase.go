@@ -23,7 +23,7 @@ type UsecaseContainer struct {
 
 // Usecase returns container of use case
 func Usecase(ctx context.Context) *UsecaseContainer {
-	return &UsecaseContainer{ctx, Repository(ctx), Logger(ctx)}
+	return &UsecaseContainer{ctx, Repository(), Logger(ctx)}
 }
 
 // CrawlFeeds use case
@@ -49,7 +49,7 @@ func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
 	return usecase.NewEnqueueTweets(
 		c.logger.AE(),
 		event.NewTaskQueue(c.ctx),
-		dao.NewDatastoreTransactor(c.ctx),
+		dao.NewDatastoreTransactor(),
 		c.repo.TweetItemRepository(),
 	)
 }
@@ -59,7 +59,7 @@ func (c *UsecaseContainer) EnqueueLines() *usecase.EnqueueLines {
 	return usecase.NewEnqueueLines(
 		c.logger.AE(),
 		event.NewTaskQueue(c.ctx),
-		dao.NewDatastoreTransactor(c.ctx),
+		dao.NewDatastoreTransactor(),
 		c.repo.LineItemRepository(),
 	)
 }

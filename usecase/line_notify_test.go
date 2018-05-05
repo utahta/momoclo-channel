@@ -21,7 +21,7 @@ func TestLineNotify_Do(t *testing.T) {
 	defer done()
 
 	taskQueue := eventtest.NewTaskQueue()
-	repo := container.Repository(ctx).LineNotificationRepository()
+	repo := container.Repository().LineNotificationRepository()
 	u := usecase.NewLineNotify(container.Logger(ctx).AE(), taskQueue, linenotify.NewNop(), repo)
 
 	validationTests := []struct {
@@ -45,13 +45,13 @@ func TestLineNotify_Do(t *testing.T) {
 	}
 
 	for _, test := range validationTests {
-		err = u.Do(test.params)
+		err = u.Do(ctx, test.params)
 		if errs, ok := errors.Cause(err).(validator.ValidationErrors); !ok {
 			t.Errorf("Expected validation error, got %v. params:%v", errs, test.params)
 		}
 	}
 
-	err = u.Do(usecase.LineNotifyParams{Request: linenotify.Request{
+	err = u.Do(ctx, usecase.LineNotifyParams{Request: linenotify.Request{
 		ID: "id-1", AccessToken: "token", Messages: []linenotify.Message{
 			{Text: "hello"},
 			{Text: " ", ImageURL: "http://localhost/a"},

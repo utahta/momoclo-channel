@@ -66,7 +66,7 @@ func LineNotifyCallback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if err := container.Usecase(ctx).AddLineNotification().Do(usecase.AddLineNotificationParams{Code: params.Code}); err != nil {
+	if err := container.Usecase(ctx).AddLineNotification().Do(ctx, usecase.AddLineNotificationParams{Code: params.Code}); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -99,7 +99,7 @@ func LineNotifyBroadcast(w http.ResponseWriter, req *http.Request) {
 	}
 
 	params := usecase.LineNotifyBroadcastParams{Messages: messages}
-	if err := container.Usecase(ctx).LineNotifyBroadcast().Do(params); err != nil {
+	if err := container.Usecase(ctx).LineNotifyBroadcast().Do(ctx, params); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -122,7 +122,7 @@ func LineNotify(w http.ResponseWriter, req *http.Request) {
 	}
 
 	params := usecase.LineNotifyParams{Request: request}
-	if err := container.Usecase(ctx).LineNotify().Do(params); err != nil {
+	if err := container.Usecase(ctx).LineNotify().Do(ctx, params); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/entity"
@@ -38,7 +40,7 @@ func NewLineNotifyBroadcast(
 }
 
 // Do notify broadcast
-func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
+func (use *LineNotifyBroadcast) Do(ctx context.Context, params LineNotifyBroadcastParams) error {
 	const errTag = "LineNotifyBroadcast.Do failed"
 
 	if err := validator.Validate(params); err != nil {
@@ -46,7 +48,7 @@ func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
 	}
 
 	//TODO use iterator
-	ns, err := use.repo.FindAll()
+	ns, err := use.repo.FindAll(ctx)
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}

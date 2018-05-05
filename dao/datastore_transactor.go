@@ -8,21 +8,23 @@ import (
 )
 
 type (
+	// Transactor provides transaction across entities
+	Transactor interface {
+		RunInTransaction(context.Context, func(context.Context) error, *TransactionOptions) error
+	}
+
 	// datastoreTransactor implements Transactor interface using goon
 	datastoreTransactor struct {
-		*goon.Goon
 	}
 )
 
 // NewDatastoreTransactor wraps datastore transaction
-func NewDatastoreTransactor(ctx context.Context) Transactor {
-	return &datastoreTransactor{
-		goon.FromContext(ctx),
-	}
+func NewDatastoreTransactor() Transactor {
+	return &datastoreTransactor{}
 }
 
 // RunInTransaction represents datastore transaction
-func (t *datastoreTransactor) RunInTransaction(fn func(h PersistenceHandler) error, opts *TransactionOptions) error {
+func (t *datastoreTransactor) RunInTransaction(ctx context.Context, fn func(ctx context.Context) error, opts *TransactionOptions) error {
 	o := &datastore.TransactionOptions{XG: true}
 	if opts != nil {
 		o = &datastore.TransactionOptions{
@@ -31,7 +33,7 @@ func (t *datastoreTransactor) RunInTransaction(fn func(h PersistenceHandler) err
 		}
 	}
 
-	return t.Goon.RunInTransaction(func(g *goon.Goon) error {
-		return fn(&datastoreHandler{g})
+	return FromContext(ctx).RunInTransaction(func(g *goon.Goon) error {
+		return fn(WithGoon(ctx, g))
 	}, o)
 }

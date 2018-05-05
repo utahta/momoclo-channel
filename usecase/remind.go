@@ -3,6 +3,8 @@ package usecase
 import (
 	"fmt"
 
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event"
@@ -35,10 +37,10 @@ func NewRemind(
 }
 
 // Do remind
-func (r *Remind) Do() error {
+func (r *Remind) Do(ctx context.Context) error {
 	const errTag = "Remind.Do failed"
 
-	reminders, err := r.repo.FindAll()
+	reminders, err := r.repo.FindAll(ctx)
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
@@ -54,7 +56,7 @@ func (r *Remind) Do() error {
 
 		if reminder.IsOneTime() {
 			reminder.Disable()
-			if err := r.repo.Save(reminder); err != nil {
+			if err := r.repo.Save(ctx, reminder); err != nil {
 				r.log.Errorf("%v: update reminder %v", errTag, reminder)
 				// not return error
 			}

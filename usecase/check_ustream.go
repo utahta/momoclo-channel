@@ -3,6 +3,8 @@ package usecase
 import (
 	"fmt"
 
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/entity"
@@ -40,7 +42,7 @@ func NewCheckUstream(
 }
 
 // Do checks momocloTV live status
-func (u *CheckUstream) Do() error {
+func (u *CheckUstream) Do(ctx context.Context) error {
 	const errTag = "CheckUstream.Do failed"
 
 	isLive, err := u.checker.IsLive()
@@ -48,7 +50,7 @@ func (u *CheckUstream) Do() error {
 		return errors.Wrap(err, errTag)
 	}
 
-	status, err := u.repo.Find(entity.UstreamStatusID)
+	status, err := u.repo.Find(ctx, entity.UstreamStatusID)
 	if err != nil && err != dao.ErrNoSuchEntity {
 		return errors.Wrap(err, errTag)
 	}
@@ -57,7 +59,7 @@ func (u *CheckUstream) Do() error {
 	}
 
 	status.IsLive = isLive
-	if err := u.repo.Save(status); err != nil {
+	if err := u.repo.Save(ctx, status); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 

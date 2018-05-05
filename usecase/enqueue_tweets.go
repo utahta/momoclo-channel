@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/dao"
@@ -41,7 +43,7 @@ func NewEnqueueTweets(
 }
 
 // Do converts feeds to tweet requests and enqueue it
-func (use *EnqueueTweets) Do(params EnqueueTweetsParams) error {
+func (use *EnqueueTweets) Do(ctx context.Context, params EnqueueTweetsParams) error {
 	const errTag = "EnqueueTweets.Do failed"
 
 	if err := validator.Validate(params); err != nil {
@@ -56,16 +58,15 @@ func (use *EnqueueTweets) Do(params EnqueueTweetsParams) error {
 		params.FeedItem.ImageURLs,
 		params.FeedItem.VideoURLs,
 	)
-	if use.repo.Exists(item.ID) {
+	if use.repo.Exists(ctx, item.ID) {
 		return nil // already enqueued
 	}
 
-	err := use.transactor.RunInTransaction(func(h dao.PersistenceHandler) error {
-		repo := use.repo.Tx(h)
-		if _, err := repo.Find(item.ID); err != dao.ErrNoSuchEntity {
+	err := use.transactor.RunInTransaction(ctx, func(ctx context.Context) error {
+		if _, err := use.repo.Find(ctx, item.ID); err != dao.ErrNoSuchEntity {
 			return err
 		}
-		return repo.Save(item)
+		return use.repo.Save(ctx, item)
 	}, nil)
 	if err != nil {
 		use.log.Errorf("%v: enqueue tweets feedItem:%v", errTag, params.FeedItem)

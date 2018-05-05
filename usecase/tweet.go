@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/event"
 	"github.com/utahta/momoclo-channel/event/eventtask"
@@ -33,7 +35,7 @@ func NewTweet(log log.Logger, taskQueue event.TaskQueue, tweeter twitter.Tweeter
 }
 
 // Do tweet
-func (use *Tweet) Do(params TweetParams) error {
+func (use *Tweet) Do(ctx context.Context, params TweetParams) error {
 	const errTag = "Tweet.Do failed"
 
 	if err := validator.Validate(params); err != nil {

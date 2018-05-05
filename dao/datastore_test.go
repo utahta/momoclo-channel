@@ -26,13 +26,13 @@ func TestDatastoreHandler_Put(t *testing.T) {
 	}
 	defer done()
 
-	h := NewDatastoreHandler(ctx)
-	if err := h.Put(&TestEntity{ID: "plan-1", Name: "ageshio-kyukou"}); err != nil {
+	h := NewDatastoreHandler()
+	if err := h.Put(ctx, &TestEntity{ID: "plan-1", Name: "ageshio-kyukou"}); err != nil {
 		t.Fatal(err)
 	}
 
 	e := TestEntity{ID: "plan-1"}
-	if err := h.Get(&e); err != nil {
+	if err := h.Get(ctx, &e); err != nil {
 		t.Fatal(err)
 	}
 
@@ -44,7 +44,7 @@ func TestDatastoreHandler_Put(t *testing.T) {
 		t.Errorf("Expected set createdAt, got %v", e.CreatedAt)
 	}
 
-	err = h.Put(&TestEntity{ID: "plan-2"})
+	err = h.Put(ctx, &TestEntity{ID: "plan-2"})
 	if errs, ok := err.(validator.ValidationErrors); !ok {
 		t.Errorf("Expected validation errors, got %v", errs)
 	}
@@ -57,13 +57,13 @@ func TestDatastoreHandler_PutMulti(t *testing.T) {
 	}
 	defer done()
 
-	h := NewDatastoreHandler(ctx)
+	h := NewDatastoreHandler()
 
 	es := []*TestEntity{
 		{ID: "plan-1", Name: "ageshio-kyukou"},
 		{ID: "plan-2", Name: "taroimo"},
 	}
-	if err := h.PutMulti(es); err != nil {
+	if err := h.PutMulti(ctx, es); err != nil {
 		t.Fatal(err)
 	}
 
@@ -71,7 +71,7 @@ func TestDatastoreHandler_PutMulti(t *testing.T) {
 		{ID: "plan-1"},
 		{ID: "plan-2"},
 	}
-	if err := h.GetMulti(es); err != nil {
+	if err := h.GetMulti(ctx, es); err != nil {
 		t.Fatal(err)
 	}
 

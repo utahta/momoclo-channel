@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event"
@@ -40,7 +42,7 @@ func NewLineNotify(
 }
 
 // Do line notify
-func (use *LineNotify) Do(params LineNotifyParams) error {
+func (use *LineNotify) Do(ctx context.Context, params LineNotifyParams) error {
 	const errTag = "LineNotify.Do failed"
 
 	if err := validator.Validate(params); err != nil {
@@ -51,7 +53,7 @@ func (use *LineNotify) Do(params LineNotifyParams) error {
 	err := use.notify.Notify(request.AccessToken, request.Messages[0])
 	if err != nil {
 		if err == linenotify.ErrInvalidAccessToken {
-			err = use.repo.Delete(request.ID)
+			err = use.repo.Delete(ctx, request.ID)
 			use.log.Infof("delete id:%v err:%v", request.ID, err)
 		}
 		return errors.Wrap(err, errTag)

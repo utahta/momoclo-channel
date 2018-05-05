@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/utahta/momoclo-channel/customsearch"
 	"github.com/utahta/momoclo-channel/linebot"
 	"github.com/utahta/momoclo-channel/log"
@@ -33,7 +35,7 @@ func NewHandleLineBotEvents(
 }
 
 // Do handles given line bot events
-func (use *HandleLineBotEvents) Do(params HandleLineBotEventsParams) error {
+func (use *HandleLineBotEvents) Do(ctx context.Context, params HandleLineBotEventsParams) error {
 	const errTag = "HandleLineBotEvents.Do"
 
 	for _, event := range params.Events {

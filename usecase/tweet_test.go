@@ -36,13 +36,13 @@ func TestTweet_Do(t *testing.T) {
 	}
 
 	for _, test := range validationTests {
-		err = u.Do(test.params)
+		err = u.Do(ctx, test.params)
 		if errs, ok := errors.Cause(err).(validator.ValidationErrors); !ok {
 			t.Errorf("Expected validation error, got %v", errs)
 		}
 	}
 
-	err = u.Do(usecase.TweetParams{Requests: []twitter.TweetRequest{
+	err = u.Do(ctx, usecase.TweetParams{Requests: []twitter.TweetRequest{
 		{Text: "test", ImageURLs: []string{"http://localhost/a", "http://localhost/b"}},
 		{ImageURLs: []string{"http://localhost/c"}},
 		{VideoURL: "http://localhost/d"},

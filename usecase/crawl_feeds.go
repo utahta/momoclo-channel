@@ -3,6 +3,8 @@ package usecase
 import (
 	"time"
 
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/log"
@@ -27,7 +29,7 @@ func NewCrawlFeeds(logger log.Logger, crawl *CrawlFeed) *CrawlFeeds {
 }
 
 // Do crawls all known sites
-func (c *CrawlFeeds) Do() error {
+func (c *CrawlFeeds) Do(ctx context.Context) error {
 	const errTag = "CrawlFeeds.Do failed"
 
 	now := timeutil.Now()
@@ -48,7 +50,7 @@ func (c *CrawlFeeds) Do() error {
 		code := code
 
 		eg.Go(func() error {
-			return c.crawl.Do(CrawlFeedParams{code})
+			return c.crawl.Do(ctx, CrawlFeedParams{code})
 		})
 	}
 

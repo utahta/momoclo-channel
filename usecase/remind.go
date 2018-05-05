@@ -57,7 +57,7 @@ func (r *Remind) Do(ctx context.Context) error {
 		if reminder.IsOneTime() {
 			reminder.Disable()
 			if err := r.repo.Save(ctx, reminder); err != nil {
-				r.log.Errorf("%v: update reminder %v", errTag, reminder)
+				r.log.Errorf(ctx, "%v: update reminder %v", errTag, reminder)
 				// not return error
 			}
 		}
@@ -66,7 +66,7 @@ func (r *Remind) Do(ctx context.Context) error {
 			eventtask.NewTweet(twitter.TweetRequest{Text: reminder.Text}),
 			eventtask.NewLineBroadcast(linenotify.Message{Text: fmt.Sprintf("\n%s", reminder.Text)}),
 		})
-		r.log.Infof("remind: %#v", reminder)
+		r.log.Infof(ctx, "remind: %#v", reminder)
 	}
 	return nil
 }

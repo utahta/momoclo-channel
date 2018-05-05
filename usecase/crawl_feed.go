@@ -54,7 +54,7 @@ func (use *CrawlFeed) Do(ctx context.Context, params CrawlFeedParams) error {
 	}
 	for i := range items {
 		if err := validator.Validate(items[i]); err != nil {
-			use.log.Errorf("%v: validate error i:%v items:%v err:%v", errTag, i, items, err)
+			use.log.Errorf(ctx, "%v: validate error i:%v items:%v err:%v", errTag, i, items, err)
 			return errors.Wrap(err, errTag)
 		}
 	}
@@ -85,7 +85,7 @@ func (use *CrawlFeed) Do(ctx context.Context, params CrawlFeedParams) error {
 	if err := use.taskQueue.PushMulti(ctx, tasks); err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	use.log.Infof("crawl feed items:%v", items)
+	use.log.Infof(ctx, "crawl feed items:%v", items)
 
 	return nil
 }

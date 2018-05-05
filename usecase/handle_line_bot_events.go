@@ -39,7 +39,7 @@ func (use *HandleLineBotEvents) Do(ctx context.Context, params HandleLineBotEven
 	const errTag = "HandleLineBotEvents.Do"
 
 	for _, event := range params.Events {
-		use.log.Infof("handle event:%v", event)
+		use.log.Infof(ctx, "handle event:%v", event)
 
 		switch event.Type {
 		case linebot.EventTypeMessage:
@@ -59,24 +59,24 @@ func (use *HandleLineBotEvents) Do(ctx context.Context, params HandleLineBotEven
 					continue
 				}
 
-				img, err := use.imageSearcher.Search(memberName)
+				img, err := use.imageSearcher.Search(ctx, memberName)
 				if err != nil {
-					use.log.Warningf("%v: image not found word:%v err:%v", errTag, memberName, err)
+					use.log.Warningf(ctx, "%v: image not found word:%v err:%v", errTag, memberName, err)
 					use.lineBot.ReplyText(ctx, event.ReplyToken, linebot.ImageNotFoundMessage())
 					continue
 				}
 				use.lineBot.ReplyImage(ctx, event.ReplyToken, img.URL, img.ThumbnailURL)
 
 			default:
-				use.log.Infof("not handle message type:%v", event.MessageType)
+				use.log.Infof(ctx, "not handle message type:%v", event.MessageType)
 			}
 		case linebot.EventTypeFollow:
-			use.log.Info("follow event")
+			use.log.Info(ctx, "follow event")
 			use.lineBot.ReplyText(ctx, event.ReplyToken, linebot.FollowMessage())
 		case linebot.EventTypeUnfollow:
-			use.log.Info("unfollow event")
+			use.log.Info(ctx, "unfollow event")
 		default:
-			use.log.Info("not handle event type:%v", event.Type)
+			use.log.Info(ctx, "not handle event type:%v", event.Type)
 		}
 	}
 	return nil

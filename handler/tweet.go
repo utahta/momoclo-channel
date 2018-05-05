@@ -28,7 +28,7 @@ func Tweet(w http.ResponseWriter, req *http.Request) {
 	}
 
 	params := usecase.TweetParams{Requests: requests}
-	if err := container.Usecase(ctx).Tweet().Do(ctx, params); err != nil {
+	if err := container.Usecase().Tweet().Do(ctx, params); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

@@ -26,7 +26,7 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 
 	taskQueue := eventtest.NewTaskQueue()
 	repo := container.Repository().LineNotificationRepository()
-	u := usecase.NewLineNotifyBroadcast(container.Logger().AE(ctx), taskQueue, repo)
+	u := usecase.NewLineNotifyBroadcast(container.Logger().AE(), taskQueue, repo)
 
 	validationTests := []struct {
 		params usecase.LineNotifyBroadcastParams

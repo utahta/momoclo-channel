@@ -54,6 +54,6 @@ func (use *AddLineNotification) Do(ctx context.Context, params AddLineNotificati
 		return errors.Wrap(err, errTag)
 	}
 
-	use.log.Infof("added LineNotification. id:%v", ln.ID)
+	use.log.Infof(ctx, "added LineNotification. id:%v", ln.ID)
 	return nil
 }

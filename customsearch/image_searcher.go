@@ -4,7 +4,6 @@ import (
 	"context"
 	"math/rand"
 	"strings"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
@@ -21,39 +20,27 @@ type (
 
 	// ImageSearcher represents image search that uses google custom search api
 	ImageSearcher interface {
-		Search(string) (ImageSearchResult, error)
+		Search(context.Context, string) (ImageSearchResult, error)
 	}
 
 	imageSearcher struct {
-		*customsearch.Service
 	}
 )
 
 // NewImageSearcher returns CustomSearchClient
-func NewImageSearcher(ctx context.Context) (ImageSearcher, error) {
-	service, err := customsearch.New(urlfetch.Client(ctx))
-	if err != nil {
-		return nil, err
-	}
-	return &imageSearcher{service}, nil
-}
-
-// MustNewImageSearcher returns CustomSearchClient
-// It causes panic if got error
-func MustNewImageSearcher(ctx context.Context) ImageSearcher {
-	s, err := NewImageSearcher(ctx)
-	if err != nil {
-		panic(err)
-	}
-	return s
+func NewImageSearcher() ImageSearcher {
+	return &imageSearcher{}
 }
 
 // Search searches image given word
-func (c *imageSearcher) Search(word string) (ImageSearchResult, error) {
-	rand.Seed(time.Now().UnixNano())
+func (c *imageSearcher) Search(ctx context.Context, word string) (ImageSearchResult, error) {
+	s, err := customsearch.New(urlfetch.Client(ctx))
+	if err != nil {
+		return ImageSearchResult{}, err
+	}
 
 	key := apiKey(config.C().GoogleCustomSearch.ApiKey)
-	search, err := c.Cse.List(word).Cx(config.C().GoogleCustomSearch.ApiID).SearchType("image").Num(10).Start(rand.Int63n(30)).Do(key)
+	search, err := s.Cse.List(word).Cx(config.C().GoogleCustomSearch.ApiID).SearchType("image").Num(10).Start(rand.Int63n(30)).Do(key)
 	if err != nil {
 		return ImageSearchResult{}, err
 	}

@@ -8,50 +8,49 @@ import (
 )
 
 type aeLogger struct {
-	ctx context.Context
 }
 
 // NewAELogger returns appengine logger
-func NewAELogger(ctx context.Context) Logger {
-	return &aeLogger{ctx}
+func NewAELogger() Logger {
+	return &aeLogger{}
 }
 
-func (l *aeLogger) Debug(args ...interface{}) {
-	l.Debugf("%v", fmt.Sprint(args...))
+func (l *aeLogger) Debug(ctx context.Context, args ...interface{}) {
+	l.Debugf(ctx, "%v", fmt.Sprint(args...))
 }
 
-func (l *aeLogger) Debugf(format string, args ...interface{}) {
-	log.Debugf(l.ctx, format, args...)
+func (l *aeLogger) Debugf(ctx context.Context, format string, args ...interface{}) {
+	log.Debugf(ctx, format, args...)
 }
 
-func (l *aeLogger) Info(args ...interface{}) {
-	l.Infof("%v", fmt.Sprint(args...))
+func (l *aeLogger) Info(ctx context.Context, args ...interface{}) {
+	l.Infof(ctx, "%v", fmt.Sprint(args...))
 }
 
-func (l *aeLogger) Infof(format string, args ...interface{}) {
-	log.Infof(l.ctx, format, args...)
+func (l *aeLogger) Infof(ctx context.Context, format string, args ...interface{}) {
+	log.Infof(ctx, format, args...)
 }
 
-func (l *aeLogger) Warning(args ...interface{}) {
-	l.Warningf("%v", fmt.Sprint(args...))
+func (l *aeLogger) Warning(ctx context.Context, args ...interface{}) {
+	l.Warningf(ctx, "%v", fmt.Sprint(args...))
 }
 
-func (l *aeLogger) Warningf(format string, args ...interface{}) {
-	log.Warningf(l.ctx, format, args...)
+func (l *aeLogger) Warningf(ctx context.Context, format string, args ...interface{}) {
+	log.Warningf(ctx, format, args...)
 }
 
-func (l *aeLogger) Error(args ...interface{}) {
-	l.Errorf("%v", fmt.Sprint(args...))
+func (l *aeLogger) Error(ctx context.Context, args ...interface{}) {
+	l.Errorf(ctx, "%v", fmt.Sprint(args...))
 }
 
-func (l *aeLogger) Errorf(format string, args ...interface{}) {
-	log.Errorf(l.ctx, format, args...)
+func (l *aeLogger) Errorf(ctx context.Context, format string, args ...interface{}) {
+	log.Errorf(ctx, format, args...)
 }
 
-func (l *aeLogger) Critical(args ...interface{}) {
-	l.Criticalf("%v", fmt.Sprint(args...))
+func (l *aeLogger) Critical(ctx context.Context, args ...interface{}) {
+	l.Criticalf(ctx, "%v", fmt.Sprint(args...))
 }
 
-func (l *aeLogger) Criticalf(format string, args ...interface{}) {
-	log.Criticalf(l.ctx, format, args...)
+func (l *aeLogger) Criticalf(ctx context.Context, format string, args ...interface{}) {
+	log.Criticalf(ctx, format, args...)
 }

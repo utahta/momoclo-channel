@@ -69,13 +69,13 @@ func (use *EnqueueLines) Do(ctx context.Context, params EnqueueLinesParams) erro
 		return use.repo.Save(ctx, item)
 	}, nil)
 	if err != nil {
-		use.log.Errorf("%v: enqueue lines feedItem:%v", errTag, params.FeedItem)
+		use.log.Errorf(ctx, "%v: enqueue lines feedItem:%v", errTag, params.FeedItem)
 		return errors.Wrap(err, errTag)
 	}
 
 	messages := params.FeedItem.ToLineNotifyMessages()
 	if len(messages) == 0 {
-		use.log.Errorf("%v: invalid enqueue lines feedItem:%v", errTag, params.FeedItem)
+		use.log.Errorf(ctx, "%v: invalid enqueue lines feedItem:%v", errTag, params.FeedItem)
 		return errors.Errorf("%v: invalid enqueue line messages", errTag)
 	}
 
@@ -83,7 +83,7 @@ func (use *EnqueueLines) Do(ctx context.Context, params EnqueueLinesParams) erro
 	if err := use.taskQueue.Push(ctx, task); err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	use.log.Infof("enqueue line messages:%#v", messages)
+	use.log.Infof(ctx, "enqueue line messages:%#v", messages)
 
 	return nil
 }

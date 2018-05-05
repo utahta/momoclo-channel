@@ -24,7 +24,7 @@ func LineBotCallback(w http.ResponseWriter, req *http.Request) {
 	}
 
 	params := usecase.HandleLineBotEventsParams{Events: events}
-	if err := container.Usecase(ctx).HandleLineBotEvents().Do(ctx, params); err != nil {
+	if err := container.Usecase().HandleLineBotEvents().Do(ctx, params); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

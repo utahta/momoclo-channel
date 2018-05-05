@@ -57,7 +57,7 @@ func (use *LineNotifyBroadcast) Do(ctx context.Context, params LineNotifyBroadca
 	for _, n := range ns {
 		accessToken, err := n.Token(config.C().LineNotify.TokenKey)
 		if err != nil {
-			use.log.Errorf("%v: get access token err:%v", errTag, err)
+			use.log.Errorf(ctx, "%v: get access token err:%v", errTag, err)
 			continue
 		}
 		tasks = append(tasks, eventtask.NewLine(linenotify.Request{
@@ -70,7 +70,7 @@ func (use *LineNotifyBroadcast) Do(ctx context.Context, params LineNotifyBroadca
 	if err := use.taskQueue.PushMulti(ctx, tasks); err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	use.log.Infof("broadcast line tasks len:%v", len(tasks))
+	use.log.Infof(ctx, "broadcast line tasks len:%v", len(tasks))
 
 	return nil
 }

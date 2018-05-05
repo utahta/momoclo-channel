@@ -12,7 +12,7 @@ import (
 func CronReminder(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	if err := container.Usecase(ctx).Remind().Do(ctx); err != nil {
+	if err := container.Usecase().Remind().Do(ctx); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -22,7 +22,7 @@ func CronReminder(w http.ResponseWriter, req *http.Request) {
 func CronUstream(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	if err := container.Usecase(ctx).CheckUstream().Do(ctx); err != nil {
+	if err := container.Usecase().CheckUstream().Do(ctx); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -33,7 +33,7 @@ func CronCrawl(w http.ResponseWriter, req *http.Request) {
 	ctx, cancel := context.WithTimeout(req.Context(), 30*time.Second)
 	defer cancel()
 
-	if err := container.Usecase(ctx).CrawlFeeds().Do(ctx); err != nil {
+	if err := container.Usecase().CrawlFeeds().Do(ctx); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

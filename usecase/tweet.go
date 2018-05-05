@@ -46,11 +46,11 @@ func (use *Tweet) Do(ctx context.Context, params TweetParams) error {
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	use.log.Infof("tweet: %v", params.Requests[0])
+	use.log.Infof(ctx, "tweet: %v", params.Requests[0])
 
 	requests := params.Requests[1:] // go to next tweet
 	if len(requests) == 0 {
-		use.log.Info("done!")
+		use.log.Info(ctx, "done!")
 		return nil
 	}
 	requests[0].InReplyToStatusID = res.IDStr

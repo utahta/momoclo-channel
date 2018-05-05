@@ -28,7 +28,7 @@ func EnqueueTweets(w http.ResponseWriter, req *http.Request) {
 	}
 
 	params := usecase.EnqueueTweetsParams{FeedItem: item}
-	if err := container.Usecase(ctx).EnqueueTweets().Do(ctx, params); err != nil {
+	if err := container.Usecase().EnqueueTweets().Do(ctx, params); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -51,7 +51,7 @@ func EnqueueLines(w http.ResponseWriter, req *http.Request) {
 	}
 
 	params := usecase.EnqueueLinesParams{FeedItem: item}
-	if err := container.Usecase(ctx).EnqueueLines().Do(ctx, params); err != nil {
+	if err := container.Usecase().EnqueueLines().Do(ctx, params); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

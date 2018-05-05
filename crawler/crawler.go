@@ -11,25 +11,24 @@ import (
 type (
 	// FeedFetcher interface
 	FeedFetcher interface {
-		Fetch(code FeedCode, maxItemNum int, latestURL string) ([]FeedItem, error)
+		Fetch(ctx context.Context, code FeedCode, maxItemNum int, latestURL string) ([]FeedItem, error)
 	}
 
 	client struct {
-		ctx context.Context
 	}
 )
 
 // New returns FeedFetcher that wraps momoclo-crawler
-func New(ctx context.Context) FeedFetcher {
-	return &client{ctx}
+func New() FeedFetcher {
+	return &client{}
 }
 
-func (c *client) Fetch(code FeedCode, maxItemNum int, latestURL string) ([]FeedItem, error) {
+func (c *client) Fetch(ctx context.Context, code FeedCode, maxItemNum int, latestURL string) ([]FeedItem, error) {
 	const errTag = "crawler Fetch failed"
 	var (
 		cli  *crawler.ChannelClient
 		err  error
-		opts = crawler.WithHTTPClient(urlfetch.Client(c.ctx))
+		opts = crawler.WithHTTPClient(urlfetch.Client(ctx))
 	)
 
 	switch code {

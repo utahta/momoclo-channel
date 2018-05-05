@@ -45,7 +45,7 @@ func NewCrawlFeed(
 func (use *CrawlFeed) Do(ctx context.Context, params CrawlFeedParams) error {
 	const errTag = "CrawlFeed.Do failed"
 
-	items, err := use.feed.Fetch(params.Code, 1, use.repo.GetURL(ctx, params.Code.String()))
+	items, err := use.feed.Fetch(ctx, params.Code, 1, use.repo.GetURL(ctx, params.Code.String()))
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}

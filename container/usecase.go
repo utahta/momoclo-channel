@@ -38,7 +38,7 @@ func (c *UsecaseContainer) CrawlFeeds() *usecase.CrawlFeeds {
 func (c *UsecaseContainer) CrawlFeed() *usecase.CrawlFeed {
 	return usecase.NewCrawlFeed(
 		c.logger.AE(c.ctx),
-		crawler.New(c.ctx),
+		crawler.New(),
 		event.NewTaskQueue(c.ctx),
 		c.repo.LatestEntryRepository(),
 	)

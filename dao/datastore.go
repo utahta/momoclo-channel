@@ -4,7 +4,6 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/mjibson/goon"
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/dao/hook"
 	"google.golang.org/appengine/datastore"
@@ -13,16 +12,16 @@ import (
 type (
 	// PersistenceHandler represents persist operations
 	PersistenceHandler interface {
-		Kind(interface{}) string
-		Put(interface{}) error
-		PutMulti(interface{}) error
-		Get(interface{}) error
-		GetMulti(interface{}) error
-		Delete(interface{}) error
-		DeleteMulti(interface{}) error
+		Kind(context.Context, interface{}) string
+		Put(context.Context, interface{}) error
+		PutMulti(context.Context, interface{}) error
+		Get(context.Context, interface{}) error
+		GetMulti(context.Context, interface{}) error
+		Delete(context.Context, interface{}) error
+		DeleteMulti(context.Context, interface{}) error
 		NewQuery(string) PersistenceQuery
-		GetAll(PersistenceQuery, interface{}) error
-		FlushLocalCache()
+		GetAll(context.Context, PersistenceQuery, interface{}) error
+		FlushLocalCache(context.Context)
 	}
 
 	// PersistenceQuery interface
@@ -36,41 +35,33 @@ type (
 		Attempts int
 	}
 
-	// Transactor provides transaction across entities
-	Transactor interface {
-		RunInTransaction(func(PersistenceHandler) error, *TransactionOptions) error
-	}
-
 	// datastoreHandler implements PersistenceHandler interface using goon
 	datastoreHandler struct {
-		*goon.Goon
 	}
 )
 
 // NewDatastoreHandler returns PersistenceHandler
-func NewDatastoreHandler(ctx context.Context) PersistenceHandler {
-	return &datastoreHandler{
-		goon.FromContext(ctx),
-	}
+func NewDatastoreHandler() PersistenceHandler {
+	return &datastoreHandler{}
 }
 
 // Kind returns datastore kind given src
-func (h *datastoreHandler) Kind(src interface{}) string {
-	return h.Goon.Kind(src)
+func (h *datastoreHandler) Kind(ctx context.Context, src interface{}) string {
+	return FromContext(ctx).Kind(src)
 }
 
 // Put wraps goon.Put()
-func (h *datastoreHandler) Put(src interface{}) error {
+func (h *datastoreHandler) Put(ctx context.Context, src interface{}) error {
 	hook.BeforeSave(src)
 	if err := hook.Validate(src); err != nil {
 		return err
 	}
-	_, err := h.Goon.Put(src)
+	_, err := FromContext(ctx).Put(src)
 	return err
 }
 
 // PutMulti wraps goon.PutMulti()
-func (h *datastoreHandler) PutMulti(src interface{}) error {
+func (h *datastoreHandler) PutMulti(ctx context.Context, src interface{}) error {
 	v := reflect.Indirect(reflect.ValueOf(src))
 	if v.Kind() != reflect.Slice {
 		return errors.New("value must be a slice")
@@ -84,13 +75,13 @@ func (h *datastoreHandler) PutMulti(src interface{}) error {
 			return err
 		}
 	}
-	_, err := h.Goon.PutMulti(src)
+	_, err := FromContext(ctx).PutMulti(src)
 	return err
 }
 
 // Get wraps goon.Get()
-func (h *datastoreHandler) Get(dst interface{}) error {
-	err := h.Goon.Get(dst)
+func (h *datastoreHandler) Get(ctx context.Context, dst interface{}) error {
+	err := FromContext(ctx).Get(dst)
 	if err == datastore.ErrNoSuchEntity {
 		return ErrNoSuchEntity
 	}
@@ -98,17 +89,18 @@ func (h *datastoreHandler) Get(dst interface{}) error {
 }
 
 // GetMulti wraps goon.GetMulti()
-func (h *datastoreHandler) GetMulti(dst interface{}) error {
-	return h.Goon.GetMulti(dst)
+func (h *datastoreHandler) GetMulti(ctx context.Context, dst interface{}) error {
+	return FromContext(ctx).GetMulti(dst)
 }
 
 // Delete wraps goon.Delete()
-func (h *datastoreHandler) Delete(src interface{}) error {
-	return h.Goon.Delete(h.Goon.Key(src))
+func (h *datastoreHandler) Delete(ctx context.Context, src interface{}) error {
+	g := FromContext(ctx)
+	return g.Delete(g.Key(src))
 }
 
 // DeleteMulti wraps goon.DeleteMulti()
-func (h *datastoreHandler) DeleteMulti(src interface{}) error {
+func (h *datastoreHandler) DeleteMulti(ctx context.Context, src interface{}) error {
 	//TODO want to encapsulate logic that get datastore keys
 	v := reflect.Indirect(reflect.ValueOf(src))
 	if v.Kind() != reflect.Slice {
@@ -116,12 +108,13 @@ func (h *datastoreHandler) DeleteMulti(src interface{}) error {
 	}
 	l := v.Len()
 
+	g := FromContext(ctx)
 	keys := make([]*datastore.Key, l)
 	for i := 0; i < l; i++ {
 		vi := v.Index(i)
-		keys[i] = h.Goon.Key(vi.Interface())
+		keys[i] = g.Key(vi.Interface())
 	}
-	return h.Goon.DeleteMulti(keys)
+	return g.DeleteMulti(keys)
 }
 
 // Query returns PersistenceQuery that wraps datastore query
@@ -130,17 +123,17 @@ func (h *datastoreHandler) NewQuery(kind string) PersistenceQuery {
 }
 
 // GetAll runs the query and returns all matches entities
-func (h *datastoreHandler) GetAll(q PersistenceQuery, dst interface{}) error {
+func (h *datastoreHandler) GetAll(ctx context.Context, q PersistenceQuery, dst interface{}) error {
 	v, ok := q.(*datastoreQuery)
 	if !ok {
 		return errors.New("required datastoreQuery")
 	}
 
-	_, err := h.Goon.GetAll(v.Query, dst)
+	_, err := FromContext(ctx).GetAll(v.Query, dst)
 	return err
 }
 
 // FlushLocalCache clears local caches
-func (h *datastoreHandler) FlushLocalCache() {
-	h.Goon.FlushLocalCache()
+func (h *datastoreHandler) FlushLocalCache(ctx context.Context) {
+	FromContext(ctx).FlushLocalCache()
 }

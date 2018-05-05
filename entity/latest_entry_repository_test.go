@@ -29,7 +29,7 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 		{crawler.FeedCodeHappyclo, "http://www.tfm.co.jp/clover/"},
 	}
 
-	repo := NewLatestEntryRepository(dao.NewDatastoreHandler(ctx))
+	repo := NewLatestEntryRepository(dao.NewDatastoreHandler())
 	for _, test := range tests {
 		l, err := NewLatestEntry(test.code.String(), test.url)
 		if err != nil {
@@ -37,11 +37,11 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 		}
 
 		l.PublishedAt = time.Now()
-		if err := repo.Save(l); err != nil {
+		if err := repo.Save(ctx, l); err != nil {
 			t.Fatal(err)
 		}
 
-		ll, err := repo.FindOrNewByURL(l.Code, l.URL)
+		ll, err := repo.FindOrNewByURL(ctx, l.Code, l.URL)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -51,10 +51,10 @@ func TestLatestEntryRepository_Save(t *testing.T) {
 		}
 	}
 
-	if err := repo.Save(&LatestEntry{ID: "fail-test", URL: "unknown", PublishedAt: time.Now()}); err == nil {
+	if err := repo.Save(ctx, &LatestEntry{ID: "fail-test", URL: "unknown", PublishedAt: time.Now()}); err == nil {
 		t.Errorf("Expected got error, but nil")
 	}
-	if err := repo.Save(&LatestEntry{ID: "fail-test", URL: "http://localhost"}); err == nil {
+	if err := repo.Save(ctx, &LatestEntry{ID: "fail-test", URL: "http://localhost"}); err == nil {
 		t.Errorf("Expected got error, but nil")
 	}
 }
@@ -66,7 +66,7 @@ func TestLatestEntryRepository_GetURL(t *testing.T) {
 	}
 	defer done()
 
-	repo := NewLatestEntryRepository(dao.NewDatastoreHandler(ctx))
+	repo := NewLatestEntryRepository(dao.NewDatastoreHandler())
 	tests := []struct {
 		code        crawler.FeedCode
 		expectedURL string
@@ -79,13 +79,13 @@ func TestLatestEntryRepository_GetURL(t *testing.T) {
 	}
 	for _, test := range tests {
 		blog := &LatestEntry{ID: test.code.String(), Code: test.code.String(), URL: test.expectedURL, PublishedAt: time.Now()}
-		if err := repo.Save(blog); err != nil {
+		if err := repo.Save(ctx, blog); err != nil {
 			t.Fatal(err)
 		}
 	}
 
 	for _, test := range tests {
-		url := repo.GetURL(test.code.String())
+		url := repo.GetURL(ctx, test.code.String())
 		if url != test.expectedURL {
 			t.Fatalf("Expected URL %s, got %s", test.expectedURL, url)
 		}

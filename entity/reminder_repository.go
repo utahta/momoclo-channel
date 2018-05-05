@@ -1,12 +1,16 @@
 package entity
 
-import "github.com/utahta/momoclo-channel/dao"
+import (
+	"context"
+
+	"github.com/utahta/momoclo-channel/dao"
+)
 
 type (
 	// ReminderRepository interface
 	ReminderRepository interface {
-		FindAll() ([]*Reminder, error)
-		Save(*Reminder) error
+		FindAll(context.Context) ([]*Reminder, error)
+		Save(context.Context, *Reminder) error
 	}
 
 	reminderRepository struct {
@@ -20,15 +24,15 @@ func NewReminderRepository(h dao.PersistenceHandler) ReminderRepository {
 }
 
 // FindAll finds all reminder entities
-func (repo *reminderRepository) FindAll() ([]*Reminder, error) {
-	kind := repo.Kind(&Reminder{})
+func (repo *reminderRepository) FindAll(ctx context.Context) ([]*Reminder, error) {
+	kind := repo.Kind(ctx, &Reminder{})
 	q := repo.NewQuery(kind).Filter("Enabled =", true)
 
 	var dst []*Reminder
-	return dst, repo.GetAll(q, &dst)
+	return dst, repo.GetAll(ctx, q, &dst)
 }
 
 // Save saves reminder entity
-func (repo *reminderRepository) Save(item *Reminder) error {
-	return repo.Put(item)
+func (repo *reminderRepository) Save(ctx context.Context, item *Reminder) error {
+	return repo.Put(ctx, item)
 }

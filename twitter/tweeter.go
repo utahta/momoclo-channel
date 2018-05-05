@@ -27,16 +27,15 @@ type (
 
 	// Tweeter interface
 	Tweeter interface {
-		Tweet(TweetRequest) (TweetResponse, error)
+		Tweet(context.Context, TweetRequest) (TweetResponse, error)
 	}
 
 	tweeter struct {
-		*twitter.Client
 	}
 )
 
 // NewTweeter returns model.Tweeter that wraps go-twitter
-func NewTweeter(ctx context.Context) Tweeter {
+func NewTweeter() Tweeter {
 	if config.C().Twitter.Disabled {
 		return NewNopTweeter()
 	}
@@ -45,29 +44,30 @@ func NewTweeter(ctx context.Context) Tweeter {
 		config.C().Twitter.ConsumerKey,
 		config.C().Twitter.ConsumerSecret,
 	)
-	c, _ := twitter.New(
+	return &tweeter{}
+}
+
+// Tweet tweets given request
+func (t *tweeter) Tweet(ctx context.Context, req TweetRequest) (TweetResponse, error) {
+	const errTag = "tweeter.Tweet failed"
+
+	c, err := twitter.New(
 		config.C().Twitter.AccessToken,
 		config.C().Twitter.AccessTokenSecret,
 		twitter.WithHTTPClient(urlfetch.Client(ctx)),
 	)
-	return &tweeter{c}
-}
+	if err != nil {
+		return TweetResponse{}, errors.Wrap(err, errTag)
+	}
 
-// Tweet tweets given request
-func (c *tweeter) Tweet(req TweetRequest) (TweetResponse, error) {
-	const errTag = "tweeter.Tweet failed"
-
-	var (
-		tweets *types.Tweets
-		err    error
-	)
+	var tweets *types.Tweets
 	if req.Text != "" {
 		if len(req.ImageURLs) > 0 {
 			tweets, err = c.TweetImageURLs(req.Text, req.ImageURLs, nil)
 		} else if req.VideoURL != "" {
 			tweets, err = c.TweetVideoURL(req.Text, req.VideoURL, "video/mp4", nil)
 		} else {
-			tweets, err = c.Client.Tweet(req.Text, nil)
+			tweets, err = c.Tweet(req.Text, nil)
 		}
 	} else {
 		v := url.Values{}

@@ -24,8 +24,8 @@ func TestEnqueueTweets_Do(t *testing.T) {
 	defer done()
 
 	taskQueue := eventtest.NewTaskQueue()
-	repo := container.Repository(ctx).TweetItemRepository()
-	u := usecase.NewEnqueueTweets(container.Logger(ctx).AE(), taskQueue, dao.NewDatastoreTransactor(ctx), repo)
+	repo := container.Repository().TweetItemRepository()
+	u := usecase.NewEnqueueTweets(container.Logger().AE(), taskQueue, dao.NewDatastoreTransactor(), repo)
 	publishedAt, _ := time.Parse("2006-01-02 15:04:05", "2008-05-17 00:00:00")
 	feedItem := crawler.FeedItem{
 		Title:       "title",
@@ -44,20 +44,20 @@ func TestEnqueueTweets_Do(t *testing.T) {
 		feedItem.ImageURLs,
 		feedItem.VideoURLs,
 	)
-	if repo.Exists(item.ID) {
+	if repo.Exists(ctx, item.ID) {
 		t.Errorf("Expected tweet item not found, but exists. feedItem:%v", feedItem)
 	}
 
-	err = u.Do(usecase.EnqueueTweetsParams{FeedItem: crawler.FeedItem{}})
+	err = u.Do(ctx, usecase.EnqueueTweetsParams{FeedItem: crawler.FeedItem{}})
 	if errs, ok := errors.Cause(err).(validator.ValidationErrors); !ok {
 		t.Errorf("Expected validation errors, got %v", errs)
 	}
 
-	if err := u.Do(usecase.EnqueueTweetsParams{FeedItem: feedItem}); err != nil {
+	if err := u.Do(ctx, usecase.EnqueueTweetsParams{FeedItem: feedItem}); err != nil {
 		t.Fatal(err)
 	}
 
-	if !repo.Exists(item.ID) {
+	if !repo.Exists(ctx, item.ID) {
 		t.Errorf("Expected tweet item exists, but not found. feedItem:%v", feedItem)
 	}
 

@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/entity"
@@ -35,10 +37,10 @@ func NewAddLineNotification(
 }
 
 // Do add line notification entity
-func (use *AddLineNotification) Do(params AddLineNotificationParams) error {
+func (use *AddLineNotification) Do(ctx context.Context, params AddLineNotificationParams) error {
 	const errTag = "AddLineNotification.Do failed"
 
-	token, err := use.token.GetAccessToken(params.Code)
+	token, err := use.token.GetAccessToken(ctx, params.Code)
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
@@ -48,10 +50,10 @@ func (use *AddLineNotification) Do(params AddLineNotificationParams) error {
 		return errors.Wrap(err, errTag)
 	}
 
-	if err := use.repo.Save(ln); err != nil {
+	if err := use.repo.Save(ctx, ln); err != nil {
 		return errors.Wrap(err, errTag)
 	}
 
-	use.log.Infof("added LineNotification. id:%v", ln.ID)
+	use.log.Infof(ctx, "added LineNotification. id:%v", ln.ID)
 	return nil
 }

@@ -14,6 +14,6 @@ func failResponse(ctx context.Context, w http.ResponseWriter, err error, code in
 		message = err.Error()
 	}
 
-	container.Logger(ctx).AE().Errorf("An error has occurred! code:%v err:%+v", code, err)
+	container.Logger().AE().Errorf(ctx, "An error has occurred! code:%v err:%+v", code, err)
 	http.Error(w, message, code)
 }

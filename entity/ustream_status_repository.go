@@ -1,12 +1,16 @@
 package entity
 
-import "github.com/utahta/momoclo-channel/dao"
+import (
+	"context"
+
+	"github.com/utahta/momoclo-channel/dao"
+)
 
 type (
 	// UstreamStatusRepository operates UstreamStatus entity
 	UstreamStatusRepository interface {
-		Find(string) (*UstreamStatus, error)
-		Save(*UstreamStatus) error
+		Find(context.Context, string) (*UstreamStatus, error)
+		Save(context.Context, *UstreamStatus) error
 	}
 
 	ustreamStatusRepository struct {
@@ -20,12 +24,12 @@ func NewUstreamStatusRepository(h dao.PersistenceHandler) UstreamStatusRepositor
 }
 
 // Find finds ustream status entity
-func (repo *ustreamStatusRepository) Find(id string) (*UstreamStatus, error) {
+func (repo *ustreamStatusRepository) Find(ctx context.Context, id string) (*UstreamStatus, error) {
 	entity := NewUstreamStatus()
-	return entity, repo.Get(entity)
+	return entity, repo.Get(ctx, entity)
 }
 
 // Save saves ustream status entity
-func (repo *ustreamStatusRepository) Save(item *UstreamStatus) error {
-	return repo.Put(item)
+func (repo *ustreamStatusRepository) Save(ctx context.Context, item *UstreamStatus) error {
+	return repo.Put(ctx, item)
 }

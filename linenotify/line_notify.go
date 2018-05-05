@@ -31,11 +31,10 @@ type (
 
 	// Client interface
 	Client interface {
-		Notify(string, Message) error
+		Notify(context.Context, string, Message) error
 	}
 
 	client struct {
-		*linenotify.Client
 	}
 )
 
@@ -45,19 +44,16 @@ var (
 )
 
 // New returns LineNotify
-func New(ctx context.Context) Client {
+func New() Client {
 	if config.C().LineNotify.Disabled {
 		return NewNop()
 	}
-
-	c := linenotify.New()
-	c.HTTPClient = urlfetch.Client(ctx)
-	return &client{Client: c}
+	return &client{}
 }
 
 // Notify sends message to given token
-func (c *client) Notify(accessToken string, msg Message) error {
-	if err := c.notify(accessToken, msg); err != nil {
+func (c *client) Notify(ctx context.Context, accessToken string, msg Message) error {
+	if err := c.notify(ctx, accessToken, msg); err != nil {
 		if err == linenotify.ErrNotifyInvalidAccessToken {
 			return ErrInvalidAccessToken
 		}
@@ -66,24 +62,27 @@ func (c *client) Notify(accessToken string, msg Message) error {
 	return nil
 }
 
-func (c *client) notify(accessToken string, msg Message) error {
+func (c *client) notify(ctx context.Context, accessToken string, msg Message) error {
+	notify := linenotify.New()
+	notify.HTTPClient = urlfetch.Client(ctx)
+
 	if msg.ImageURL != "" {
-		b, err := c.fetchImage(msg.ImageURL)
+		b, err := c.fetchImage(ctx, msg.ImageURL)
 		if err != nil {
 			return err
 		}
-		if _, err := c.Client.NotifyWithImage(accessToken, msg.Text, bytes.NewReader(b)); err != nil {
+		if _, err := notify.NotifyWithImage(accessToken, msg.Text, bytes.NewReader(b)); err != nil {
 			return err
 		}
 	} else {
-		if _, err := c.Client.NotifyMessage(accessToken, msg.Text); err != nil {
+		if _, err := notify.NotifyMessage(accessToken, msg.Text); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (c *client) fetchImage(urlStr string) ([]byte, error) {
+func (c *client) fetchImage(ctx context.Context, urlStr string) ([]byte, error) {
 	cacheNamedMux.Lock(urlStr)
 	defer cacheNamedMux.Unlock(urlStr)
 
@@ -91,7 +90,7 @@ func (c *client) fetchImage(urlStr string) ([]byte, error) {
 		return c.Bytes(), nil
 	}
 
-	o, err := openuri.Open(urlStr, openuri.WithHTTPClient(c.HTTPClient))
+	o, err := openuri.Open(urlStr, openuri.WithHTTPClient(urlfetch.Client(ctx)))
 	if err != nil {
 		return nil, err
 	}

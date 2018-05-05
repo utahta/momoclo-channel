@@ -4,6 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"context"
+
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/testutil"
@@ -30,21 +32,19 @@ func TestLineItemRepository_Tx(t *testing.T) {
 		feedItem.ImageURLs,
 		feedItem.VideoURLs,
 	)
-	repo := NewLineItemRepository(dao.NewDatastoreHandler(ctx))
-	if err := repo.Save(item); err != nil {
+	repo := NewLineItemRepository(dao.NewDatastoreHandler())
+	if err := repo.Save(ctx, item); err != nil {
 		t.Fatal(err)
 	}
 
-	tran := dao.NewDatastoreTransactor(ctx)
-	tran.RunInTransaction(func(h dao.PersistenceHandler) error {
-		repo := repo.Tx(h)
-
+	tran := dao.NewDatastoreTransactor()
+	tran.RunInTransaction(ctx, func(ctx context.Context) error {
 		item.Title = "entry title z"
-		if err := repo.Save(item); err != nil {
+		if err := repo.Save(ctx, item); err != nil {
 			t.Fatal(err)
 		}
 
-		v, err := repo.Find(item.ID)
+		v, err := repo.Find(ctx, item.ID)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -56,7 +56,7 @@ func TestLineItemRepository_Tx(t *testing.T) {
 		return nil
 	}, nil)
 
-	v, err := repo.Find(item.ID)
+	v, err := repo.Find(ctx, item.ID)
 	if err != nil {
 		t.Fatal(err)
 	}

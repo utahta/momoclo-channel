@@ -1,8 +1,6 @@
 package container
 
 import (
-	"context"
-
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/customsearch"
 	"github.com/utahta/momoclo-channel/dao"
@@ -16,14 +14,13 @@ import (
 
 // UsecaseContainer dependency injection
 type UsecaseContainer struct {
-	ctx    context.Context
 	repo   *RepositoryContainer
 	logger *LoggerContainer
 }
 
 // Usecase returns container of use case
-func Usecase(ctx context.Context) *UsecaseContainer {
-	return &UsecaseContainer{ctx, Repository(ctx), Logger(ctx)}
+func Usecase() *UsecaseContainer {
+	return &UsecaseContainer{Repository(), Logger()}
 }
 
 // CrawlFeeds use case
@@ -38,8 +35,8 @@ func (c *UsecaseContainer) CrawlFeeds() *usecase.CrawlFeeds {
 func (c *UsecaseContainer) CrawlFeed() *usecase.CrawlFeed {
 	return usecase.NewCrawlFeed(
 		c.logger.AE(),
-		crawler.New(c.ctx),
-		event.NewTaskQueue(c.ctx),
+		crawler.New(),
+		event.NewTaskQueue(),
 		c.repo.LatestEntryRepository(),
 	)
 }
@@ -48,8 +45,8 @@ func (c *UsecaseContainer) CrawlFeed() *usecase.CrawlFeed {
 func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
 	return usecase.NewEnqueueTweets(
 		c.logger.AE(),
-		event.NewTaskQueue(c.ctx),
-		dao.NewDatastoreTransactor(c.ctx),
+		event.NewTaskQueue(),
+		dao.NewDatastoreTransactor(),
 		c.repo.TweetItemRepository(),
 	)
 }
@@ -58,8 +55,8 @@ func (c *UsecaseContainer) EnqueueTweets() *usecase.EnqueueTweets {
 func (c *UsecaseContainer) EnqueueLines() *usecase.EnqueueLines {
 	return usecase.NewEnqueueLines(
 		c.logger.AE(),
-		event.NewTaskQueue(c.ctx),
-		dao.NewDatastoreTransactor(c.ctx),
+		event.NewTaskQueue(),
+		dao.NewDatastoreTransactor(),
 		c.repo.LineItemRepository(),
 	)
 }
@@ -68,8 +65,8 @@ func (c *UsecaseContainer) EnqueueLines() *usecase.EnqueueLines {
 func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 	return usecase.NewTweet(
 		c.logger.AE(),
-		event.NewTaskQueue(c.ctx),
-		twitter.NewTweeter(c.ctx),
+		event.NewTaskQueue(),
+		twitter.NewTweeter(),
 	)
 }
 
@@ -77,7 +74,7 @@ func (c *UsecaseContainer) Tweet() *usecase.Tweet {
 func (c *UsecaseContainer) Remind() *usecase.Remind {
 	return usecase.NewRemind(
 		c.logger.AE(),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		c.repo.ReminderRepository(),
 	)
 }
@@ -86,8 +83,8 @@ func (c *UsecaseContainer) Remind() *usecase.Remind {
 func (c *UsecaseContainer) CheckUstream() *usecase.CheckUstream {
 	return usecase.NewCheckUstream(
 		c.logger.AE(),
-		event.NewTaskQueue(c.ctx),
-		ustream.NewStatusChecker(c.ctx),
+		event.NewTaskQueue(),
+		ustream.NewStatusChecker(),
 		c.repo.UstreamStatusRepository(),
 	)
 }
@@ -96,7 +93,7 @@ func (c *UsecaseContainer) CheckUstream() *usecase.CheckUstream {
 func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 	return usecase.NewAddLineNotification(
 		c.logger.AE(),
-		linenotify.NewToken(c.ctx),
+		linenotify.NewToken(),
 		c.repo.LineNotificationRepository(),
 	)
 }
@@ -105,8 +102,8 @@ func (c *UsecaseContainer) AddLineNotification() *usecase.AddLineNotification {
 func (c *UsecaseContainer) HandleLineBotEvents() *usecase.HandleLineBotEvents {
 	return usecase.NewHandleLineBotEvents(
 		c.logger.AE(),
-		linebot.New(c.ctx),
-		customsearch.MustNewImageSearcher(c.ctx),
+		linebot.New(),
+		customsearch.NewImageSearcher(),
 	)
 }
 
@@ -114,7 +111,7 @@ func (c *UsecaseContainer) HandleLineBotEvents() *usecase.HandleLineBotEvents {
 func (c *UsecaseContainer) LineNotifyBroadcast() *usecase.LineNotifyBroadcast {
 	return usecase.NewLineNotifyBroadcast(
 		c.logger.AE(),
-		event.NewTaskQueue(c.ctx),
+		event.NewTaskQueue(),
 		c.repo.LineNotificationRepository(),
 	)
 }
@@ -123,8 +120,8 @@ func (c *UsecaseContainer) LineNotifyBroadcast() *usecase.LineNotifyBroadcast {
 func (c *UsecaseContainer) LineNotify() *usecase.LineNotify {
 	return usecase.NewLineNotify(
 		c.logger.AE(),
-		event.NewTaskQueue(c.ctx),
-		linenotify.New(c.ctx),
+		event.NewTaskQueue(),
+		linenotify.New(),
 		c.repo.LineNotificationRepository(),
 	)
 }

@@ -17,14 +17,14 @@ func TestReminderRepository_FindAll(t *testing.T) {
 	}
 	defer done()
 
-	repo := NewReminderRepository(dao.NewDatastoreHandler(ctx))
+	repo := NewReminderRepository(dao.NewDatastoreHandler())
 	reminders := []*Reminder{
 		NewReminderOnce("test1", time.Now()),
 		NewReminderOnce("test2", time.Now()),
 	}
 	reminders[1].Enabled = false
 	for _, reminder := range reminders {
-		if err := repo.Save(reminder); err != nil {
+		if err := repo.Save(ctx, reminder); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -37,7 +37,7 @@ func TestReminderRepository_FindAll(t *testing.T) {
 		t.Fatalf("Expected len 2, got %d", len(reminders))
 	}
 
-	reminders, err = repo.FindAll()
+	reminders, err = repo.FindAll(ctx)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
 	"github.com/utahta/momoclo-channel/entity"
@@ -38,7 +40,7 @@ func NewLineNotifyBroadcast(
 }
 
 // Do notify broadcast
-func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
+func (use *LineNotifyBroadcast) Do(ctx context.Context, params LineNotifyBroadcastParams) error {
 	const errTag = "LineNotifyBroadcast.Do failed"
 
 	if err := validator.Validate(params); err != nil {
@@ -46,7 +48,7 @@ func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
 	}
 
 	//TODO use iterator
-	ns, err := use.repo.FindAll()
+	ns, err := use.repo.FindAll(ctx)
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
@@ -55,7 +57,7 @@ func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
 	for _, n := range ns {
 		accessToken, err := n.Token(config.C().LineNotify.TokenKey)
 		if err != nil {
-			use.log.Errorf("%v: get access token err:%v", errTag, err)
+			use.log.Errorf(ctx, "%v: get access token err:%v", errTag, err)
 			continue
 		}
 		tasks = append(tasks, eventtask.NewLine(linenotify.Request{
@@ -65,10 +67,10 @@ func (use *LineNotifyBroadcast) Do(params LineNotifyBroadcastParams) error {
 		}))
 	}
 
-	if err := use.taskQueue.PushMulti(tasks); err != nil {
+	if err := use.taskQueue.PushMulti(ctx, tasks); err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	use.log.Infof("broadcast line tasks len:%v", len(tasks))
+	use.log.Infof(ctx, "broadcast line tasks len:%v", len(tasks))
 
 	return nil
 }

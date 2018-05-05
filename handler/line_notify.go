@@ -26,7 +26,7 @@ func LineNotifyOn(w http.ResponseWriter, req *http.Request) {
 	}
 	http.SetCookie(w, &http.Cookie{Name: "state", Value: c.State, Expires: time.Now().Add(300 * time.Second), Secure: true})
 
-	container.Logger(ctx).AE().Info("Redirect to LINE Notify connection page")
+	container.Logger().AE().Info(ctx, "Redirect to LINE Notify connection page")
 
 	err = c.Redirect(w, req)
 	if err != nil {
@@ -39,7 +39,7 @@ func LineNotifyOn(w http.ResponseWriter, req *http.Request) {
 func LineNotifyOff(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	container.Logger(ctx).AE().Info("Redirect to LINE Notify revoking page")
+	container.Logger().AE().Info(ctx, "Redirect to LINE Notify revoking page")
 
 	// official url
 	http.Redirect(w, req, "https://notify-bot.line.me/my/", http.StatusFound)
@@ -66,7 +66,7 @@ func LineNotifyCallback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if err := container.Usecase(ctx).AddLineNotification().Do(usecase.AddLineNotificationParams{Code: params.Code}); err != nil {
+	if err := container.Usecase().AddLineNotification().Do(ctx, usecase.AddLineNotificationParams{Code: params.Code}); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -99,7 +99,7 @@ func LineNotifyBroadcast(w http.ResponseWriter, req *http.Request) {
 	}
 
 	params := usecase.LineNotifyBroadcastParams{Messages: messages}
-	if err := container.Usecase(ctx).LineNotifyBroadcast().Do(params); err != nil {
+	if err := container.Usecase().LineNotifyBroadcast().Do(ctx, params); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}
@@ -122,7 +122,7 @@ func LineNotify(w http.ResponseWriter, req *http.Request) {
 	}
 
 	params := usecase.LineNotifyParams{Request: request}
-	if err := container.Usecase(ctx).LineNotify().Do(params); err != nil {
+	if err := container.Usecase().LineNotify().Do(ctx, params); err != nil {
 		failResponse(ctx, w, err, http.StatusInternalServerError)
 		return
 	}

@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/crawler"
 	"github.com/utahta/momoclo-channel/entity"
@@ -40,10 +42,10 @@ func NewCrawlFeed(
 }
 
 // Do crawls a site and invokes tweet and line event
-func (use *CrawlFeed) Do(params CrawlFeedParams) error {
+func (use *CrawlFeed) Do(ctx context.Context, params CrawlFeedParams) error {
 	const errTag = "CrawlFeed.Do failed"
 
-	items, err := use.feed.Fetch(params.Code, 1, use.repo.GetURL(params.Code.String()))
+	items, err := use.feed.Fetch(ctx, params.Code, 1, use.repo.GetURL(ctx, params.Code.String()))
 	if err != nil {
 		return errors.Wrap(err, errTag)
 	}
@@ -52,14 +54,14 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 	}
 	for i := range items {
 		if err := validator.Validate(items[i]); err != nil {
-			use.log.Errorf("%v: validate error i:%v items:%v err:%v", errTag, i, items, err)
+			use.log.Errorf(ctx, "%v: validate error i:%v items:%v err:%v", errTag, i, items, err)
 			return errors.Wrap(err, errTag)
 		}
 	}
 
 	// update latest entry
 	item := items[0] // first item is the latest entry
-	l, err := use.repo.FindOrNewByURL(item.FeedCode().String(), item.EntryURL)
+	l, err := use.repo.FindOrNewByURL(ctx, item.FeedCode().String(), item.EntryURL)
 	if err != nil {
 		return errors.Wrapf(err, "%v: url:%v", errTag, item.EntryURL)
 	}
@@ -68,7 +70,7 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 	}
 	l.URL = item.EntryURL
 	l.PublishedAt = item.PublishedAt
-	if err := use.repo.Save(l); err != nil {
+	if err := use.repo.Save(ctx, l); err != nil {
 		return errors.Wrapf(err, errTag)
 	}
 
@@ -80,10 +82,10 @@ func (use *CrawlFeed) Do(params CrawlFeedParams) error {
 			eventtask.NewEnqueueLines(item),
 		)
 	}
-	if err := use.taskQueue.PushMulti(tasks); err != nil {
+	if err := use.taskQueue.PushMulti(ctx, tasks); err != nil {
 		return errors.Wrap(err, errTag)
 	}
-	use.log.Infof("crawl feed items:%v", items)
+	use.log.Infof(ctx, "crawl feed items:%v", items)
 
 	return nil
 }

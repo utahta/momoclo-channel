@@ -3,6 +3,8 @@ package dao
 import (
 	"testing"
 
+	"context"
+
 	"github.com/utahta/momoclo-channel/testutil"
 	"google.golang.org/appengine/aetest"
 )
@@ -14,20 +16,20 @@ func TestDatastoreTransactor_RunInTransaction(t *testing.T) {
 	}
 	defer done()
 
-	h := NewDatastoreHandler(ctx)
+	h := NewDatastoreHandler()
 	e := &TestEntity{ID: "plan-2", Name: "taroimo"}
-	if err := h.Put(e); err != nil {
+	if err := h.Put(ctx, e); err != nil {
 		t.Fatal(err)
 	}
 
-	tran := NewDatastoreTransactor(ctx)
-	err = tran.RunInTransaction(func(p PersistenceHandler) error {
+	tran := NewDatastoreTransactor()
+	err = tran.RunInTransaction(ctx, func(ctx context.Context) error {
 		e.Name = "taroimo_z"
-		if err := p.Put(e); err != nil {
+		if err := h.Put(ctx, e); err != nil {
 			return err
 		}
 
-		if err := p.Get(e); err != nil {
+		if err := h.Get(ctx, e); err != nil {
 			return err
 		}
 
@@ -41,8 +43,8 @@ func TestDatastoreTransactor_RunInTransaction(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	h.FlushLocalCache()
-	if err := h.Get(e); err != nil {
+	h.FlushLocalCache(ctx)
+	if err := h.Get(ctx, e); err != nil {
 		t.Fatal(err)
 	}
 

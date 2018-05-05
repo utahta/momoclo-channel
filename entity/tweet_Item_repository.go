@@ -1,14 +1,17 @@
 package entity
 
-import "github.com/utahta/momoclo-channel/dao"
+import (
+	"context"
+
+	"github.com/utahta/momoclo-channel/dao"
+)
 
 type (
 	// TweetItemRepository interface
 	TweetItemRepository interface {
-		Exists(string) bool
-		Find(string) (*TweetItem, error)
-		Save(*TweetItem) error
-		Tx(dao.PersistenceHandler) TweetItemRepository
+		Exists(context.Context, string) bool
+		Find(context.Context, string) (*TweetItem, error)
+		Save(context.Context, *TweetItem) error
 	}
 
 	tweetItemRepository struct {
@@ -22,23 +25,18 @@ func NewTweetItemRepository(h dao.PersistenceHandler) TweetItemRepository {
 }
 
 // Exists exists tweet item
-func (repo *tweetItemRepository) Exists(id string) bool {
-	_, err := repo.Find(id)
+func (repo *tweetItemRepository) Exists(ctx context.Context, id string) bool {
+	_, err := repo.Find(ctx, id)
 	return err == nil
 }
 
 // Find finds tweet item given id
-func (repo *tweetItemRepository) Find(id string) (*TweetItem, error) {
+func (repo *tweetItemRepository) Find(ctx context.Context, id string) (*TweetItem, error) {
 	item := &TweetItem{ID: id}
-	return item, repo.Get(item)
+	return item, repo.Get(ctx, item)
 }
 
 // Save saves tweet item
-func (repo *tweetItemRepository) Save(item *TweetItem) error {
-	return repo.Put(item)
-}
-
-// Tx can be used in RunInTransaction
-func (repo *tweetItemRepository) Tx(h dao.PersistenceHandler) TweetItemRepository {
-	return NewTweetItemRepository(h)
+func (repo *tweetItemRepository) Save(ctx context.Context, item *TweetItem) error {
+	return repo.Put(ctx, item)
 }

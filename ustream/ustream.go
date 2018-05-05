@@ -10,21 +10,23 @@ import (
 type (
 	// StatusChecker interface
 	StatusChecker interface {
-		IsLive() (bool, error)
+		IsLive(ctx context.Context) (bool, error)
 	}
 
 	statusChecker struct {
-		*uststat.Client
 	}
 )
 
 // NewStatusChecker returns UstreamStatusChecker wraps ustream live status client
-func NewStatusChecker(ctx context.Context) StatusChecker {
-	c, _ := uststat.New(uststat.WithHTTPTransport(&urlfetch.Transport{Context: ctx}))
-	return &statusChecker{Client: c}
+func NewStatusChecker() StatusChecker {
+	return &statusChecker{}
 }
 
 // IsLive returns true if status is live
-func (s *statusChecker) IsLive() (bool, error) {
-	return s.IsLiveByChannelID("4979543") // momoclotv
+func (s *statusChecker) IsLive(ctx context.Context) (bool, error) {
+	c, err := uststat.New(uststat.WithHTTPTransport(&urlfetch.Transport{Context: ctx}))
+	if err != nil {
+		return false, err
+	}
+	return c.IsLiveByChannelID("4979543") // momoclotv
 }

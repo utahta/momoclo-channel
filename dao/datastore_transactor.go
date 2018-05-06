@@ -13,6 +13,12 @@ type (
 		RunInTransaction(context.Context, func(context.Context) error, *TransactionOptions) error
 	}
 
+	// TransactionOptions represents transaction options (TODO: datastore dependencies should be eliminated, but there is no idea)
+	TransactionOptions struct {
+		XG       bool
+		Attempts int
+	}
+
 	// datastoreTransactor implements Transactor interface using goon
 	datastoreTransactor struct {
 	}

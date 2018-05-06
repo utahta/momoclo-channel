@@ -24,17 +24,6 @@ type (
 		FlushLocalCache(context.Context)
 	}
 
-	// PersistenceQuery interface
-	PersistenceQuery interface {
-		Filter(string, interface{}) PersistenceQuery
-	}
-
-	// TransactionOptions represents transaction options (TODO: datastore dependencies should be eliminated, but there is no idea)
-	TransactionOptions struct {
-		XG       bool
-		Attempts int
-	}
-
 	// datastoreHandler implements PersistenceHandler interface using goon
 	datastoreHandler struct {
 	}

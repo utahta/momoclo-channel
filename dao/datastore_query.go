@@ -5,6 +5,11 @@ import (
 )
 
 type (
+	// PersistenceQuery interface
+	PersistenceQuery interface {
+		Filter(string, interface{}) PersistenceQuery
+	}
+
 	datastoreQuery struct {
 		*datastore.Query
 	}

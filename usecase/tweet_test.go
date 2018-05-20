@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-playground/validator"
 	"github.com/pkg/errors"
-	"github.com/utahta/momoclo-channel/container"
 	"github.com/utahta/momoclo-channel/event/eventtest"
+	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/testutil"
 	"github.com/utahta/momoclo-channel/twitter"
 	"github.com/utahta/momoclo-channel/usecase"
@@ -21,7 +21,7 @@ func TestTweet_Do(t *testing.T) {
 	defer done()
 
 	taskQueue := eventtest.NewTaskQueue()
-	u := usecase.NewTweet(container.Logger().AE(), taskQueue, twitter.NewNopTweeter())
+	u := usecase.NewTweet(log.NewAELogger(), taskQueue, twitter.NewNopTweeter())
 
 	validationTests := []struct {
 		params usecase.TweetParams

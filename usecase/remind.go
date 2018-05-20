@@ -1,9 +1,8 @@
 package usecase
 
 import (
-	"fmt"
-
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/entity"

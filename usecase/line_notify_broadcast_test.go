@@ -8,10 +8,11 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/pkg/errors"
 	"github.com/utahta/momoclo-channel/config"
-	"github.com/utahta/momoclo-channel/container"
+	"github.com/utahta/momoclo-channel/dao"
 	"github.com/utahta/momoclo-channel/entity"
 	"github.com/utahta/momoclo-channel/event/eventtest"
 	"github.com/utahta/momoclo-channel/linenotify"
+	"github.com/utahta/momoclo-channel/log"
 	"github.com/utahta/momoclo-channel/testutil"
 	"github.com/utahta/momoclo-channel/usecase"
 	"google.golang.org/appengine/aetest"
@@ -25,8 +26,8 @@ func TestLineNotifyBroadcast_Do(t *testing.T) {
 	defer done()
 
 	taskQueue := eventtest.NewTaskQueue()
-	repo := container.Repository().LineNotificationRepository()
-	u := usecase.NewLineNotifyBroadcast(container.Logger().AE(), taskQueue, repo)
+	repo := entity.NewLineNotificationRepository(dao.NewDatastoreHandler())
+	u := usecase.NewLineNotifyBroadcast(log.NewAELogger(), taskQueue, repo)
 
 	validationTests := []struct {
 		params usecase.LineNotifyBroadcastParams

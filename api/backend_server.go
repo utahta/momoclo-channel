@@ -46,8 +46,26 @@ type (
 )
 
 // NewBackendServer returns backend server.
-func NewBackendServer() *backendServer {
-	return &backendServer{}
+func NewBackendServer() Server {
+	dh := dao.NewDatastoreHandler()
+	return &backendServer{
+		logger:           log.NewAELogger(),
+		transactor:       dao.NewDatastoreTransactor(),
+		taskQueue:        event.NewTaskQueue(),
+		ustChecker:       ustream.NewStatusChecker(),
+		feedFetcher:      crawler.New(),
+		linebotClient:    linebot.New(),
+		imageSearcher:    customsearch.NewImageSearcher(),
+		linenotifyToken:  linenotify.NewToken(),
+		linenotifyClient: linenotify.New(),
+
+		reminderRepo:         entity.NewReminderRepository(dh),
+		ustreamStatusRepo:    entity.NewUstreamStatusRepository(dh),
+		latestEntryRepo:      entity.NewLatestEntryRepository(dh),
+		tweetItemRepo:        entity.NewTweetItemRepository(dh),
+		lineItemRepo:         entity.NewLineItemRepository(dh),
+		lineNotificationRepo: entity.NewLineNotificationRepository(dh),
+	}
 }
 
 func (s *backendServer) Handle() {

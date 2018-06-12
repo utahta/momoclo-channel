@@ -48,7 +48,7 @@
 
 [[constraint]]
   name = "github.com/utahta/momoclo-crawler"
-  revision = "9a65828d7369d206d8a45ed6ef36d699149d0469"
+  revision = "c771f7aaf36dba558172b2d5c225b1e0a324efb1"
 
 [[constraint]]
   branch = "master"

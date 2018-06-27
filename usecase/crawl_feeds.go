@@ -41,7 +41,7 @@ func (c *CrawlFeeds) Do(ctx context.Context) error {
 		crawler.FeedCodeAeNews,
 		crawler.FeedCodeYoutube,
 	}
-	if now.Weekday() == time.Sunday {
+	if now.Weekday() == time.Sunday && now.Hour() == 17 {
 		codes = append(codes, crawler.FeedCodeHappyclo)
 	}
 

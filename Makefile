@@ -33,7 +33,7 @@ reviewdog:
 	reviewdog -diff="git diff master"
 
 reviewdog/ci:
-	reviewdog -ci="travis"
+	reviewdog -reporter="github-pr-review"
 
 ## serve
 

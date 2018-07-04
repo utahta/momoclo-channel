@@ -1,9 +1,9 @@
 service: batch
 version: v4-0-0
 runtime: go
-api_version: go1.8
+api_version: go1.9
 
-instance_class: B2
+instance_class: B4
 basic_scaling:
   idle_timeout: 1m
   max_instances: 1

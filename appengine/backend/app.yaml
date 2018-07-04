@@ -1,6 +1,6 @@
 version: v4-0-0
 runtime: go
-api_version: go1.8
+api_version: go1.9
 
 instance_class: F1
 automatic_scaling:

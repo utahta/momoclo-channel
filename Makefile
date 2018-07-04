@@ -4,12 +4,12 @@ setup:
 	@dep ensure -v
 
 setup/tools:
-	go get -u golang.org/x/tools/cmd/goimports
-	go get -u honnef.co/go/tools/cmd/staticcheck
-	go get -u honnef.co/go/tools/cmd/unused
-	go get -u github.com/kisielk/errcheck
-	go get -u golang.org/x/lint/golint
-	go get -u github.com/haya14busa/reviewdog/cmd/reviewdog
+	go get -u golang.org/x/tools/cmd/goimports \
+		honnef.co/go/tools/cmd/staticcheck \
+		honnef.co/go/tools/cmd/unused \
+		github.com/kisielk/errcheck \
+		golang.org/x/lint/golint \
+		github.com/haya14busa/reviewdog/cmd/reviewdog
 
 ## test
 
